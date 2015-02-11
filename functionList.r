@@ -1,10 +1,93 @@
-### Functions taken from "catanalysis.R" and "catAnalysisExtension.R" from "jinlong25_catanalysis" repo
+### Kevin Sparks 2/11/15
+### Functions taken from "catanalysis.R" and "catAnalysisExtension.R" from "jinlong25_catanalysis" repo (cross-referenced with "catanalysis2501" (geo terms))
+
+### Notes
+## There seemed to be two sets of functions being defined among various catanalysis scripts. The first, denoted by 6 lines of "#"s and called "Function list Pt. 1" 
+# (followed with a set of executables running those functions denoted by three lines of "#"s), and the second, denoted by 6 lines of "#"s and called "Functions list Pt. 2"
+## "clusterval" package not available in R 3.0.0
+## Directly below is the set up for testing the functions. This is where you set paths, create sub-directories, and load packages. 
 
 
 
 
 
 
+
+
+
+
+#####################################################################################################
+
+#Instruction
+#1. Create a folder with the name of the experiment;
+#2. In the experiment folder, create a folder named "zip" and put all participant zip files into the "zip" folder;
+#3. Change the PATH & SCENARIO NAME at the beginning of the script;
+#4. Run the entire script;
+#5. To create dendrograms at different solutions, manually change the number in the last line of the script.
+#6. Go find the result in the experiment folder
+
+#KlipArt Instruction
+#A klipart folder will be created inside the experiment folder. In the klipart folder:
+#1. Zip the matrices folder into a zip file;
+#2. Put a icons.zip file that contains all the icon files.
+
+#Clear the workspace
+rm(list=ls())
+
+#Define the name of the experiment
+scenario_name <- "2501 geotermsN"
+
+#Define the path to the experiment folder (with a closing "/" or "\")
+
+#path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/birdseye/red/"
+#path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/sideview/black/"
+#path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1200 mturk planes birdseye/analysis/birdseye_30/"
+# path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2501 mturk geo terms new/"
+path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/"
+
+##Checks if "/" exists after path. If not, one is added
+if(substr(path, nchar(path), nchar(path)) != "/"){
+	path <- paste(path, "/", sep = "")
+}
+
+#Define the max number of clusters
+max_cluster <- 9
+
+#Auto-create two subfolders "ism" and "matrices"
+dir.create(paste(path, "ism/", sep=""))
+klipart_path <- paste(path, scenario_name, "-klipart/", sep = "")
+dir.create(klipart_path)
+dir.create(paste(klipart_path, "matrices/", sep="")) 
+dir.create(paste(path, "matrices/", sep="")) 
+
+#Uncomment the install.package() functions if you haven't installed these packages
+#install.packages("gplots")
+require("gplots")
+#install.packages("vegan")
+require("vegan")
+#install.packages("clusterval")
+require("clusteval")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# BEGIN: Function list Pt. 1
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
 
 
 
@@ -45,6 +128,8 @@ icon_counter <- function(path){
 	#Return the number of icons
 	return(n_icons)
 }
+
+
 
 
 
@@ -119,6 +204,7 @@ icon_list_getter <- function(path){
 
 
 
+
 #Participant counter: count the number of participants
 participant_counter <- function(path){
 	
@@ -132,14 +218,6 @@ participant_counter <- function(path){
 	#Return the total number of participants as an integer
 	return(np)
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -250,9 +328,6 @@ osm_ism_generator <- function(path){
 
 
 
-
-
-
 #assignment_getter: generate the assignment.csv for KlipArt
 assignment_getter <- function(path){
 	#Create an empty dataframe
@@ -280,13 +355,6 @@ assignment_getter <- function(path){
 	write.table(df, file = paste(klipart_path, "assignment.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
 }
-
-
-
-
-
-
-
 
 
 
@@ -427,14 +495,6 @@ participant_info <- function(path){
 
 
 
-
-
-
-
-
-
-
-
 #description_getter: extract the linguistic labels (both long and short) from all participants and store in a single csv file
 description_getter <- function(path){
 	
@@ -507,17 +567,6 @@ description_getter <- function(path){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 #osm_viz: generates a heatmap based on the OSM.
 #No dendrograms are generated and the icons are in alphabetical order
 #Jinlong: It is intended to be a raw heat map without dendrograms. 
@@ -533,27 +582,15 @@ osm_viz <- function(path){
 	#Jinlong: other options includes jpg, bmp, png, etc. but each has its own function with
 	#slightly different arguments and different default values for arguments
 	#Drawing the heatmap and export as a tiff file
+
+	# png(filename = paste(path, "heat_map.png", sep = ""),width = 2000, height = 2000, units = "px",
+	# 		pointsize = 5,compression = "none", bg = "white", res = 600)
 	png(filename = paste(path, "heat_map.png", sep = ""),width = 2000, height = 2000, units = "px",
-			pointsize = 5,compression = "none", bg = "white", res = 600)
+			pointsize = 5, bg = "white", res = 600)
 	heatmap.2(as.matrix(participant_counter(path) - dm), Rowv = F, Colv = "Rowv", dendrogram = "none", 
 			margin = c(3, 3), cexRow = 0.5, cexCol = 0.5, revC = F, trace = "none", key = F)
 	dev.off()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -604,8 +641,6 @@ cluster_heatmap <- function(path){
 
 
 
-
-
 #General cluster analysis
 general_cluster_analysis  <- function(path) {
 	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
@@ -634,26 +669,33 @@ general_cluster_analysis  <- function(path) {
 	dend_comp <- as.dendrogram(comp)
 	dend_ward <- as.dendrogram(ward)
 	
+	# png(filename = paste(path, "dendrogram_ave.png", sep =""),
+	# 		width = 2000, height=2000, units="px",
+	# 		pointsize=5, compression = "none", bg = "white", res = 600)
 	png(filename = paste(path, "dendrogram_ave.png", sep =""),
 			width = 2000, height=2000, units="px",
-			pointsize=5, compression = "none", bg = "white", res = 600)
+			pointsize=5, bg = "white", res = 600)
 	plot(dend_ave)
 	dev.off()
 	
+	# png(filename = paste(path, "dendrogram_comp.png", sep =""),
+	# 		width = 2000, height=2000, units="px",
+	# 		pointsize=5, compression = "none", bg = "white", res = 600)
 	png(filename = paste(path, "dendrogram_comp.png", sep =""),
 			width = 2000, height=2000, units="px",
-			pointsize=5, compression = "none", bg = "white", res = 600)
+			pointsize=5, bg = "white", res = 600)
 	plot(dend_comp)
 	dev.off()
 	
+	# png(filename = paste(path, "dendrogram_ward.png", sep =""),
+	# 		width = 2000, height=2000, units="px",
+	# 		pointsize=5, compression = "none", bg = "white", res = 600)
 	png(filename = paste(path, "dendrogram_ward.png", sep =""),
 			width = 2000, height=2000, units="px",
-			pointsize=5, compression = "none", bg = "white", res = 600)
+			pointsize=5, bg = "white", res = 600)
 	plot(dend_ward)
 	dev.off()
 }
-
-
 
 
 
@@ -717,6 +759,448 @@ detailed_cluster_analysis <- function(path, k, title = ""){
 
 
 
+
+
+
+#Cluster validation
+cluster_validation <- function(path, k, title=""){
+	
+	ism <- list.files(paste(path,"ism/",sep=""))
+	r <- sample(1:100, size=participant_counter(path), replace=TRUE)
+	ism_list <- data.frame(ism,r)
+	ism_list <- ism_list[order(r),]
+	
+	if(participant_counter(path)%%2 == 0){
+		split <- participant_counter(path)/2
+	}else{
+		split <-(participant_counter(path)-1)/2
+	}
+	
+	#Split the participants
+	group1=ism_list[1:split,1]
+	group2=ism_list[(split+1):participant_counter(path),1]
+	
+	#read in group1 matrix
+	matrix1=read.delim(paste(path,"ism/",group1[1],sep=""),header=F, sep=" ",stringsAsFactors=F)
+	osm1=data.matrix(matrix1)
+	
+	for (i in 2:length(group1)){
+		matrix_i<-read.delim(paste(path,"ism/",group1[i],sep=""),header=F, sep=" ",stringsAsFactors=F)
+		matrix_i<-data.matrix(matrix_i)
+		osm1<-osm1 + matrix_i
+	}
+	
+	#read in group2 matrix
+	matrix2=read.delim(paste(path,"ism/",group2[1],sep=""),header=F, sep=" ",stringsAsFactors=F)
+	osm2=data.matrix(matrix2)
+	
+	for (i in 2:length(group2)){
+		matrix_i<-read.delim(paste(path,"ism/",group2[i],sep=""),header=F, sep=" ",stringsAsFactors=F)
+		matrix_i<-data.matrix(matrix_i)
+		osm2<-osm2 + matrix_i
+	}
+	
+	d1=data.frame(icon_list_getter(path),osm1)
+	d1m = as.matrix(d1[,-1])
+	dimnames(d1m) = list(d1[,1],d1[,1])
+	
+	d2=data.frame(icon_list_getter(path),osm2)
+	d2m = as.matrix(d2[,-1])
+	dimnames(d2m) = list(d2[,1],d2[,1])
+	
+	ave1 = hclust(method = "average", as.dist(participant_counter(path)-d1m))
+	ave2 = hclust(method = "average", as.dist(participant_counter(path)-d2m))
+	
+	comp1 = hclust(method = "complete", as.dist(participant_counter(path)-d1m))
+	comp2 = hclust(method = "complete", as.dist(participant_counter(path)-d2m))
+	
+	ward1 = hclust(method = "ward", as.dist(participant_counter(path)-d1m))
+	ward2 = hclust(method = "ward", as.dist(participant_counter(path)-d2m))
+	
+	#load code of A2R function
+	source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
+	
+	#Define colors
+	pre_colors <- rainbow(k)
+	colors <- pre_colors[1:k]
+	
+	#colored dendrograms
+	pdf(file= paste(path, "cluster_validation.pdf", sep=""),onefile=T,width=12, height=4)
+	A2Rplot(ave1 , k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 1 Average Linkage",sep=""))
+	A2Rplot(ave2 , k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 2 Average Linkage",sep=""))
+	
+	A2Rplot(comp1 , k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 1 Complete Linkage",sep=""))
+	A2Rplot(comp2 , k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 2 Complete Linkage",sep=""))
+	
+	A2Rplot(ward1, k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 1 Ward's Method",sep=""))
+	A2Rplot(ward2, k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 2 Ward's Method",sep=""))
+	
+	dev.off()
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##Overview
+#set the scenario here and file name
+overview_getter <- function(path){
+	output <- paste(scenario_name, "_overview.pdf", sep = "")
+	data <- read.csv(paste(path,"participant.csv", sep = ""), header=F, stringsAsFactors = F)
+	
+	male=0
+	female=0
+	for (i in 1:nrow(data)){
+		if (data[i,3]== "male"){
+			male=male+1
+		} else {
+			female=female+1
+		}
+	}
+	
+	aveage <- round(mean(data[,2]),2)
+	max <- max(data[,2])
+	min <- min(data[,2])
+	
+	
+	pdf(file= paste(path, output, sep = "") ,onefile=T,width=10, height=25)
+	
+	layout(matrix(c(1,1,2,2,3,3,4,5), 4, 2, byrow = TRUE))
+	
+	plot.new()
+	title(paste("Total participants: ", np ,";",sep=""),line=-18, cex=20)
+	title(paste("Male: ",male, ", Female: ", female, sep=""),line=-20, cex=20)
+	title(paste("Average age: ", aveage, " (max: ", max, ", min: ", min, ")", sep=""),line=-22,cex=20)
+	boxplot(data[,14],
+			horizontal=TRUE, 
+			notch = FALSE,  # Notches for CI for median
+			col = "slategray3",
+			boxwex = 0.5,  # Width of box as proportion of original
+			whisklty = 1,  # Whisker line type; 1 = solid line
+			staplelty = 0,  # Staple (line at end) type; 0 = none
+			outpch = 16,  # Symbols for outliers; 16 = filled circle
+			outcol = "slategray3",  # Color for outliers
+			main = "Groups Created")
+	boxplot(data[,15],
+			horizontal=TRUE, 
+			#notch = TRUE,  # Notches for CI for median
+			col = "slategray3",
+			boxwex = 0.5,  # Width of box as proportion of original
+			whisklty = 1,  # Whisker line type; 1 = solid line
+			staplelty = 0,  # Staple (line at end) type; 0 = none
+			outpch = 16,  # Symbols for outliers; 16 = filled circle
+			outcol = "slategray3",  # Color for outliers
+			main = "Grouping Time")
+	
+	groupscount=data.frame(table(data[,14]))
+	
+	a=groupscount$Var1
+	b=c()
+	for (i in 1:length(a)){
+		b[i]=toString(a[i])
+	}
+	
+	groupmean=mean(data[,14])
+	groupsd=round(sd(data[,14]),2)
+	
+	barplot(groupscount$Freq, names.arg = b, 
+			main = paste("Groups Created (mean = ", groupmean,", ","sd = ", groupsd, ")",sep=""),
+			xlab="Number of groups created", ylab="Frequency")
+	
+	hist(data[,15], col="grey",main = paste("Grouping Time", " (mean = ", round(mean(data[,15]),2), "s", "," ," sd = ", round(sd(data[,15]),2),  "s", ")",sep=""),xlab="Time spent on grouping in second")
+	title(scenario_name,outer=T,line=-2,cex.main = 2,col.main="blue")
+	
+	dev.off()
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##Participant similarity analysis
+participant_similarity <- function(path){
+
+	#List all ISMs
+	isms <- list.files(paste(path, "ism/", sep = ""))
+	all_isms <- list()
+	
+	np <- length(isms)
+	
+	#Read in all ISMs and store them in a list named all_isms
+	for (i in 1:length(isms)){
+		aism <- read.delim(paste(paste(path, "ism/", sep = ""), isms[i], sep = ""),
+				header = F, sep = " ", stringsAsFactors = F)
+		all_isms <- c(all_isms, list(aism))
+	}
+	
+	#Calculate participant similarity matrices of all pairs of partcipants based on the hamming distance of their ISMs (dm) and Jaccard index (dm_jaccard)
+	dm <- matrix(0, ncol = np, nrow = np)
+	dm_jac <- matrix(0, ncol = np, nrow = np)
+	dm_rand <- matrix(0, ncol = np, nrow = np)
+	for (i in 1: np){
+		for (j in 1: np){
+			dm[i,j] <- sum(abs(all_isms[[i]] - all_isms[[j]]))
+			
+			m11 <- sum(all_isms[[i]] * all_isms[[j]])
+			m01 <- sum(abs(1-all_isms[[i]]) * all_isms[[j]])
+			m10 <- sum(all_isms[[i]] * abs(1-all_isms[[j]]))
+			m00 <- sum(abs(1-all_isms[[i]]) * abs(1-all_isms[[j]]))
+			
+			dm_jac[i,j] <- m11 / (m01+m10+m11) 
+			
+			dm_rand[i,j] <- (m11 + m00) / (m01+m10+m00+m11)
+		}
+	}
+	
+	#Extract the participant number of all participants and store them in a vector named names
+	names <- c()
+	for (i in 1: length(isms)){
+		name <- isms[i]
+		names <- append(names, substr(name, 12, nchar(name) - 5))
+	}
+	
+	#Assign participants numbers as the row&column names of the participant similarity matrix (dm)
+	colnames(dm) <- names
+	rownames(dm) <- names
+	colnames(dm_jac) <- names
+	rownames(dm_jac) <- names
+	colnames(dm_rand) <- names
+	rownames(dm_rand) <- names
+	
+	write.table(dm,file = paste(path, "participant_similarity_hamming.csv",sep = ""), sep = " ",
+			row.names = T, col.names = T)
+	
+	write.table(dm_jac,file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
+			row.names = T, col.names = T)
+	
+	write.table(dm_rand,file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
+			row.names = T, col.names = T)
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Visualize the frequency that each icon is being selected as group prototype
+prototype_freq <- function(path){
+	
+	#Construct the path for the zip folder and list all the zip files
+	zip_path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip_path)
+	
+	#Create a dataframe to store the prototype frequency
+	freq <- data.frame(icon = icon_list_getter(path), 
+			icon_index = 0: (length(icon_list_getter(path))-1), 
+			count = rep(0, length(icon_list_getter(path)))
+	)
+	
+	for(p in files){
+		participant <- unzip(paste(zip_path, p, sep =""))
+		participant_number <- substring(p, 1, nchar(p) - 4)
+		prototype_file <- paste("./", participant_number, "/", substring(p,1,8), "gprototypes.csv", sep = "")
+		prototype <- read.csv(prototype_file, header = F, stringsAsFactors = F)
+		prev <- -1 # workaround to deal with old prototype files
+		for(j in 1:nrow(prototype)) {
+			if(ncol(prototype) < 4 || (!is.na(prototype[j, 2]) && !is.na(prototype[j, 3]) && !is.na(as.numeric(as.numeric(prototype[j, 3]))) && prototype[j, 2] != prev)){
+				prev <- as.numeric(prototype[j, 2])
+				freq[as.numeric(prototype[j, 3]) + 1, 3] <- freq[as.numeric(prototype[j, 3]) + 1, 3] + 1
+			}
+		}
+	}
+	
+	#Export batch.csv for Klipart
+	write.table(freq, file=paste(path, "prototype.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
+	return(freq)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# multi-dimensional scaling
+mdscaling <- function(path){
+	d <-  read.csv(paste(path, "osm.csv", sep = ""), header = F)
+	dm <- as.matrix(d[, -1])
+	dimnames(dm) <- list(d[, 1],d[, 1])
+	dm_dist <- dist(dm, method = "euclidean")
+	mds <- cmdscale(dm_dist)
+	col <- rainbow(50)
+	tiff(filename = paste(path, "mds.tiff", sep = ""), width = 3, height =3, units = "in", pointsize = 5, compression = "none", bg = "white", res = 600)
+	plot(min(mds[, 1], mds[, 2]) : max(mds[, 1],mds[, 2]), min(mds[, 1], mds[, 2]) : max(mds[, 1], mds[, 2]), type = "n", xlab = "", ylab = "", main = "Multidimensional Scaling")
+	for(i in 1: nrow(mds)){
+		points(mds[i, 1], mds[i, 2], type = "p", cex = 1.5)
+	}
+	dev.off()
+	return(mds)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Function list Pt. 1 - Executables
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#exe
+n_icons <- icon_counter(path)
+
+all_icons <- sort(icon_list_getter(path))
+
+np <- participant_counter(path)
+
+osm_ism_generator(path)
+
+prototypes <- prototype_freq(path)
+
+osm_viz(path)
+
+cluster_heatmap(path)
+
+general_cluster_analysis(path)
+
+participant_info(path)
+
+overview_getter(path)
+
+description_getter(path)
+
+participant_similarity(path)
+# sluggish. clogged up R. Had to kill R
+
+mds <- mdscaling(path)
+# no text labels on plot. Just points.
+
+assignment_getter(path)
+
+cluster_validation(path, 3, "geo terms")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# END: Function list Pt. 1
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# BEGIN: Function list Pt. 2
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
 
 
 
@@ -786,22 +1270,6 @@ sampling_run <- function(path, ism_list, sample_size) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #Perform a complete sampling experiment in which an average cophenetic matrix for samples of participants is compared
 #to that of the entire set of participnats. The number of trials is given by paramter 'trials' and a sample size 
 #of 'sample_size' 
@@ -848,13 +1316,6 @@ cophenetic_sampling <- function(path, ism_list,trials, sample_size) {
 	print (sum(diff_comp) / (nrow(d)^2))
 	print (sum(diff_ward) / (nrow(d)^2))
 }
-
-
-
-
-
-
-
 
 
 
@@ -1007,336 +1468,6 @@ index_sampling <- function(path, ism_list, output_name, trials, sample_size_star
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Cluster validation
-cluster_validation <- function(path, k, title=""){
-	
-	ism <- list.files(paste(path,"ism/",sep=""))
-	r <- sample(1:100, size=participant_counter(path), replace=TRUE)
-	ism_list <- data.frame(ism,r)
-	ism_list <- ism_list[order(r),]
-	
-	if(participant_counter(path)%%2 == 0){
-		split <- participant_counter(path)/2
-	}else{
-		split <-(participant_counter(path)-1)/2
-	}
-	
-	#Split the participants
-	group1=ism_list[1:split,1]
-	group2=ism_list[(split+1):participant_counter(path),1]
-	
-	#read in group1 matrix
-	matrix1=read.delim(paste(path,"ism/",group1[1],sep=""),header=F, sep=" ",stringsAsFactors=F)
-	osm1=data.matrix(matrix1)
-	
-	for (i in 2:length(group1)){
-		matrix_i<-read.delim(paste(path,"ism/",group1[i],sep=""),header=F, sep=" ",stringsAsFactors=F)
-		matrix_i<-data.matrix(matrix_i)
-		osm1<-osm1 + matrix_i
-	}
-	
-	#read in group2 matrix
-	matrix2=read.delim(paste(path,"ism/",group2[1],sep=""),header=F, sep=" ",stringsAsFactors=F)
-	osm2=data.matrix(matrix2)
-	
-	for (i in 2:length(group2)){
-		matrix_i<-read.delim(paste(path,"ism/",group2[i],sep=""),header=F, sep=" ",stringsAsFactors=F)
-		matrix_i<-data.matrix(matrix_i)
-		osm2<-osm2 + matrix_i
-	}
-	
-	d1=data.frame(icon_list_getter(path),osm1)
-	d1m = as.matrix(d1[,-1])
-	dimnames(d1m) = list(d1[,1],d1[,1])
-	
-	d2=data.frame(icon_list_getter(path),osm2)
-	d2m = as.matrix(d2[,-1])
-	dimnames(d2m) = list(d2[,1],d2[,1])
-	
-	ave1 = hclust(method = "average", as.dist(participant_counter(path)-d1m))
-	ave2 = hclust(method = "average", as.dist(participant_counter(path)-d2m))
-	
-	comp1 = hclust(method = "complete", as.dist(participant_counter(path)-d1m))
-	comp2 = hclust(method = "complete", as.dist(participant_counter(path)-d2m))
-	
-	ward1 = hclust(method = "ward", as.dist(participant_counter(path)-d1m))
-	ward2 = hclust(method = "ward", as.dist(participant_counter(path)-d2m))
-	
-	#load code of A2R function
-	source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
-	
-	#Define colors
-	pre_colors <- rainbow(k)
-	colors <- pre_colors[1:k]
-	
-	#colored dendrograms
-	pdf(file= paste(path, "cluster_validation.pdf", sep=""),onefile=T,width=12, height=4)
-	A2Rplot(ave1 , k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 1 Average Linkage",sep=""))
-	A2Rplot(ave2 , k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 2 Average Linkage",sep=""))
-	
-	A2Rplot(comp1 , k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 1 Complete Linkage",sep=""))
-	A2Rplot(comp2 , k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 2 Complete Linkage",sep=""))
-	
-	A2Rplot(ward1, k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 1 Ward's Method",sep=""))
-	A2Rplot(ward2, k=k, boxes = FALSE,col.up = "gray50", col.down = colors,main=paste(title," Group 2 Ward's Method",sep=""))
-	
-	dev.off()
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##Overview
-#set the scenario here and file name
-
-overview_getter <- function(path){
-	output <- paste(scenario_name, "_overview.pdf", sep = "")
-	data <- read.csv(paste(path,"participant.csv", sep = ""), header=F, stringsAsFactors = F)
-	
-	male=0
-	female=0
-	for (i in 1:nrow(data)){
-		if (data[i,3]== "male"){
-			male=male+1
-		} else {
-			female=female+1
-		}
-	}
-	
-	aveage <- round(mean(data[,2]),2)
-	max <- max(data[,2])
-	min <- min(data[,2])
-	
-	
-	pdf(file= paste(path, output, sep = "") ,onefile=T,width=10, height=25)
-	
-	layout(matrix(c(1,1,2,2,3,3,4,5), 4, 2, byrow = TRUE))
-	
-	plot.new()
-	title(paste("Total participants: ", np ,";",sep=""),line=-18, cex=20)
-	title(paste("Male: ",male, ", Female: ", female, sep=""),line=-20, cex=20)
-	title(paste("Average age: ", aveage, " (max: ", max, ", min: ", min, ")", sep=""),line=-22,cex=20)
-	boxplot(data[,14],
-			horizontal=TRUE, 
-			notch = FALSE,  # Notches for CI for median
-			col = "slategray3",
-			boxwex = 0.5,  # Width of box as proportion of original
-			whisklty = 1,  # Whisker line type; 1 = solid line
-			staplelty = 0,  # Staple (line at end) type; 0 = none
-			outpch = 16,  # Symbols for outliers; 16 = filled circle
-			outcol = "slategray3",  # Color for outliers
-			main = "Groups Created")
-	boxplot(data[,15],
-			horizontal=TRUE, 
-			#notch = TRUE,  # Notches for CI for median
-			col = "slategray3",
-			boxwex = 0.5,  # Width of box as proportion of original
-			whisklty = 1,  # Whisker line type; 1 = solid line
-			staplelty = 0,  # Staple (line at end) type; 0 = none
-			outpch = 16,  # Symbols for outliers; 16 = filled circle
-			outcol = "slategray3",  # Color for outliers
-			main = "Grouping Time")
-	
-	groupscount=data.frame(table(data[,14]))
-	
-	a=groupscount$Var1
-	b=c()
-	for (i in 1:length(a)){
-		b[i]=toString(a[i])
-	}
-	
-	groupmean=mean(data[,14])
-	groupsd=round(sd(data[,14]),2)
-	
-	barplot(groupscount$Freq, names.arg = b, 
-			main = paste("Groups Created (mean = ", groupmean,", ","sd = ", groupsd, ")",sep=""),
-			xlab="Number of groups created", ylab="Frequency")
-	
-	hist(data[,15], col="grey",main = paste("Grouping Time", " (mean = ", round(mean(data[,15]),2), "s", "," ," sd = ", round(sd(data[,15]),2),  "s", ")",sep=""),xlab="Time spent on grouping in second")
-	title(scenario_name,outer=T,line=-2,cex.main = 2,col.main="blue")
-	
-	dev.off()
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##Participant similarity analysis
-participant_similarity <- function(path){
-
-	#List all ISMs
-	isms <- list.files(paste(path, "ism/", sep = ""))
-	all_isms <- list()
-	
-	np <- length(isms)
-	
-	#Read in all ISMs and store them in a list named all_isms
-	for (i in 1:length(isms)){
-		aism <- read.delim(paste(paste(path, "ism/", sep = ""), isms[i], sep = ""),
-				header = F, sep = " ", stringsAsFactors = F)
-		all_isms <- c(all_isms, list(aism))
-	}
-	
-	#Calculate participant similarity matrices of all pairs of partcipants based on the hamming distance of their ISMs (dm) and Jaccard index (dm_jaccard)
-	dm <- matrix(0, ncol = np, nrow = np)
-	dm_jac <- matrix(0, ncol = np, nrow = np)
-	dm_rand <- matrix(0, ncol = np, nrow = np)
-	for (i in 1: np){
-		for (j in 1: np){
-			dm[i,j] <- sum(abs(all_isms[[i]] - all_isms[[j]]))
-			
-			m11 <- sum(all_isms[[i]] * all_isms[[j]])
-			m01 <- sum(abs(1-all_isms[[i]]) * all_isms[[j]])
-			m10 <- sum(all_isms[[i]] * abs(1-all_isms[[j]]))
-			m00 <- sum(abs(1-all_isms[[i]]) * abs(1-all_isms[[j]]))
-			
-			dm_jac[i,j] <- m11 / (m01+m10+m11) 
-			
-			dm_rand[i,j] <- (m11 + m00) / (m01+m10+m00+m11)
-		}
-	}
-	
-	#Extract the participant number of all participants and store them in a vector named names
-	names <- c()
-	for (i in 1: length(isms)){
-		name <- isms[i]
-		names <- append(names, substr(name, 12, nchar(name) - 5))
-	}
-	
-	#Assign participants numbers as the row&column names of the participant similarity matrix (dm)
-	colnames(dm) <- names
-	rownames(dm) <- names
-	colnames(dm_jac) <- names
-	rownames(dm_jac) <- names
-	colnames(dm_rand) <- names
-	rownames(dm_rand) <- names
-	
-	write.table(dm,file = paste(path, "participant_similarity_hamming.csv",sep = ""), sep = " ",
-			row.names = T, col.names = T)
-	
-	write.table(dm_jac,file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
-			row.names = T, col.names = T)
-	
-	write.table(dm_rand,file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
-			row.names = T, col.names = T)
-	
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ##Participant similarity analysis
 participant_similarity_clusters <- function(path){
 	dm <- as.matrix(read.table(file = paste(path, "participant_similarity_hamming.csv",sep = ""), sep = " ",
@@ -1360,14 +1491,6 @@ participant_similarity_clusters <- function(path){
 	tree = cutree(cluster, k = c(1:nrow(dm)))
 	write.csv(tree, file=paste(path, "participant_similarity_ward_clusters", ".csv", sep = ""))
 }
-
-
-
-
-
-
-
-
 
 
 
@@ -1459,143 +1582,6 @@ participant_similarity_visualizations <- function(path){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Visualize the frequency that each icon is being selected as group prototype
-prototype_freq <- function(path){
-	
-	#Construct the path for the zip folder and list all the zip files
-	zip_path <- paste(path, "zip/", sep = "")
-	files <- list.files(zip_path)
-	
-	#Create a dataframe to store the prototype frequency
-	freq <- data.frame(icon = icon_list_getter(path), 
-			icon_index = 0: (length(icon_list_getter(path))-1), 
-			count = rep(0, length(icon_list_getter(path)))
-	)
-	
-	for(p in files){
-		participant <- unzip(paste(zip_path, p, sep =""))
-		participant_number <- substring(p, 1, nchar(p) - 4)
-		prototype_file <- paste("./", participant_number, "/", substring(p,1,8), "gprototypes.csv", sep = "")
-		prototype <- read.csv(prototype_file, header = F, stringsAsFactors = F)
-		prev <- -1 # workaround to deal with old prototype files
-		for(j in 1:nrow(prototype)) {
-			if(ncol(prototype) < 4 || (!is.na(prototype[j, 2]) && !is.na(prototype[j, 3]) && !is.na(as.numeric(as.numeric(prototype[j, 3]))) && prototype[j, 2] != prev)){
-				prev <- as.numeric(prototype[j, 2])
-				freq[as.numeric(prototype[j, 3]) + 1, 3] <- freq[as.numeric(prototype[j, 3]) + 1, 3] + 1
-			}
-		}
-	}
-	
-	#Export batch.csv for Klipart
-	write.table(freq, file=paste(path, "prototype.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
-	return(freq)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# multi-dimensional scaling
-mdscaling <- function(path){
-	d <-  read.csv(paste(path, "osm.csv", sep = ""), header = F)
-	dm <- as.matrix(d[, -1])
-	dimnames(dm) <- list(d[, 1],d[, 1])
-	dm_dist <- dist(dm, method = "euclidean")
-	mds <- cmdscale(dm_dist)
-	col <- rainbow(50)
-	tiff(filename = paste(path, "mds.tiff", sep = ""), width = 3, height =3, units = "in", pointsize = 5, compression = "none", bg = "white", res = 600)
-	plot(min(mds[, 1], mds[, 2]) : max(mds[, 1],mds[, 2]), min(mds[, 1], mds[, 2]) : max(mds[, 1], mds[, 2]), type = "n", xlab = "", ylab = "", main = "Multidimensional Scaling")
-	for(i in 1: nrow(mds)){
-		points(mds[i, 1], mds[i, 2], type = "p", cex = 1.5)
-	}
-	dev.off()
-	return(mds)
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #Numerical cluster validation
 #cluster validation is accomplished by comparing cluster membership
 #for a certain number of clusters across different clustering methods (ave, comp, ward)
@@ -1641,14 +1627,7 @@ NumClusVal <- function(path, k){
 
 
 
-
-
-
-
-
-
-
-###################################################################
+##########################
 # print standard dendrograms
 # Author: Alexander Klippel
 # input variable: path
@@ -1678,7 +1657,7 @@ stanDen <- function(path)
     dev.off()
     }
   }
-stanDen(path)
+# stanDen(path)
 
 
 
@@ -1694,16 +1673,7 @@ stanDen(path)
 
 
 
-
-
-
-
-
-
-
-
-
-################################################33
+########################################
 # ploting individual "heatmaps" as black/white images
 # Author: Alexander Klippel
 # input: path
@@ -1726,28 +1696,42 @@ visIndISM <- function(path)
     dev.off()
     }
   }
-visIndISM(path)
+# visIndISM(path)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #### Not finished
 ## ploting reordered individual "heatmaps"
 #read in all ISMs and store as a list
-indISM <- as.list(list.files(paste(path,"ism/",sep="")))
-dir.create(paste(path, "indISM-reordered/", sep=""))
-indISM.Path <- paste(path, "indISM-reordered/", sep="")
-#read in file names with new order
-my.names <- read.csv((paste(path, "newNameOrder.csv", sep = "")), header = TRUE)
-#iterate through the list and plot each matrix using 'grid.raster'
-#individusal images are stored as png files
-for (i in indISM) {
-  indISM.matrix <- read.delim(paste(path, "ism/", i, sep = ""), header = FALSE, sep = " ", stringsAsFactors = F)
-  indISM.matrix <- data.matrix(indISM.matrix)
-  colnames(indISM.matrix) <- my.names$new
-  rownames(indISM.matrix) <- my.names$new
-  new.indISM.matrix <- indISM.matrix[sort(rownames(indISM.matrix)),sort(colnames(indISM.matrix)), drop = F]
-  png(paste(indISM.Path, i, ".png", sep = ""), width = 480, height = 480)
-  grid.raster(as.raster(new.indISM.matrix), interpolate = FALSE)
-  dev.off()
-}
+# indISM <- as.list(list.files(paste(path,"ism/",sep="")))
+# dir.create(paste(path, "indISM-reordered/", sep=""))
+# indISM.Path <- paste(path, "indISM-reordered/", sep="")
+# #read in file names with new order
+# my.names <- read.csv((paste(path, "newNameOrder.csv", sep = "")), header = TRUE)
+# #iterate through the list and plot each matrix using 'grid.raster'
+# #individusal images are stored as png files
+# for (i in indISM) {
+#   indISM.matrix <- read.delim(paste(path, "ism/", i, sep = ""), header = FALSE, sep = " ", stringsAsFactors = F)
+#   indISM.matrix <- data.matrix(indISM.matrix)
+#   colnames(indISM.matrix) <- my.names$new
+#   rownames(indISM.matrix) <- my.names$new
+#   new.indISM.matrix <- indISM.matrix[sort(rownames(indISM.matrix)),sort(colnames(indISM.matrix)), drop = F]
+#   png(paste(indISM.Path, i, ".png", sep = ""), width = 480, height = 480)
+#   grid.raster(as.raster(new.indISM.matrix), interpolate = FALSE)
+#   dev.off()
+# }
 
 
 
@@ -1763,27 +1747,7 @@ for (i in indISM) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#############################################################################################
-
+#######################################
 # Visualizing participant similarities by groups
 # Author: Alexander Klippel
 # Input: path, number of participants (np), number of clusters (k)
@@ -1858,33 +1822,7 @@ part.sim.group.vis <- function(path, np, k){
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-##################################################################################################
-
+##############################
 # Comparing results from 2 experiments / 2 OSMs
 # Here: Substracting two OSMs from one another and visualizing the difference
 # Author: Alexander Klippel
@@ -1925,38 +1863,25 @@ dif2Osm <- function(path1,path2)
 
 
 
+# Function list Pt. 2 - Executables
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
 
 
-#exe
-n_icons <- icon_counter(path)
 
-all_icons <- sort(icon_list_getter(path))
 
-np <- participant_counter(path)
 
-osm_ism_generator(path)
 
-prototypes <- prototype_freq(path)
 
-osm_viz(path)
 
-cluster_heatmap(path)
 
-general_cluster_analysis(path)
 
-participant_info(path)
 
-overview_getter(path)
 
-description_getter(path)
 
-participant_similarity(path)
 
-mds <- mdscaling(path)
-
-assignment_getter(path)
-
-cluster_validation(path, 3, "geo terms")
+# exe
 
 # generate output file for icon viewer containing mds results and prototype frequencies
 mdsc <- cbind(mds,prototypes[3])
@@ -1969,6 +1894,18 @@ for(i in 2: max_cluster){
 }
 
 
+stanDen(path)
+
+visIndISM(path)
+
+cophenetic_sampling(path, list.files(paste(path,"ism/",sep="")),100, 20)
+
+index_sampling(path, list.files(paste(path,"ism/",sep="")), "CMSI-2500", 100, 5, 100, 2, 10)
+
+
+path1 <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/1209 mturk directions 3D mugs final 225deg/"
+path2 <- path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/1208 mturk directions 3D mugs final 0deg/"
+dif2Osm(path1,path2)
 
 
 
@@ -1976,6 +1913,21 @@ for(i in 2: max_cluster){
 
 
 
+
+
+
+
+
+
+
+
+# END: Function list Pt. 2
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
+#####################################################################################################
 
 
 
