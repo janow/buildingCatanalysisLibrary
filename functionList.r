@@ -331,7 +331,7 @@ OsmIsmGenerator <- function(path){
 #AssignmentGetter: generate the assignment.csv for KlipArt
 AssignmentGetter <- function(path){
 	#Create an empty dataframe
-	df = data.frame()
+	df <- data.frame()
 	
 	#List all zip files
 	zip_path <- paste(path, "zip/", sep = "")
@@ -349,7 +349,7 @@ AssignmentGetter <- function(path){
 				"assignment.csv", sep = "")
 		
 		assignment <- read.delim(participant_assignment, header = F, sep = ",", stringsAsFactors = F)
-		df = rbind(df, assignment)
+		df <- rbind(df, assignment)
 	}
 	#Export the assignment.csv
 	write.table(df, file = paste(klipart_path, "assignment.csv", sep = ""),
@@ -574,9 +574,9 @@ DescriptionGetter <- function(path){
 OsmViz <- function(path){
 	
 	#Read in the osm.csv file and format the row/column names
-	d = read.csv(paste(path, "osm.csv", sep = ""),header = F)
-	dm = as.matrix(d[, -1])
-	dimnames(dm) = list(d[, 1],d[, 1])
+	d <- read.csv(paste(path, "osm.csv", sep = ""),header = F)
+	dm <- as.matrix(d[, -1])
+	dimnames(dm) <- list(d[, 1],d[, 1])
 	
 	#The export of the heatmap is realized as a pngfile. Other options are ....??
 	#Jinlong: other options includes jpg, bmp, png, etc. but each has its own function with
@@ -610,13 +610,13 @@ OsmViz <- function(path){
 ClusterHeatmap <- function(path){
 	
 	#Read in the osm.csv file and format the row/column names
-	d = read.csv(paste(path, "osm.csv", sep = ""), header = F)
-	dm = as.matrix(d[, -1])
-	dimnames(dm) = list(d[, 1],d[, 1])
+	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+	dm <- as.matrix(d[, -1])
+	dimnames(dm) <- list(d[, 1],d[, 1])
 	
 	#Generate the dendrogram using wards method
-	cluster = hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
-	dend = as.dendrogram(cluster)
+	cluster <- hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
+	dend <- as.dendrogram(cluster)
 	
 	#Drawing the cluster heatmap and export as a png file
 	png(filename = paste(path, "cluster_heatmap.png", sep = ""), width = 2000, height = 2000, units = "px",
@@ -777,12 +777,12 @@ ClusterValidation <- function(path, k, title=""){
 	}
 	
 	#Split the participants
-	group1=ism_list[1:split,1]
-	group2=ism_list[(split+1):ParticipantCounter(path),1]
+	group1<-ism_list[1:split,1]
+	group2<-ism_list[(split+1):ParticipantCounter(path),1]
 	
 	#read in group1 matrix
-	matrix1=read.delim(paste(path,"ism/",group1[1],sep=""),header=F, sep=" ",stringsAsFactors=F)
-	osm1=data.matrix(matrix1)
+	matrix1<-read.delim(paste(path,"ism/",group1[1],sep=""),header=F, sep=" ",stringsAsFactors=F)
+	osm1<-data.matrix(matrix1)
 	
 	for (i in 2:length(group1)){
 		matrix_i<-read.delim(paste(path,"ism/",group1[i],sep=""),header=F, sep=" ",stringsAsFactors=F)
@@ -791,8 +791,8 @@ ClusterValidation <- function(path, k, title=""){
 	}
 	
 	#read in group2 matrix
-	matrix2=read.delim(paste(path,"ism/",group2[1],sep=""),header=F, sep=" ",stringsAsFactors=F)
-	osm2=data.matrix(matrix2)
+	matrix2<-read.delim(paste(path,"ism/",group2[1],sep=""),header=F, sep=" ",stringsAsFactors=F)
+	osm2<-data.matrix(matrix2)
 	
 	for (i in 2:length(group2)){
 		matrix_i<-read.delim(paste(path,"ism/",group2[i],sep=""),header=F, sep=" ",stringsAsFactors=F)
@@ -800,22 +800,22 @@ ClusterValidation <- function(path, k, title=""){
 		osm2<-osm2 + matrix_i
 	}
 	
-	d1=data.frame(IconListGetter(path),osm1)
-	d1m = as.matrix(d1[,-1])
-	dimnames(d1m) = list(d1[,1],d1[,1])
+	d1<-data.frame(IconListGetter(path),osm1)
+	d1m <- as.matrix(d1[,-1])
+	dimnames(d1m) <- list(d1[,1],d1[,1])
 	
-	d2=data.frame(IconListGetter(path),osm2)
-	d2m = as.matrix(d2[,-1])
-	dimnames(d2m) = list(d2[,1],d2[,1])
+	d2<-data.frame(IconListGetter(path),osm2)
+	d2m <- as.matrix(d2[,-1])
+	dimnames(d2m) <- list(d2[,1],d2[,1])
 	
-	ave1 = hclust(method = "average", as.dist(ParticipantCounter(path)-d1m))
-	ave2 = hclust(method = "average", as.dist(ParticipantCounter(path)-d2m))
+	ave1 <- hclust(method = "average", as.dist(ParticipantCounter(path)-d1m))
+	ave2 <- hclust(method = "average", as.dist(ParticipantCounter(path)-d2m))
 	
-	comp1 = hclust(method = "complete", as.dist(ParticipantCounter(path)-d1m))
-	comp2 = hclust(method = "complete", as.dist(ParticipantCounter(path)-d2m))
+	comp1 <- hclust(method = "complete", as.dist(ParticipantCounter(path)-d1m))
+	comp2 <- hclust(method = "complete", as.dist(ParticipantCounter(path)-d2m))
 	
-	ward1 = hclust(method = "ward", as.dist(ParticipantCounter(path)-d1m))
-	ward2 = hclust(method = "ward", as.dist(ParticipantCounter(path)-d2m))
+	ward1 <- hclust(method = "ward", as.dist(ParticipantCounter(path)-d1m))
+	ward2 <- hclust(method = "ward", as.dist(ParticipantCounter(path)-d2m))
 	
 	#load code of A2R function
 	source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
@@ -858,13 +858,13 @@ OverviewGetter <- function(path){
 	output <- paste(scenario_name, "_overview.pdf", sep = "")
 	data <- read.csv(paste(path,"participant.csv", sep = ""), header=F, stringsAsFactors = F)
 	
-	male=0
-	female=0
+	male<-0
+	female<-0
 	for (i in 1:nrow(data)){
 		if (data[i,3]== "male"){
-			male=male+1
+			male<-male+1
 		} else {
-			female=female+1
+			female<-female+1
 		}
 	}
 	
@@ -902,16 +902,16 @@ OverviewGetter <- function(path){
 			outcol = "slategray3",  # Color for outliers
 			main = "Grouping Time")
 	
-	groupscount=data.frame(table(data[,14]))
+	groupscount<-data.frame(table(data[,14]))
 	
-	a=groupscount$Var1
-	b=c()
+	a<-groupscount$Var1
+	b<-c()
 	for (i in 1:length(a)){
-		b[i]=toString(a[i])
+		b[i]<-toString(a[i])
 	}
 	
-	groupmean=mean(data[,14])
-	groupsd=round(sd(data[,14]),2)
+	groupmean<-mean(data[,14])
+	groupsd<-round(sd(data[,14]),2)
 	
 	barplot(groupscount$Freq, names.arg = b, 
 			main = paste("Groups Created (mean = ", groupmean,", ","sd = ", groupsd, ")",sep=""),
@@ -1307,9 +1307,9 @@ CopheneticSampling <- function(path, ism_list,trials, sample_size) {
 	write.table(coph_ward_total,file = paste(path, "coph_matrix_sampled_ward.mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
 	
 	#compute differences to all participant matrices
-	diff_ave = abs(as.matrix(cophenetic(ave_all)) - coph_ave_total)
-	diff_comp = abs(as.matrix(cophenetic(comp_all)) - coph_comp_total)
-	diff_ward = abs(as.matrix(cophenetic(ward_all)) - coph_ward_total)
+	diff_ave <- abs(as.matrix(cophenetic(ave_all)) - coph_ave_total)
+	diff_comp <- abs(as.matrix(cophenetic(comp_all)) - coph_comp_total)
+	diff_ward <- abs(as.matrix(cophenetic(ward_all)) - coph_ward_total)
 	
 	#print out average devigation per cell
 	print (sum(diff_ave) / (nrow(d)^2))
@@ -1488,7 +1488,7 @@ ParticipantSimilarityClusters <- function(path){
 	dend_rand <- as.dendrogram(cluster_rand)
 	
 	#Create overview table showing cluster membership for all possible numbers of clusters
-	tree = cutree(cluster, k = c(1:nrow(dm)))
+	tree <- cutree(cluster, k = c(1:nrow(dm)))
 	write.csv(tree, file=paste(path, "participant_similarity_ward_clusters", ".csv", sep = ""))
 }
 
@@ -1558,7 +1558,7 @@ ParticipantSimilarityVisualizations <- function(path){
   
 	# Generate the dendrogram using wards method for
 	# Participant similarity using Jaccard coefficient
-	dend = as.dendrogram(cluster_jac)
+	dend <- as.dendrogram(cluster_jac)
 	# Create a cluster heatmap for participant similarities
 	png(filename = paste(path, "HM-Clust-PartSimJac.png", sep = ""), width = 2000, height = 2000, units = "px",
 	    pointsize = 5, bg = "white", res = 600)
@@ -1595,11 +1595,11 @@ NumClusVal <- function(path, k){
 	dimnames(dm) <- list(d[, 1],d[, 1])
 	
 	###Participants minus osm generates dissimilarity###
-	ave = hclust(method = "average", as.dist(ParticipantCounter(path) - dm))
-	comp = hclust(method = "complete", as.dist(ParticipantCounter(path) - dm))
-	ward = hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
+	ave <- hclust(method = "average", as.dist(ParticipantCounter(path) - dm))
+	comp <- hclust(method = "complete", as.dist(ParticipantCounter(path) - dm))
+	ward <- hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
 	#cluster validation
-	cut.Results = data.frame() #create empty data frame
+	cut.Results <- data.frame() #create empty data frame
 	for (i in 2:k){
 		cut.ave <- as.data.frame(cutree(ave, i))
 		cut.comp <- as.data.frame(cutree(comp, i))
@@ -1632,16 +1632,15 @@ NumClusVal <- function(path, k){
 # Author: Alexander Klippel
 # input variable: path
 # OSM needs to be present
-StanDen <- function(path)
-  {
+StanDen <- function(path) {
   d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
   dm <- as.matrix(d[, -1])
   dimnames(dm) <- list(d[, 1],d[, 1])
-  clu.meth = c("ave", "comp", "ward.D")
+  clu.meth <- c("ave", "comp", "ward.D")
   for (i in clu.meth)
     {
     ##ALTERNATIVE 1
-      dummy = hclust(method = i, as.dist(ParticipantCounter(path) - dm))
+      dummy <- hclust(method = i, as.dist(ParticipantCounter(path) - dm))
       png(file = paste(path, "dendro", i, ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
       plot(dummy)
     ##ALTERNATIVE 2
@@ -1652,7 +1651,7 @@ StanDen <- function(path)
 #          horiz = TRUE, 
 #          #center = FALSE, dLeaf = -2, edge.root = FALSE
 #     )
-    myTitle = paste(scenario_name, i, sep="//")
+    myTitle <- paste(scenario_name, i, sep="//")
     title(main = myTitle)
     dev.off()
     }
@@ -1796,7 +1795,7 @@ PartSimGroupVis <- function(path, np, k){
     partNames <- rownames(clusterMembers)
     #define output file using the cluster number as a name variable
     output <- paste(k, "_partClus", i, ".html", sep = "")
-    HTMLoutput=file.path(path, output)
+    HTMLoutput<-file.path(path, output)
     #specify where the icons/images are located at
     iconPath <- paste(path, "indISM/", sep = "")
     #write all the images/icons of one cluster into the html file
@@ -1826,8 +1825,7 @@ PartSimGroupVis <- function(path, np, k){
 # Comparing results from 2 experiments / 2 OSMs
 # Here: Substracting two OSMs from one another and visualizing the difference
 # Author: Alexander Klippel
-Dif2Osm <- function(path1,path2)
-  {
+Dif2Osm <- function(path1,path2) {
   # load first OSM
   d1 <- read.csv(paste(path1, "osm.csv", sep = ""), header = F)
   dm1 <- as.matrix(d1[, -1])
