@@ -109,7 +109,6 @@ icon_counter <- function(path){
 	zip_path <- paste(path, "zip/", sep = "")
 	files <- list.files(zip_path)
 
-	
 	#Get the participant number for the first participant
 	first_p_number <- substring(files[1], 1, nchar(files[1]) - 4)
 	
@@ -255,14 +254,12 @@ osm_ism_generator <- function(path){
 	
 	#Export the first ISM
 	write.table(first_matrix,file = paste(path, "ism/", "participant", 
-					substr(files[1], 1, nchar(files[1]) - 4),
-					".mtrx",sep = ""), sep = " ",
-			row.names = F, col.names = F)
+                                        substr(files[1], 1, nchar(files[1]) - 4),
+                                        ".mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
 	
 	write.table(first_matrix,file = paste(path, "matrices/", "participant", 
-					substr(files[1], 1, nchar(files[1]) - 4),
-					".mtrx",sep = ""), sep = " ", 
-			row.names = F, col.names = F)
+                                        substr(files[1], 1, nchar(files[1]) - 4),
+                                        ".mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
 	
 	#Summing up all ISMs for OSM and export each ISM
 	osm <- first_matrix
