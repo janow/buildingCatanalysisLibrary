@@ -35,7 +35,7 @@
 rm(list=ls())
 
 #Define the name of the experiment
-scenario_name <- "2501 geotermsN"
+scenario.name <- "2501 geotermsN"
 
 #Define the path to the experiment folder (with a closing "/" or "\")
 
@@ -51,13 +51,13 @@ if(substr(path, nchar(path), nchar(path)) != "/"){
 }
 
 #Define the max number of clusters
-max_cluster <- 9
+max.cluster <- 9
 
 #Auto-create two subfolders "ism" and "matrices"
 dir.create(paste(path, "ism/", sep=""))
-klipart_path <- paste(path, scenario_name, "-klipart/", sep = "")
-dir.create(klipart_path)
-dir.create(paste(klipart_path, "matrices/", sep="")) 
+klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+dir.create(klipart.path)
+dir.create(paste(klipart.path, "matrices/", sep="")) 
 dir.create(paste(path, "matrices/", sep="")) 
 
 #Uncomment the install.package() functions if you haven't installed these packages
@@ -106,20 +106,20 @@ require("clusteval")
 #Icon counter: count the number of icons(items) used in the experiment
 IconCounter <- function(path){
 	#Construct the zip folder path and list all the zip files
-	zip_path <- paste(path, "zip/", sep = "")
-	files <- list.files(zip_path)
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
 
 	#Get the participant number for the first participant
-	first_p_number <- substring(files[1], 1, nchar(files[1]) - 4)
+	first.p.number <- substring(files[1], 1, nchar(files[1]) - 4)
 	
 	#Unzip the file
-	first_p <- unzip(paste(zip_path, files[1], sep = ""))
+	first.p <- unzip(paste(zip.path, files[1], sep = ""))
 	
 	#Construct the full file name for icons.csv
-	icons_csv <- paste("./", first_p_number, "/", substring(files[1],1,8), "icons.csv", sep = "")
+	icons.csv <- paste("./", first.p.number, "/", substring(files[1],1,8), "icons.csv", sep = "")
 	
 	#Read in icons.csv
-	icons <- read.csv(icons_csv, header = F)
+	icons <- read.csv(icons.csv, header = F)
 	
 	#Get the number of icons used in the experiment
 	n.icons <- nrow(icons)
@@ -147,47 +147,47 @@ IconCounter <- function(path){
 IconListGetter <- function(path){
 	
 	#Construct the zip folder path and list all the zip files 
-	zip_path <- paste(path, "zip/", sep = "")
-	files <- list.files(zip_path)
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
 	
 	#Unzip the zip file from the 1st participant
-	first_p <- unzip(paste(zip_path, files[1], sep = ""))
+	first.p <- unzip(paste(zip.path, files[1], sep = ""))
 	
 	#Get the participant number for the first participant
-	first_p_number <- substring(files[1], 1, nchar(files[1]) - 4)
+	first.p.number <- substring(files[1], 1, nchar(files[1]) - 4)
 	
 	#Construct the full file name for icons.csv
-	icons_csv <- paste("./", first_p_number, "/", substring(files[1],1,8), "icons.csv", sep = "")
+	icons.csv <- paste("./", first.p.number, "/", substring(files[1],1,8), "icons.csv", sep = "")
 	
 	#Read in icons.csv
-	icons <- read.csv(icons_csv, header = F, stringsAsFactors = F)
+	icons <- read.csv(icons.csv, header = F, stringsAsFactors = F)
 	
 	#Reorder icon names by icon index
 	icons <- icons[order(icons[, 1]),]
 	
 	#Extract the icon names from the table (excluding the path name and file extensions)
-	icon_list <- icons[, 2]
-	for(i in 1:length(icon_list)){
-		end <- regexpr("\\.[^\\.]*$", icon_list[i])[1]
-		icon_list[i] <- substr(icon_list[i], 9, end - 1)
+	icon.list <- icons[, 2]
+	for(i in 1:length(icon.list)){
+		end <- regexpr("\\.[^\\.]*$", icon.list[i])[1]
+		icon.list[i] <- substr(icon.list[i], 9, end - 1)
 	}
 	
 	#Extract the icon names with file type (e.g. .jpg) for KlipArt
-	icon_list_klipart <- icons
-	for(j in 1:nrow(icon_list_klipart)){
-		icon_list_klipart[j, 2] <- substr(icon_list_klipart[j, 2], 9, nchar(icon_list_klipart[j, 2]))
+	icon.list.klipart <- icons
+	for(j in 1:nrow(icon.list.klipart)){
+		icon.list.klipart[j, 2] <- substr(icon.list.klipart[j, 2], 9, nchar(icon.list.klipart[j, 2]))
 	}
-	colnames(icon_list_klipart) <- c("index", "icon_names")
+	colnames(icon.list.klipart) <- c("index", "icon_names")
 	
 	#Sort the icon list by index
-	icon_list_klipart <- icon_list_klipart[order(icon_list_klipart$index) , ]
+	icon.list.klipart <- icon.list.klipart[order(icon.list.klipart$index) , ]
 	
 	#Export the list as a csv file
-	write.table(icon_list_klipart, file = paste(klipart_path, "icon.csv", sep = ""),
+	write.table(icon.list.klipart, file = paste(klipart.path, "icon.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
 	
 	#Return the icon list as a vector
-	return(icon_list)
+	return(icon.list)
 }
 
 
@@ -208,8 +208,8 @@ IconListGetter <- function(path){
 ParticipantCounter <- function(path){
 	
 	#Construct the zip folder path and list all zip files
-	zip_path <- paste(path, "zip/", sep = "")
-	files <- list.files(zip_path)
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
 	
 	#Get the total number of participants (zip files)
 	np <- length(files)
@@ -236,74 +236,74 @@ ParticipantCounter <- function(path){
 #and generate the overall similarity matrix(OSM) by summing up all ISMs
 OsmIsmGenerator <- function(path){
 	#Construct the zip folder path and list all zip files
-	zip_path <- paste(path, "zip/", sep = "")
-	files <- list.files(zip_path)
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
 	
 	#Initialize osm with the 1st ISM
-	participant1 <- unzip(paste(zip_path, files[1], sep = ""))
+	participant1 <- unzip(paste(zip.path, files[1], sep = ""))
 	
 	#Get the participant number for the first participant
-	first_p_number <- substring(files[1], 1, nchar(files[1]) - 4)
+	first.p.number <- substring(files[1], 1, nchar(files[1]) - 4)
 	
 	#Construct the full file name for ISM file (mtrx file)
-	first_ism <- paste("./", first_p_number, "/", substring(files[1],1,8), ".mtrx", sep = "")
+	first.ism <- paste("./", first.p.number, "/", substring(files[1],1,8), ".mtrx", sep = "")
 	
 	#Read in the ISM from the 1st participant and exclude the non-ism info from the .mtrx file
-	first_matrix <- read.delim(first_ism, header = FALSE, sep = " ", stringsAsFactors = F)
-	first_matrix <- data.matrix(first_matrix[1:IconCounter(path), ])
+	first.matrix <- read.delim(first.ism, header = FALSE, sep = " ", stringsAsFactors = F)
+	first.matrix <- data.matrix(first.matrix[1:IconCounter(path), ])
 	
 	#Export the first ISM
-	write.table(first_matrix,file = paste(path, "ism/", "participant", 
+	write.table(first.matrix,file = paste(path, "ism/", "participant", 
                                         substr(files[1], 1, nchar(files[1]) - 4),
                                         ".mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
 	
-	write.table(first_matrix,file = paste(path, "matrices/", "participant", 
+	write.table(first.matrix,file = paste(path, "matrices/", "participant", 
                                         substr(files[1], 1, nchar(files[1]) - 4),
                                         ".mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
 	
 	#Summing up all ISMs for OSM and export each ISM
-	osm <- first_matrix
+	osm <- first.matrix
 	
 	#Process the ISMs of the rest of participants
 	for(i in 2:length(files)){
 		#Unzip the participant's zip file
-		participant_i <- unzip(paste(zip_path, files[i], sep = ""))
+		participant.i <- unzip(paste(zip.path, files[i], sep = ""))
 		
 		#Get the participant number
-		participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+		participant.number <- substring(files[i], 1, nchar(files[i]) - 4)
 		
 		#Construct the full file name for .mtrx file
-		matrix_i_name <- paste("./", participant_number, "/", substring(files[i],1,8), ".mtrx", sep = "")
+		matrix.i.name <- paste("./", participant.number, "/", substring(files[i],1,8), ".mtrx", sep = "")
 		
 		#Read in the ISM from a participant and exclude the non-ism info from the .mtrx file
-		matrix_i <- read.delim(matrix_i_name, header = F, sep = " ", stringsAsFactors = F)
-		matrix_i <- data.matrix(matrix_i[1:IconCounter(path), ])
+		matrix.i <- read.delim(matrix.i.name, header = F, sep = " ", stringsAsFactors = F)
+		matrix.i <- data.matrix(matrix.i[1:IconCounter(path), ])
 		
 		#Export the ISM as .mtrx for KlipArt and .csv for catanalysis
-		write.table(matrix_i, file = paste(path, "ism/", "participant", 
+		write.table(matrix.i, file = paste(path, "ism/", "participant", 
 						substr(files[i], 1, nchar(files[i]) - 4),
 						".mtrx", sep = ""), sep = " ", 
 				row.names = F, col.names = F)
 		
-		write.table(matrix_i, file = paste(klipart_path, "matrices/", "participant", 
+		write.table(matrix.i, file = paste(klipart.path, "matrices/", "participant", 
 						substr(files[i], 1, nchar(files[i]) - 4), 
 						".mtrx", sep = ""), sep = " ",
 				row.names = F, col.names = F)
 		
-		write.table(matrix_i, file = paste(path, "matrices/", "participant", 
+		write.table(matrix.i, file = paste(path, "matrices/", "participant", 
 						substr(files[i], 1, nchar(files[i]) - 4), 
 						".mtrx", sep = ""), sep = " ",
 				row.names = F, col.names = F)
 		
 		#Add the ISM to OSM
-		osm <- osm + matrix_i
+		osm <- osm + matrix.i
 	}
 	
 	#Export OSM
 	write.table(osm, file = paste(path, "matrices/", "total.mtrx", sep = ""), 
 			sep = " ", row.names = F,  col.names = F)
 	
-	write.table(osm, file = paste(klipart_path, "matrices/", "total.mtrx", sep = ""), 
+	write.table(osm, file = paste(klipart.path, "matrices/", "total.mtrx", sep = ""), 
 			sep = " ", row.names = F,  col.names = F)
 	
 	osm <- cbind(IconListGetter(path), osm)
@@ -331,25 +331,25 @@ AssignmentGetter <- function(path){
 	df <- data.frame()
 	
 	#List all zip files
-	zip_path <- paste(path, "zip/", sep = "")
-	files <- list.files(zip_path)
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
 	
 	for(i in 1:length(files)){
 		#Read in the assignment.csv file
-		participant_i <- unzip(paste(zip_path, files[i], sep = ""))
+		participant.i <- unzip(paste(zip.path, files[i], sep = ""))
 		
 		#Get the participant number for the first participant
-		participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+		participant.number <- substring(files[i], 1, nchar(files[i]) - 4)
 		
 		#Construct the full file name for assignment.csv file
-		participant_assignment <- paste("./", participant_number, "/", substring(files[i],1,8), 
+		participant.assignment <- paste("./", participant.number, "/", substring(files[i],1,8), 
 				"assignment.csv", sep = "")
 		
-		assignment <- read.delim(participant_assignment, header = F, sep = ",", stringsAsFactors = F)
+		assignment <- read.delim(participant.assignment, header = F, sep = ",", stringsAsFactors = F)
 		df <- rbind(df, assignment)
 	}
 	#Export the assignment.csv
-	write.table(df, file = paste(klipart_path, "assignment.csv", sep = ""),
+	write.table(df, file = paste(klipart.path, "assignment.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
 }
 
@@ -373,20 +373,20 @@ AssignmentGetter <- function(path){
 ParticipantInfo <- function(path){
 	
 	#Read in the zip file
-	zip_path <- paste(path, "zip/", sep = "")
-	files <- list.files(zip_path)
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
 	
 	#Read in to demographic info for the 1st participant
-	participant1 <- unzip(paste(zip_path,files[1],sep = ""))
+	participant1 <- unzip(paste(zip.path,files[1],sep = ""))
 	
 	#Get the participant number for the first participant
-	first_p_number <- substring(files[1], 1, nchar(files[1]) - 4)
+	first.p.number <- substring(files[1], 1, nchar(files[1]) - 4)
 	
 	#Construct the full file name for the participant.csv file for the 1st participant
-	first_demo <- paste("./", first_p_number, "/", substring(files[1],1,8), "participant.csv", sep = "")
+	first.demo <- paste("./", first.p.number, "/", substring(files[1],1,8), "participant.csv", sep = "")
 	
 	#Read in the participant.csv for the 1st participant
-	demo1 <- read.delim(first_demo, header = F, sep = ",",stringsAsFactors = F)
+	demo1 <- read.delim(first.demo, header = F, sep = ",",stringsAsFactors = F)
 	
 	#Aggregate eduction background for participant who use comma(s) in their eduction 
 	#background (e.g., geography, education, business)
@@ -401,17 +401,17 @@ ParticipantInfo <- function(path){
 	
 	#Add demographic info from the rest of participants to the dataframe "demographic"
 	for(i in 2:length(files)){
-		participant_i <- unzip(paste(zip_path,files[i],sep=""))
+		participant.i <- unzip(paste(zip.path,files[i],sep=""))
 		
 		#Get the participant number for the first participant
-		participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+		participant.number <- substring(files[i], 1, nchar(files[i]) - 4)
 		
 		#Construct the full file name for participant.csv file
-		participant_demo <- paste("./", participant_number, "/", substring(files[i],1,8), 
+		participant.demo <- paste("./", participant.number, "/", substring(files[i],1,8), 
 				"participant.csv", sep = "")
 		
 		#Read in the participant.csv
-		demo <- read.delim(participant_demo, header = F, sep = ",", stringsAsFactors = F)
+		demo <- read.delim(participant.demo, header = F, sep = ",", stringsAsFactors = F)
 		while(length(demo) > 13){
 			demo[7] <- paste(demo[7], demo[8], sep = ",")
 			demo <- demo[-8]
@@ -421,61 +421,61 @@ ParticipantInfo <- function(path){
 	}
 	
 	#Create two vectors to store the # of groups created and time spent (in seconds)
-	groups_created <- c()
-	time_spent <- c()
+	groups.created <- c()
+	time.spent <- c()
 	
 	for(i in 1:length(files)){
 		#Read in the assignment.csv file
-		participant_i <- unzip(paste(zip_path, files[i], sep = ""))
+		participant.i <- unzip(paste(zip.path, files[i], sep = ""))
 		
 		#Get the participant number for the first participant
-		participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+		participant.number <- substring(files[i], 1, nchar(files[i]) - 4)
 		
 		#Construct the full file name for assignment.csv file
-		participant_groups <- paste("./", participant_number, "/", substring(files[i],1,8), 
+		participant.groups <- paste("./", participant.number, "/", substring(files[i],1,8), 
 				"assignment.csv", sep = "")
 		
-		groups <- read.delim(participant_groups, header = F, sep = ",", stringsAsFactors = F)
+		groups <- read.delim(participant.groups, header = F, sep = ",", stringsAsFactors = F)
 		
 		# Count the number of rows in the assignment file and convert it to the # of groups created
 		groups <- length(unique(groups[,2]))
 		
-		#Append the # of groups created to the vector "groups_created"
-		groups_created <- append(groups_created, groups)
+		#Append the # of groups created to the vector "groups.created"
+		groups.created <- append(groups.created, groups)
 	}
 	
 	
 	for(i in 1:length(files)){
 		#Read in the log file
-		participant_i <- unzip(paste(zip_path,files[i],sep=""))
+		participant.i <- unzip(paste(zip.path,files[i],sep=""))
 		
 		#Get the participant number for the first participant
-		participant_number <- substring(files[i], 1, nchar(files[i]) - 4)
+		participant.number <- substring(files[i], 1, nchar(files[i]) - 4)
 		
 		#Construct the full file name for .log file
-		participant_log <- paste("./", participant_number, "/", substring(files[i],1,8), ".log", sep = "")
+		participant.log <- paste("./", participant.number, "/", substring(files[i],1,8), ".log", sep = "")
 		
 		#Read in the log file
-		log <- read.delim(participant_log, header = F, sep=",", stringsAsFactors = F)
+		log <- read.delim(participant.log, header = F, sep=",", stringsAsFactors = F)
 		
 		#Get the time spent
 		time <- log[nrow(log), ]
 		time <- substr(time, 33, nchar(time))
 		
-		#Append the time spent to the vector "time_spent"
-		time_spent <- append(time_spent, time)
+		#Append the time spent to the vector "time.spent"
+		time.spent <- append(time.spent, time)
 	}
 	
-	#Append two vectors (i.e., two columns) - groups_created and time_spent to the demographic dataframe
-	demographic <- cbind(demographic, groups_created)
-	demographic <- cbind(demographic, time_spent)
+	#Append two vectors (i.e., two columns) - groups.created and time.spent to the demographic dataframe
+	demographic <- cbind(demographic, groups.created)
+	demographic <- cbind(demographic, time.spent)
 	
 	#Export the demographic dataframe as a csv file
 	write.table(demographic, file = paste(path, "participant.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
 	
 	#Export the participant.csv for KlipArt
-	write.table(demographic, file = paste(klipart_path, "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
+	write.table(demographic, file = paste(klipart.path, "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
 }
 
 
@@ -496,17 +496,17 @@ ParticipantInfo <- function(path){
 DescriptionGetter <- function(path){
 	
 	#Construct the path for the zip folder and list all the zip files
-	zip_path <- paste(path, "zip/", sep = "")
-	files <- list.files(zip_path)
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
 	
 	#Unzip the zip file from the 1st participant
-	participant1 <- unzip(paste(zip_path, files[1], sep =""))
+	participant1 <- unzip(paste(zip.path, files[1], sep =""))
 	
 	#Get the participant number for the first participant
-	participant_number <- substring(files[1], 1, nchar(files[1]) - 4)
+	participant.number <- substring(files[1], 1, nchar(files[1]) - 4)
 	
 	#Construct the full file name for the batch.csv file
-	batch <- paste("./", participant_number, "/", substring(files[1],1,8), "batch.csv", sep = "")
+	batch <- paste("./", participant.number, "/", substring(files[1],1,8), "batch.csv", sep = "")
 	
 	description1 <- read.csv(batch, header = F, stringsAsFactors = F)
 	
@@ -526,20 +526,20 @@ DescriptionGetter <- function(path){
 	for(i in 2:length(files)){
 		
 		#Read in the zip files
-		participant_i <- unzip(paste(zip_path, files[i], sep = ""))
-		description_i <- read.csv(sort(participant_i)[5],header = F, stringsAsFactors = F)
+		participant.i <- unzip(paste(zip.path, files[i], sep = ""))
+		description.i <- read.csv(sort(participant.i)[5],header = F, stringsAsFactors = F)
 		
 		#Aggregate participants' long descriptions when they use comma in the descriptions.
-		while(length(description_i) > 4){
-			description_i[4] <- paste(description_i[, 4], description_i[, 5], sep = ",")
-			description_i <- description_i[-5]
+		while(length(description.i) > 4){
+			description.i[4] <- paste(description.i[, 4], description.i[, 5], sep = ",")
+			description.i <- description.i[-5]
 		}
 		
 		#Create dummy column names for the dataframe (will not be included when exported)
-		colnames(description_i) <- 1:4
+		colnames(description.i) <- 1:4
 		
 		#Combine descriptions from all participant into a dataframe (row-bind)
-		description <- rbind(description, description_i)
+		description <- rbind(description, description.i)
 	}
 	
 	#Export the description dataframe as a csv file
@@ -547,7 +547,7 @@ DescriptionGetter <- function(path){
 			sep = ",", row.names = F,  col.names = F)
 	
 	#Export batch.csv for Klipart
-	write.table(description, file=paste(klipart_path, "batch.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
+	write.table(description, file=paste(klipart.path, "batch.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
 }
 
 
@@ -653,18 +653,18 @@ GeneralClusterAnalysis  <- function(path) {
 	
 	# compute and save cophenectic matrices
 	
-	coph_ave <- as.matrix(cophenetic(ave)) 
-	coph_comp <- as.matrix(cophenetic(comp)) 
-	coph_ward <- as.matrix(cophenetic(ward)) 
+	coph.ave <- as.matrix(cophenetic(ave)) 
+	coph.comp <- as.matrix(cophenetic(comp)) 
+	coph.ward <- as.matrix(cophenetic(ward)) 
 	
-	write.table(coph_ave,file = paste(path, "coph_matrix_ave.mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
-	write.table(coph_comp,file = paste(path, "coph_matrix_comp.mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
-	write.table(coph_ward,file = paste(path, "coph_matrix_ward.mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
+	write.table(coph.ave,file = paste(path, "coph_matrix_ave.mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
+	write.table(coph.comp,file = paste(path, "coph_matrix_comp.mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
+	write.table(coph.ward,file = paste(path, "coph_matrix_ward.mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
 	
 	#Export the dendrograms as a tiff files
-	dend_ave <- as.dendrogram(ave)
-	dend_comp <- as.dendrogram(comp)
-	dend_ward <- as.dendrogram(ward)
+	dend.ave <- as.dendrogram(ave)
+	dend.comp <- as.dendrogram(comp)
+	dend.ward <- as.dendrogram(ward)
 	
 	# png(filename = paste(path, "dendrogram_ave.png", sep =""),
 	# 		width = 2000, height=2000, units="px",
@@ -672,7 +672,7 @@ GeneralClusterAnalysis  <- function(path) {
 	png(filename = paste(path, "dendrogram_ave.png", sep =""),
 			width = 2000, height=2000, units="px",
 			pointsize=5, bg = "white", res = 600)
-	plot(dend_ave)
+	plot(dend.ave)
 	dev.off()
 	
 	# png(filename = paste(path, "dendrogram_comp.png", sep =""),
@@ -681,7 +681,7 @@ GeneralClusterAnalysis  <- function(path) {
 	png(filename = paste(path, "dendrogram_comp.png", sep =""),
 			width = 2000, height=2000, units="px",
 			pointsize=5, bg = "white", res = 600)
-	plot(dend_comp)
+	plot(dend.comp)
 	dev.off()
 	
 	# png(filename = paste(path, "dendrogram_ward.png", sep =""),
@@ -690,7 +690,7 @@ GeneralClusterAnalysis  <- function(path) {
 	png(filename = paste(path, "dendrogram_ward.png", sep =""),
 			width = 2000, height=2000, units="px",
 			pointsize=5, bg = "white", res = 600)
-	plot(dend_ward)
+	plot(dend.ward)
 	dev.off()
 }
 
@@ -726,8 +726,8 @@ DetailedClusterAnalysis <- function(path, k, title = ""){
 	source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
 	
 	#Create a color scheme from rainbow color scheme
-	pre_colors <- rainbow(k)
-	colors <- pre_colors[1: k]
+	pre.colors <- rainbow(k)
+	colors <- pre.colors[1: k]
 	
 	pdf(file = paste(path, "dendrograms_", k, "_cluster.pdf", sep=""),
 			width = 6, height = 2.5, 
@@ -764,8 +764,8 @@ ClusterValidation <- function(path, k, title=""){
 	
 	ism <- list.files(paste(path,"ism/",sep=""))
 	r <- sample(1:100, size=ParticipantCounter(path), replace=TRUE)
-	ism_list <- data.frame(ism,r)
-	ism_list <- ism_list[order(r),]
+	ism.list <- data.frame(ism,r)
+	ism.list <- ism.list[order(r),]
 	
 	if(ParticipantCounter(path)%%2 == 0){
 		split <- ParticipantCounter(path)/2
@@ -774,17 +774,17 @@ ClusterValidation <- function(path, k, title=""){
 	}
 	
 	#Split the participants
-	group1<-ism_list[1:split,1]
-	group2<-ism_list[(split+1):ParticipantCounter(path),1]
+	group1<-ism.list[1:split,1]
+	group2<-ism.list[(split+1):ParticipantCounter(path),1]
 	
 	#read in group1 matrix
 	matrix1<-read.delim(paste(path,"ism/",group1[1],sep=""),header=F, sep=" ",stringsAsFactors=F)
 	osm1<-data.matrix(matrix1)
 	
 	for (i in 2:length(group1)){
-		matrix_i<-read.delim(paste(path,"ism/",group1[i],sep=""),header=F, sep=" ",stringsAsFactors=F)
-		matrix_i<-data.matrix(matrix_i)
-		osm1<-osm1 + matrix_i
+		matrix.i<-read.delim(paste(path,"ism/",group1[i],sep=""),header=F, sep=" ",stringsAsFactors=F)
+		matrix.i<-data.matrix(matrix.i)
+		osm1<-osm1 + matrix.i
 	}
 	
 	#read in group2 matrix
@@ -792,9 +792,9 @@ ClusterValidation <- function(path, k, title=""){
 	osm2<-data.matrix(matrix2)
 	
 	for (i in 2:length(group2)){
-		matrix_i<-read.delim(paste(path,"ism/",group2[i],sep=""),header=F, sep=" ",stringsAsFactors=F)
-		matrix_i<-data.matrix(matrix_i)
-		osm2<-osm2 + matrix_i
+		matrix.i<-read.delim(paste(path,"ism/",group2[i],sep=""),header=F, sep=" ",stringsAsFactors=F)
+		matrix.i<-data.matrix(matrix.i)
+		osm2<-osm2 + matrix.i
 	}
 	
 	d1<-data.frame(IconListGetter(path),osm1)
@@ -818,8 +818,8 @@ ClusterValidation <- function(path, k, title=""){
 	source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
 	
 	#Define colors
-	pre_colors <- rainbow(k)
-	colors <- pre_colors[1:k]
+	pre.colors <- rainbow(k)
+	colors <- pre.colors[1:k]
 	
 	#colored dendrograms
 	pdf(file= paste(path, "cluster_validation.pdf", sep=""),onefile=T,width=12, height=4)
@@ -852,7 +852,7 @@ ClusterValidation <- function(path, k, title=""){
 ##Overview
 #set the scenario here and file name
 OverviewGetter <- function(path){
-	output <- paste(scenario_name, "_overview.pdf", sep = "")
+	output <- paste(scenario.name, "_overview.pdf", sep = "")
 	data <- read.csv(paste(path,"participant.csv", sep = ""), header=F, stringsAsFactors = F)
 	
 	male<-0
@@ -915,7 +915,7 @@ OverviewGetter <- function(path){
 			xlab="Number of groups created", ylab="Frequency")
 	
 	hist(data[,15], col="grey",main = paste("Grouping Time", " (mean = ", round(mean(data[,15]),2), "s", "," ," sd = ", round(sd(data[,15]),2),  "s", ")",sep=""),xlab="Time spent on grouping in second")
-	title(scenario_name,outer=T,line=-2,cex.main = 2,col.main="blue")
+	title(scenario.name,outer=T,line=-2,cex.main = 2,col.main="blue")
 	
 	dev.off()
 }
@@ -939,33 +939,33 @@ ParticipantSimilarity <- function(path){
 
 	#List all ISMs
 	isms <- list.files(paste(path, "ism/", sep = ""))
-	all_isms <- list()
+	all.isms <- list()
 	
 	np <- length(isms)
 	
-	#Read in all ISMs and store them in a list named all_isms
+	#Read in all ISMs and store them in a list named all.isms
 	for (i in 1:length(isms)){
 		aism <- read.delim(paste(paste(path, "ism/", sep = ""), isms[i], sep = ""),
 				header = F, sep = " ", stringsAsFactors = F)
-		all_isms <- c(all_isms, list(aism))
+		all.isms <- c(all.isms, list(aism))
 	}
 	
 	#Calculate participant similarity matrices of all pairs of partcipants based on the hamming distance of their ISMs (dm) and Jaccard index (dm_jaccard)
 	dm <- matrix(0, ncol = np, nrow = np)
-	dm_jac <- matrix(0, ncol = np, nrow = np)
-	dm_rand <- matrix(0, ncol = np, nrow = np)
+	dm.jac <- matrix(0, ncol = np, nrow = np)
+	dm.rand <- matrix(0, ncol = np, nrow = np)
 	for (i in 1: np){
 		for (j in 1: np){
-			dm[i,j] <- sum(abs(all_isms[[i]] - all_isms[[j]]))
+			dm[i,j] <- sum(abs(all.isms[[i]] - all.isms[[j]]))
 			
-			m11 <- sum(all_isms[[i]] * all_isms[[j]])
-			m01 <- sum(abs(1-all_isms[[i]]) * all_isms[[j]])
-			m10 <- sum(all_isms[[i]] * abs(1-all_isms[[j]]))
-			m00 <- sum(abs(1-all_isms[[i]]) * abs(1-all_isms[[j]]))
+			m11 <- sum(all.isms[[i]] * all.isms[[j]])
+			m01 <- sum(abs(1-all.isms[[i]]) * all.isms[[j]])
+			m10 <- sum(all.isms[[i]] * abs(1-all.isms[[j]]))
+			m00 <- sum(abs(1-all.isms[[i]]) * abs(1-all.isms[[j]]))
 			
-			dm_jac[i,j] <- m11 / (m01+m10+m11) 
+			dm.jac[i,j] <- m11 / (m01+m10+m11) 
 			
-			dm_rand[i,j] <- (m11 + m00) / (m01+m10+m00+m11)
+			dm.rand[i,j] <- (m11 + m00) / (m01+m10+m00+m11)
 		}
 	}
 	
@@ -979,18 +979,18 @@ ParticipantSimilarity <- function(path){
 	#Assign participants numbers as the row&column names of the participant similarity matrix (dm)
 	colnames(dm) <- names
 	rownames(dm) <- names
-	colnames(dm_jac) <- names
-	rownames(dm_jac) <- names
-	colnames(dm_rand) <- names
-	rownames(dm_rand) <- names
+	colnames(dm.jac) <- names
+	rownames(dm.jac) <- names
+	colnames(dm.rand) <- names
+	rownames(dm.rand) <- names
 	
 	write.table(dm,file = paste(path, "participant_similarity_hamming.csv",sep = ""), sep = " ",
 			row.names = T, col.names = T)
 	
-	write.table(dm_jac,file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
+	write.table(dm.jac,file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
 			row.names = T, col.names = T)
 	
-	write.table(dm_rand,file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
+	write.table(dm.rand,file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
 			row.names = T, col.names = T)
 	
 }
@@ -1015,8 +1015,8 @@ ParticipantSimilarity <- function(path){
 PrototypeFreq <- function(path){
 	
 	#Construct the path for the zip folder and list all the zip files
-	zip_path <- paste(path, "zip/", sep = "")
-	files <- list.files(zip_path)
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
 	
 	#Create a dataframe to store the prototype frequency
 	freq <- data.frame(icon = IconListGetter(path), 
@@ -1025,9 +1025,9 @@ PrototypeFreq <- function(path){
 	)
 	
 	for(p in files){
-		participant <- unzip(paste(zip_path, p, sep =""))
-		participant_number <- substring(p, 1, nchar(p) - 4)
-		prototype_file <- paste("./", participant_number, "/", substring(p,1,8), "gprototypes.csv", sep = "")
+		participant <- unzip(paste(zip.path, p, sep =""))
+		participant.number <- substring(p, 1, nchar(p) - 4)
+		prototype_file <- paste("./", participant.number, "/", substring(p,1,8), "gprototypes.csv", sep = "")
 		prototype <- read.csv(prototype_file, header = F, stringsAsFactors = F)
 		prev <- -1 # workaround to deal with old prototype files
 		for(j in 1:nrow(prototype)) {
@@ -1062,8 +1062,8 @@ MdsScaling <- function(path){
 	d <-  read.csv(paste(path, "osm.csv", sep = ""), header = F)
 	dm <- as.matrix(d[, -1])
 	dimnames(dm) <- list(d[, 1],d[, 1])
-	dm_dist <- dist(dm, method = "euclidean")
-	mds <- cmdscale(dm_dist)
+	dm.dist <- dist(dm, method = "euclidean")
+	mds <- cmdscale(dm.dist)
 	col <- rainbow(50)
 	tiff(filename = paste(path, "mds.tiff", sep = ""), width = 3, height =3, units = "in", pointsize = 5, compression = "none", bg = "white", res = 600)
 	plot(min(mds[, 1], mds[, 2]) : max(mds[, 1],mds[, 2]), min(mds[, 1], mds[, 2]) : max(mds[, 1], mds[, 2]), type = "n", xlab = "", ylab = "", main = "Multidimensional Scaling")
@@ -1214,30 +1214,30 @@ ClusterValidation(path, 3, "geo terms")
 
 
 #Creates a sample of participants of size sample_size and computes the hclust objects and cophenetic matrices for this sample.
-#The return value is a 6 element list (hclust_ave,coph_ave,hclust_comp,coph_comp,hclust_ward,coph_ward)
-SamplingRun <- function(path, ism_list, sample_size) {
+#The return value is a 6 element list (hclust_ave,coph.ave,hclust_comp,coph.comp,hclust_ward,coph.ward)
+SamplingRun <- function(path, ism.list, sample_size) {
 	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
 	
 	#Construct the zip folder path and list all zip files
 	ism_path <- paste(path, "ism/", sep = "")
-	files <- ism_list
+	files <- ism.list
 	
 	#Initialize OSM
 	osm <- matrix(0,nrow(d),nrow(d))
 	
 	#create random sample numbers
-	r <- sample(length(ism_list), size=sample_size, replace=FALSE)
+	r <- sample(length(ism.list), size=sample_size, replace=FALSE)
 	
 	#create OSM for sample
 	for (i in 1:sample_size) {
-		matrix_i_name <- files[r[i]]
-		#print(paste("reading",matrix_i_name))
+		matrix.i.name <- files[r[i]]
+		#print(paste("reading",matrix.i.name))
 		
 		#Read in the ISM from a participant and exclude the non-ism info from the .mtrx file
-		matrix_i <- read.delim(paste(ism_path,matrix_i_name,sep=""), header = F, sep = " ", stringsAsFactors = F)
-		matrix_i <- data.matrix(matrix_i[1:nrow(d), ])
+		matrix.i <- read.delim(paste(ism_path,matrix.i.name,sep=""), header = F, sep = " ", stringsAsFactors = F)
+		matrix.i <- data.matrix(matrix.i[1:nrow(d), ])
 		
-		osm <- osm + matrix_i
+		osm <- osm + matrix.i
 	}
 	
 	# create hclust objects for different methods
@@ -1246,11 +1246,11 @@ SamplingRun <- function(path, ism_list, sample_size) {
 	ward <- hclust(method = "ward", as.dist(sample_size - osm))
 	
 	# compute cophenetic matrices
-	coph_ave <- as.matrix(cophenetic(ave)) 
-	coph_comp <- as.matrix(cophenetic(comp)) 
-	coph_ward <- as.matrix(cophenetic(ward)) 
+	coph.ave <- as.matrix(cophenetic(ave)) 
+	coph.comp <- as.matrix(cophenetic(comp)) 
+	coph.ward <- as.matrix(cophenetic(ward)) 
 	
-	return(list(ave,coph_ave,comp,coph_comp,ward,coph_ward,r))
+	return(list(ave,coph.ave,comp,coph.comp,ward,coph.ward,r))
 }
 
 
@@ -1270,7 +1270,7 @@ SamplingRun <- function(path, ism_list, sample_size) {
 #Perform a complete sampling experiment in which an average cophenetic matrix for samples of participants is compared
 #to that of the entire set of participnats. The number of trials is given by paramter 'trials' and a sample size 
 #of 'sample_size' 
-CopheneticSampling <- function(path, ism_list,trials, sample_size) {
+CopheneticSampling <- function(path, ism.list,trials, sample_size) {
 	# read overall osm
 	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
 	dm <- as.matrix(d[, -1])
@@ -1287,7 +1287,7 @@ CopheneticSampling <- function(path, ism_list,trials, sample_size) {
 	
 	#sample and sum up the cophenetic matrices for different clustering methods
 	for (i in 1:trials) {
-		result <- SamplingRun(path, ism_list, sample_size)
+		result <- SamplingRun(path, ism.list, sample_size)
 		coph_ave_total <- coph_ave_total + result[[2]]
 		coph_comp_total <- coph_comp_total + result[[4]]
 		coph_ward_total <- coph_ward_total + result[[6]]
@@ -1331,13 +1331,13 @@ CopheneticSampling <- function(path, ism_list,trials, sample_size) {
 #Perform complete sample experiments for deviations of clusterings resulting from different methods using Jaccard's index
 #Parameters are:
 #output_name: name of output file without extension
-#ism_list: vector of .mtrx files from which to sample
+#ism.list: vector of .mtrx files from which to sample
 #trials: number of runs averaged per sample size and cluster number
 #sample_size_start: smallest sample size to be used
 #sample_size_end: largest sample size to be used
 #n_cluster_start: smallest number of clusters to used
 #n_cluster_end: largest number of clusters to used
-IndexSampling <- function(path, ism_list, output_name, trials, sample_size_start, sample_size_end, n_cluster_start, n_cluster_end) {
+IndexSampling <- function(path, ism.list, output_name, trials, sample_size_start, sample_size_end, n_cluster_start, n_cluster_end) {
 	
 	# set up data frame for results
 	log <- data.frame(col_names=c("cluster number","sample size","trial","sample","sim ave-comp jac","sim ave-ward jac","sim comp-ward jac", "sim avg diff jac", "sim ave-comp rand", "sim ave-ward rand", "sim comp-ward rand", "sim avg diff rand"),stringsAsFactors=FALSE)
@@ -1361,7 +1361,7 @@ IndexSampling <- function(path, ism_list, output_name, trials, sample_size_start
 			avg_rand <- 0 
 			sq_rand <- 0
 			for (i in 1:trials) {
-				result <- SamplingRun(path,ism_list,l)
+				result <- SamplingRun(path,ism.list,l)
 				sim_ave_comp_jac <- cluster_similarity(cutree(result[[1]],k=j),cutree(result[[3]],k=j), similarity = c("jaccard"), method = "independence")
 				sim_ave_ward_jac <- cluster_similarity(cutree(result[[1]],k=j),cutree(result[[5]],k=j), similarity = c("jaccard"), method = "independence")
 				sim_comp_ward_jac <- cluster_similarity(cutree(result[[3]],k=j),cutree(result[[5]],k=j), similarity = c("jaccard"), method = "independence")
@@ -1470,16 +1470,16 @@ ParticipantSimilarityClusters <- function(path){
 	dm <- as.matrix(read.table(file = paste(path, "participant_similarity_hamming.csv",sep = ""), sep = " ",
 			header = T))
 	
-	dm_jac <- as.matrix(read.table(file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
+	dm.jac <- as.matrix(read.table(file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
 			header = T))
 	
-	dm_rand <- as.matrix(read.table(file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
+	dm.rand <- as.matrix(read.table(file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
 			header = T))
 	
 	#Perform cluster analysis based on participant similarity matrix using Ward's method and construct a dendrogram
 	cluster <- hclust(method = "ward", as.dist(dm))
-	cluster_jac <- hclust(method = "ward", as.dist(dm_jac))
-	cluster_rand <- hclust(method = "ward", as.dist(dm_rand))
+	cluster_jac <- hclust(method = "ward", as.dist(dm.jac))
+	cluster_rand <- hclust(method = "ward", as.dist(dm.rand))
 	dend <- as.dendrogram(cluster)
 	dend_jac <- as.dendrogram(cluster_jac)
 	dend_rand <- as.dendrogram(cluster_rand)
@@ -1509,16 +1509,16 @@ ParticipantSimilarityVisualizations <- function(path){
 	dm <- as.matrix(read.table(file = paste(path, "participant_similarity_hamming.csv",sep = ""), sep = " ",
 					header = T))
 	
-	dm_jac <- as.matrix(read.table(file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
+	dm.jac <- as.matrix(read.table(file = paste(path, "participant_similarity_jaccard.csv",sep = ""), sep = " ",
 					header = T))
 	
-	dm_rand <- as.matrix(read.table(file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
+	dm.rand <- as.matrix(read.table(file = paste(path, "participant_similarity_rand.csv",sep = ""), sep = " ",
 					header = T))
 	
 	#Perform cluster analysis based on participant similarity matrix using Ward's method and construct a dendrogram
 	cluster <- hclust(method = "ward", as.dist(dm))
-	cluster_jac <- hclust(method = "ward", as.dist(dm_jac))
-	cluster_rand <- hclust(method = "ward", as.dist(dm_rand))
+	cluster_jac <- hclust(method = "ward", as.dist(dm.jac))
+	cluster_rand <- hclust(method = "ward", as.dist(dm.rand))
 	dend <- as.dendrogram(cluster)
 	dend_jac <- as.dendrogram(cluster_jac)
 	dend_rand <- as.dendrogram(cluster_rand)
@@ -1559,7 +1559,7 @@ ParticipantSimilarityVisualizations <- function(path){
 	# Create a cluster heatmap for participant similarities
 	png(filename = paste(path, "HM-Clust-PartSimJac.png", sep = ""), width = 2000, height = 2000, units = "px",
 	    pointsize = 5, bg = "white", res = 600)
-	heatmap.2(as.matrix(dm_jac), Rowv = dend, Colv = dend, 
+	heatmap.2(as.matrix(dm.jac), Rowv = dend, Colv = dend, 
 	          margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
 	          revC = TRUE, trace = "none", key = TRUE)
 	dev.off()
@@ -1648,7 +1648,7 @@ StanDen <- function(path) {
 #          horiz = TRUE, 
 #          #center = FALSE, dLeaf = -2, edge.root = FALSE
 #     )
-    myTitle <- paste(scenario_name, i, sep="//")
+    myTitle <- paste(scenario.name, i, sep="//")
     title(main = myTitle)
     dev.off()
     }
@@ -1751,20 +1751,20 @@ VisIndIsm <- function(path)
 PartSimGroupVis <- function(path, np, k){
   #List all ISMs
   isms <- list.files(paste(path, "ism/", sep = ""))
-  all_isms <- list()
+  all.isms <- list()
   
-  #Read in all ISMs and store them in a list named all_isms
+  #Read in all ISMs and store them in a list named all.isms
   for (i in 1:length(isms)){
     aism <- read.delim(paste(paste(path, "ism/", sep = ""), isms[i], sep = ""),
                        header = F, sep = " ", stringsAsFactors = F)
-    all_isms <- c(all_isms, list(aism))
+    all.isms <- c(all.isms, list(aism))
   }
   
   #Calculate participant similarity matrix (dm) of all pairs of partcipants based on the hamming distance of their ISMs
   dm <- matrix(0, ncol = np, nrow = np)
   for (i in 1: np){
     for (j in 1: np){
-      dm[i,j] <- sum(abs(all_isms[[i]] - all_isms[[j]]))
+      dm[i,j] <- sum(abs(all.isms[[i]] - all.isms[[j]]))
     }
   }
   
@@ -1884,8 +1884,8 @@ write.table(mdsc, file = paste(path, "mds.txt", sep = ""), sep = " ", quote = FA
 		row.names = T, col.names = T)
 
 ###Change the number here to create colored-dendrograms at different solutions
-for(i in 2: max_cluster){
-	DetailedClusterAnalysis(path, i, scenario_name)
+for(i in 2: max.cluster){
+	DetailedClusterAnalysis(path, i, scenario.name)
 }
 
 
