@@ -5,9 +5,7 @@
 # There seemed to be two sets of functions being defined among various catanalysis scripts. The first, denoted by 6 lines of "#"s and called "Function list Pt. 1" 
 # (followed with a set of executables running those functions denoted by three lines of "#"s), and the second, denoted by 6 lines of "#"s and called "Functions list Pt. 2"
 
-# "clusterval" package not available in R 3.0.0
-
-# Directly below is the set up for testing the functions. This is where you set paths, create sub-directories, and load packages. 
+# "clusterval" package not available in R 3.0.0 
 
 
 
@@ -21,8 +19,9 @@
 # Instruction
 # 1. Create a folder with the name of the experiment;
 # 2. In the experiment folder, create a folder named "zip" and put all participant zip files into the "zip" folder;
-# 3. Change the PATH & SCENARIO NAME at the beginning of the script;
-# 4. Run the entire script;
+# 3. Run the SetUp function to define the scenario name, path, and max number of clusters;
+# 3a. (the SetUp function will also create subfolders to store other needed data)
+# 4. Run the entire script ("function_list_pre.R"), then run "function_list_1.R", followed by "function_list_2.R";
 # 5. To create dendrograms at different solutions, manually change the number in the last line of the script.
 # 6. Go find the result in the experiment folder
 
@@ -31,53 +30,48 @@
 # 1. Zip the matrices folder into a zip file;
 # 2. Put a icons.zip file that contains all the icon files.
 
-# Clear the workspace
-rm(list=ls())
 
-# Define the name of the experiment
-scenario.name <- "2501 geotermsN"
 
-# Define the path to the experiment folder (with a closing "/" or "\")
-
-# path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/birdseye/red/"
-# path <- "E:/My Documents/Dropbox/qstr_collaboration/Spatial Cognition and Computation - Directions/analysis_jinlong/sideview/black/"
-# path <- "/Users/jinlong/Dropbox/Catscan experiments/Experiments/1200 mturk planes birdseye/analysis/birdseye_30/"
-# path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/2501 mturk geo terms new/"
-path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/"
-
-# Checks if "/" exists after path. If not, one is added
-if(substr(path, nchar(path), nchar(path)) != "/"){
-	path <- paste(path, "/", sep = "")
-}
-
-# Define the max number of clusters
-max.cluster <- 9
-
-# Auto-create two subfolders "ism" and "matrices"
-dir.create(paste(path, "ism/", sep=""))
-klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
-dir.create(klipart.path)
-dir.create(paste(klipart.path, "matrices/", sep="")) 
-dir.create(paste(path, "matrices/", sep="")) 
-
-# Uncomment the install.package() functions if you haven't installed these packages
-#install.packages("gplots")
 require("gplots")
 #install.packages("vegan")
 require("vegan")
 #install.packages("clusterval")
 require("clusteval")
 
+# Clear the workspace
+rm(list=ls())
 
 
 
+SetUp <- function(scenario.name, path, max.cluster){
 
+	# Define the name of the experiment
+	scenario.name <- scenario.name	
 
+	# Define the path to the experiment folder (with a closing "/" or "\")
+	path <- path
 
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
 
+	# Define the max number of clusters
+	max.cluster <- max.cluster
 
+	# Auto-create two subfolders "ism" and "matrices"
+	dir.create(paste(path, "ism/", sep=""))
+	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	dir.create(klipart.path)
+	dir.create(paste(klipart.path, "matrices/", sep="")) 
+	dir.create(paste(path, "matrices/", sep="")) 
+}
 
-
+# SetUp takes 3 parameters. 
+# 1. the name of the experiment (as a string)
+# 2. the file path to where your "zip" folder is (as a string)
+# 3. the maximum number of clusters (as an integer) 
+SetUp("2501 geotermsN", "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/", 9)
 
 
 
