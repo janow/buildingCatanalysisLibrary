@@ -19,11 +19,9 @@
 # Instruction
 # 1. Create a folder with the name of the experiment;
 # 2. In the experiment folder, create a folder named "zip" and put all participant zip files into the "zip" folder;
-# 3. Run the SetUp function to define the scenario name, path, and max number of clusters;
-# 3a. (the SetUp function will also create subfolders to store other needed data)
-# 4. Run the entire script ("function_list_pre.R"), then run "function_list_1.R", followed by "function_list_2.R";
-# 5. To create dendrograms at different solutions, manually change the number in the last line of the script.
-# 6. Go find the result in the experiment folder
+# 3. Run the entire script ("function_list_pre.R"), then run "function_list_1.R", followed by "function_list_2.R";
+# 4. To create dendrograms at different solutions, manually change the number in the last line of the script.
+# 5. Go find the result in the experiment folder
 
 # KlipArt Instruction
 # A klipart folder will be created inside the experiment folder. In the klipart folder:
@@ -31,7 +29,7 @@
 # 2. Put a icons.zip file that contains all the icon files.
 
 
-
+#install.packages("gplots")
 require("gplots")
 #install.packages("vegan")
 require("vegan")
@@ -41,38 +39,32 @@ require("clusteval")
 # Clear the workspace
 rm(list=ls())
 
+# Begin user input #
 
+# Path to where the experiment folder is
+path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/"
 
-SetUp <- function(scenario.name, path, max.cluster){
+# Define the name of the experiment
+scenario.name <- "2501 geotermsN"
 
-	# Define the name of the experiment
-	scenario.name <- scenario.name	
+# Define the max number of clusters
+max.cluster <- 9
 
-	# Define the path to the experiment folder (with a closing "/" or "\")
-	path <- path
+# End user input #
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
-	}
-
-	# Define the max number of clusters
-	max.cluster <- max.cluster
-
-	# Auto-create two subfolders "ism" and "matrices"
-	dir.create(paste(path, "ism/", sep=""))
-	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
-	dir.create(klipart.path)
-	dir.create(paste(klipart.path, "matrices/", sep="")) 
-	dir.create(paste(path, "matrices/", sep="")) 
+# Checks if "/" exists after path. If not, one is added
+if(substr(path, nchar(path), nchar(path)) != "/") {
+	path <- paste(path, "/", sep = "")
 }
 
-# SetUp takes 3 parameters. 
-# 1. the name of the experiment (as a string)
-# 2. the file path to where your "zip" folder is (as a string)
-# 3. the maximum number of clusters (as an integer) 
-SetUp("2501 geotermsN", "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/", 9)
+# Auto-create two subfolders "ism" and "matrices"
+dir.create(paste(path, "ism/", sep=""))
+klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+dir.create(klipart.path)
+dir.create(paste(klipart.path, "matrices/", sep="")) 
+dir.create(paste(path, "matrices/", sep="")) 
 
+ 
 
 
 # BEGIN: Function list PRE

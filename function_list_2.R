@@ -677,11 +677,11 @@ StanDen(path) # error
 # Error in hclust(method = i, as.dist(ParticipantCounter(path) - dm)) : 
 #   invalid clustering method
 
-VisIndIsm(path)
+VisIndIsm(path) # requires the "clusterval" package 
 
 CopheneticSampling(path, list.files(paste(path, "ism/", sep = "")), 100, 20)
 
-IndexSampling(path, list.files(paste(path, "ism/", sep = "")), "CMSI-2500", 100, 5, 100, 2, 10)
+IndexSampling(path, list.files(paste(path, "ism/", sep = "")), "CMSI-2500", 100, 5, 100, 2, 10) # requires the "clusterval" package
 
 
 path1 <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/1209 mturk directions 3D mugs final 225deg/"

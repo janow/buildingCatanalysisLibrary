@@ -755,10 +755,8 @@ OverviewGetter(path)
 
 DescriptionGetter(path)
 
-ParticipantSimilarity(path)
-# sluggish. clogged up R. Had to kill R
+ParticipantSimilarity(path) # sluggish. clogged up R. Had to kill R
 
-mds <- MdsScaling(path)
-# no text labels on plot. Just points.
+mds <- MdsScaling(path) # no text labels on plot. Just points.
 
 ClusterValidation(path, 3, "geo terms")
