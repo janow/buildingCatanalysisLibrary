@@ -672,7 +672,6 @@ for(i in 2: max.cluster) {
 	DetailedClusterAnalysis(path, i, scenario.name)
 }
 
-
 StanDen(path) # error
 # Error in hclust(method = i, as.dist(ParticipantCounter(path) - dm)) : 
 #   invalid clustering method
