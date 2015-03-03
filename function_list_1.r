@@ -224,17 +224,11 @@ OsmViz <- function(path) {
 	dm <- as.matrix(d[, -1])
 	dimnames(dm) <- list(d[, 1], d[, 1])
 	
-	# The export of the heatmap is realized as a pngfile. Other options are ....??
-	# Jinlong: other options includes jpg, bmp, png, etc. but each has its own function with
-	# slightly different arguments and different default values for arguments
 	# Drawing the heatmap and export as a jpeg file
-
-	# png(filename = paste(path, "heat_map.png", sep = ""),width = 2000, height = 2000, units = "px",
-	# 		pointsize = 5,compression = "none", bg = "white", res = 600)
 	jpeg(filename = paste(path, "heat_map.jpeg", sep = ""),width = 2000, height = 2000, units = "px",
-			pointsize = 5, bg = "white", res = 600)
+			pointsize = 5, bg = "white", res = 700)
 	heatmap.2(as.matrix(ParticipantCounter(path) - dm), Rowv = F, Colv = "Rowv", dendrogram = "none", 
-			margin = c(3, 3), cexRow = 0.5, cexCol = 0.5, revC = F, trace = "none", key = F)
+			margin = c(4, 4), cexRow = 0.35, cexCol = 0.35, revC = F, trace = "none", key = F)
 	dev.off()
 }
 
@@ -266,9 +260,9 @@ ClusterHeatmap <- function(path) {
 	
 	# Drawing the cluster heatmap and export as a jpeg file
 	jpeg(filename = paste(path, "cluster_heatmap.jpeg", sep = ""), width = 2000, height = 2000, units = "px",
-			pointsize = 5, bg = "white", res = 600)
+			pointsize = 5, bg = "white", res = 700)
 	heatmap.2(as.matrix(ParticipantCounter(path) - dm), Rowv = dend, Colv = dend, 
-			margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
+			margin = c(4, 4), cexRow = 0.35, cexCol = 0.35, dendrogram = "both", 
 			revC = T, trace = "none", key = T)
 	dev.off()
 }
