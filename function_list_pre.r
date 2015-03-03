@@ -30,11 +30,12 @@
 
 
 #install.packages("gplots")
-require("gplots")
+require(gplots)
 #install.packages("vegan")
-require("vegan")
-#install.packages("clusterval")
-require("clusteval")
+require(vegan)
+#install.packages("clusteval")
+require(clusteval)
+require(grid)
 
 # Clear the workspace
 rm(list=ls())

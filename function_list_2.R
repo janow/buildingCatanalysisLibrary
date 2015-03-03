@@ -1,6 +1,6 @@
 ## Kevin Sparks 2/24/15
 # Make sure to run "function_list_pre.R" and "function_list_1.R" before attempting to run the executables at the
-# bottom of this file. In particular, some functions below rely on the "clusterval" package 
+# bottom of this file. In particular, some functions below rely on the "clusteval" package 
 # that is not available in R version 3.0.0. Also, some executables rely on outputs from executeables from 
 # "function_list_1.R".
 
@@ -672,17 +672,17 @@ for(i in 2: max.cluster) {
 	DetailedClusterAnalysis(path, i, scenario.name)
 }
 
-StanDen(path) # error
-# Error in hclust(method = i, as.dist(ParticipantCounter(path) - dm)) : 
-#   invalid clustering method
+StanDen(path) 
 
-VisIndIsm(path) # requires the "clusterval" package 
+VisIndIsm(path) 
 
 CopheneticSampling(path, list.files(paste(path, "ism/", sep = "")), 100, 20)
 
-IndexSampling(path, list.files(paste(path, "ism/", sep = "")), "CMSI-2500", 100, 5, 100, 2, 10) # requires the "clusterval" package
+# Error in sample.int(x, size, replace, prob) : 
+  # cannot take a sample larger than the population when 'replace = FALSE'
+IndexSampling(path, list.files(paste(path, "ism/", sep = "")), "CMSI-2500", 100, 5, 100, 2, 10) # sluggish
 
-
+# Can someone email me these files? Or dropbox me these files?
 path1 <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/1209 mturk directions 3D mugs final 225deg/"
 path2 <- path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/1208 mturk directions 3D mugs final 0deg/"
 Dif2Osm(path1, path2)

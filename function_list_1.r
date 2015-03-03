@@ -755,7 +755,7 @@ OverviewGetter(path)
 
 DescriptionGetter(path)
 
-ParticipantSimilarity(path) # sluggish. clogged up R. Had to kill R
+ParticipantSimilarity(path) # sluggish 
 
 mds <- MdsScaling(path) # no text labels on plot. Just points.
 
