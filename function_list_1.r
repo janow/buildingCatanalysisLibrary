@@ -227,11 +227,11 @@ OsmViz <- function(path) {
 	# The export of the heatmap is realized as a pngfile. Other options are ....??
 	# Jinlong: other options includes jpg, bmp, png, etc. but each has its own function with
 	# slightly different arguments and different default values for arguments
-	# Drawing the heatmap and export as a tiff file
+	# Drawing the heatmap and export as a jpeg file
 
 	# png(filename = paste(path, "heat_map.png", sep = ""),width = 2000, height = 2000, units = "px",
 	# 		pointsize = 5,compression = "none", bg = "white", res = 600)
-	png(filename = paste(path, "heat_map.png", sep = ""),width = 2000, height = 2000, units = "px",
+	jpeg(filename = paste(path, "heat_map.jpeg", sep = ""),width = 2000, height = 2000, units = "px",
 			pointsize = 5, bg = "white", res = 600)
 	heatmap.2(as.matrix(ParticipantCounter(path) - dm), Rowv = F, Colv = "Rowv", dendrogram = "none", 
 			margin = c(3, 3), cexRow = 0.5, cexCol = 0.5, revC = F, trace = "none", key = F)
@@ -264,8 +264,8 @@ ClusterHeatmap <- function(path) {
 	cluster <- hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
 	dend <- as.dendrogram(cluster)
 	
-	# Drawing the cluster heatmap and export as a png file
-	png(filename = paste(path, "cluster_heatmap.png", sep = ""), width = 2000, height = 2000, units = "px",
+	# Drawing the cluster heatmap and export as a jpeg file
+	jpeg(filename = paste(path, "cluster_heatmap.jpeg", sep = ""), width = 2000, height = 2000, units = "px",
 			pointsize = 5, bg = "white", res = 600)
 	heatmap.2(as.matrix(ParticipantCounter(path) - dm), Rowv = dend, Colv = dend, 
 			margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
@@ -310,7 +310,7 @@ GeneralClusterAnalysis  <- function(path) {
 	write.table(coph.comp, file = paste(path, "coph_matrix_comp.mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
 	write.table(coph.ward, file = paste(path, "coph_matrix_ward.mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
 	
-	# Export the dendrograms as a tiff files
+	# Export the dendrograms as a jpeg files
 	dend.ave <- as.dendrogram(ave)
 	dend.comp <- as.dendrogram(comp)
 	dend.ward <- as.dendrogram(ward)
@@ -318,7 +318,7 @@ GeneralClusterAnalysis  <- function(path) {
 	# png(filename = paste(path, "dendrogram_ave.png", sep =""),
 	# 		width = 2000, height=2000, units="px",
 	# 		pointsize=5, compression = "none", bg = "white", res = 600)
-	png(filename = paste(path, "dendrogram_ave.png", sep =""),
+	jpeg(filename = paste(path, "dendrogram_ave.jpeg", sep =""),
 			width = 2000, height=2000, units="px",
 			pointsize=5, bg = "white", res = 600)
 	plot(dend.ave)
@@ -327,7 +327,7 @@ GeneralClusterAnalysis  <- function(path) {
 	# png(filename = paste(path, "dendrogram_comp.png", sep =""),
 	# 		width = 2000, height=2000, units="px",
 	# 		pointsize=5, compression = "none", bg = "white", res = 600)
-	png(filename = paste(path, "dendrogram_comp.png", sep =""),
+	jpeg(filename = paste(path, "dendrogram_comp.jpeg", sep =""),
 			width = 2000, height=2000, units="px",
 			pointsize=5, bg = "white", res = 600)
 	plot(dend.comp)
@@ -336,7 +336,7 @@ GeneralClusterAnalysis  <- function(path) {
 	# png(filename = paste(path, "dendrogram_ward.png", sep =""),
 	# 		width = 2000, height=2000, units="px",
 	# 		pointsize=5, compression = "none", bg = "white", res = 600)
-	png(filename = paste(path, "dendrogram_ward.png", sep =""),
+	jpeg(filename = paste(path, "dendrogram_ward.jpeg", sep =""),
 			width = 2000, height=2000, units="px",
 			pointsize=5, bg = "white", res = 600)
 	plot(dend.ward)
@@ -714,7 +714,7 @@ MdsScaling <- function(path) {
 	dm.dist <- dist(dm, method = "euclidean")
 	mds <- cmdscale(dm.dist)
 	col <- rainbow(50)
-	tiff(filename = paste(path, "mds.tiff", sep = ""), width = 3, height =3, units = "in", pointsize = 5, compression = "none", bg = "white", res = 600)
+	jpeg(filename = paste(path, "mds.jpeg", sep = ""), width = 3, height =3, units = "in", pointsize = 5, compression = "none", bg = "white", res = 600)
 	plot(min(mds[, 1], mds[, 2]):max(mds[, 1],mds[, 2]), min(mds[, 1], mds[, 2]):max(mds[, 1], mds[, 2]), type = "n", xlab = "", ylab = "", main = "Multidimensional Scaling")
 	for(i in 1:nrow(mds)) {
 		points(mds[i, 1], mds[i, 2], type = "p", cex = 1.5)

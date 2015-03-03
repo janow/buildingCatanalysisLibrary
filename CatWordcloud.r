@@ -42,7 +42,7 @@ CatWordcloud <- function(dir.path) {
 	# inspect(word.data)
 
 	# Create jpeg of wordcould output 
-	jpeg(paste(dir.path, "/wordcloud.jpg", sep=""), width = 480, height = 480, units = "px", pointsize = 12)
+	jpeg(paste(dir.path, "/wordcloud.jpeg", sep=""), width = 480, height = 480, units = "px", pointsize = 12)
 	wordcloud(word.data, scale=c(5,0.5), min.freq=3, max.words=100, 
 	          random.order=FALSE, rot.per=0.35, use.r.layout=FALSE, 
 	          colors=brewer.pal(8, "Dark2"))

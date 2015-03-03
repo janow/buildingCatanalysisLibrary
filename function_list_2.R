@@ -351,7 +351,7 @@ ParticipantSimilarityVisualizations <- function(path) {
 	dev.off()
   
 	# Create a cluster heatmap for participant similarities
-	png(filename = paste(path, "HM-Clust-PartSimHam.png", sep = ""), width = 2000, height = 2000, units = "px",
+	jpeg(filename = paste(path, "HM-Clust-PartSimHam.jpeg", sep = ""), width = 2000, height = 2000, units = "px",
 	    pointsize = 5, bg = "white", res = 600)
 	heatmap.2(as.matrix(dm), col=cm.colors(255), Rowv = dend, Colv = dend, 
 	          margin = c(3,3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
@@ -362,7 +362,7 @@ ParticipantSimilarityVisualizations <- function(path) {
 	# Participant similarity using Jaccard coefficient
 	dend <- as.dendrogram(cluster.jac)
 	# Create a cluster heatmap for participant similarities
-	png(filename = paste(path, "HM-Clust-PartSimJac.png", sep = ""), width = 2000, height = 2000, units = "px",
+	jpeg(filename = paste(path, "HM-Clust-PartSimJac.jpeg", sep = ""), width = 2000, height = 2000, units = "px",
 	    pointsize = 5, bg = "white", res = 600)
 	heatmap.2(as.matrix(dm.jac), Rowv = dend, Colv = dend, 
 	          margin = c(3, 3), cexRow = 0.5, cexCol = 0.5, dendrogram = "both", 
@@ -441,7 +441,7 @@ StanDen <- function(path) {
   for (i in clu.meth) {
     # ALTERNATIVE 1
       dummy <- hclust(method = i, as.dist(ParticipantCounter(path) - dm))
-      png(file = paste(path, "dendro", i, ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
+      jpeg(file = paste(path, "dendro", i, ".jpeg", sep=""), width = 1200, height = 1200, pointsize = 12)
       plot(dummy)
     # ALTERNATIVE 2
 #     dummy = as.dendrogram(hclust(method = i, as.dist(ParticipantCounter(path) - dm)))
@@ -487,7 +487,7 @@ VisIndIsm <- function(path) {
   for (i in indISM) {
     indISM.matrix <- read.delim(paste(path, "ism/", i, sep = ""), header = FALSE, sep = " ", stringsAsFactors = F)
     indISM.matrix <- data.matrix(indISM.matrix)
-    png(paste(indISM.Path, i, ".png", sep = ""), width = 480, height = 480)
+    jpeg(paste(indISM.Path, i, ".jpeg", sep = ""), width = 480, height = 480)
     grid.raster(as.raster(indISM.matrix), interpolate = FALSE)
     dev.off()
   }
@@ -597,7 +597,7 @@ PartSimGroupVis <- function(path, np, k) {
     # write all the images/icons of one cluster into the html file
     # MyHTMLInsertGraph is necessary as there is no parameter to switch off the line break
     for (i in part.names) {
-      MyHTMLInsertGraph(paste(icon.path, "participant", i, ".mtrx", ".png", sep = ""), file = HTML.output, caption = i)
+      MyHTMLInsertGraph(paste(icon.path, "participant", i, ".mtrx", ".jpeg", sep = ""), file = HTML.output, caption = i)
     }
   }
   
@@ -633,7 +633,7 @@ Dif2Osm <- function(path1,path2) {
   dm.diff <- dm1 - dm2
   dimnames(dm.diff) <- list(d1[, 1], d1[, 1])
   # Output results
-  tiff(filename = paste(path1, "heatDif.tiff", sep = ""), width = 2000, height = 2000, units = "px",
+  jpeg(filename = paste(path1, "heatDif.jpeg", sep = ""), width = 2000, height = 2000, units = "px",
        pointsize = 5, compression = "none", bg = "white", res = 600)
   heatmap.2(as.matrix(dm.diff), Rowv = F, Colv = "Rowv", dendrogram = "none", 
             margin = c(3, 3), cexRow = 0.6, cexCol = 0.6, revC = F, trace = "none", key = TRUE)
