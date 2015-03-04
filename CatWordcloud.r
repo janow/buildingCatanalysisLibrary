@@ -54,5 +54,3 @@ CatWordcloud <- function(dir.path) {
 dir.path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/wordcloud"
 
 CatWordcloud(dir.path)
-
-
