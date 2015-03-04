@@ -49,6 +49,7 @@ CatWordcloud <- function(dir.path) {
 
 }
 
+
 # Has to be the directory of where the .txt file is, not the .txt file itself.
 # Also, no other files can be in the directory where the .txt file is.
 dir.path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/wordcloud"
