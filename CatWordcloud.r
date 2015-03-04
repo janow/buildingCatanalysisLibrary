@@ -15,7 +15,6 @@ CatWordcloud <- function(dir.path) {
 	}
 
 	word.data <- Corpus(DirSource(dir.path))
-
 	# inspect(word.data)
 
 	# cleaning the txt file (could also use removeNumbers and removePunctuation)
