@@ -1,4 +1,4 @@
-## Kevin Sparks 2/24/15
+## Kevin Sparks 3/4/15
 # Make sure to run "function_list_pre.R" and "function_list_1.R" before attempting to run the executables at the
 # bottom of this file. In particular, some functions below rely on the "clusteval" package 
 # that is not available in R version 3.0.0. Also, some executables rely on outputs from executeables from 

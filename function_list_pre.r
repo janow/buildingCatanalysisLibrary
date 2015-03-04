@@ -1,4 +1,4 @@
-## Kevin Sparks 2/24/15
+## Kevin Sparks 3/4/15
 ## Functions taken from "catanalysis.R" and "catAnalysisExtension.R" from "jinlong25_catanalysis" repo (cross-referenced with "catanalysis2501" (geo terms))
 
 ## Notes
