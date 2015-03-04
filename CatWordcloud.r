@@ -7,7 +7,6 @@ require(SnowballC)
 #install.packages("RColorBrewer")
 require(RColorBrewer)
 
-
 CatWordcloud <- function(dir.path) {
 
 	# Checks if "/" exists after path. If not, one is added
