@@ -3,6 +3,11 @@
 # bottom of this file. 
 
 
+# OSM file should now be created from function_list_pre's OsmIsmGenerator function.
+# define path to OSM file below, as it is used as a parameter for functions below
+# rather than it being a dependency
+osm.path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/osm.csv"
+
 
 
 
@@ -217,10 +222,10 @@ DescriptionGetter <- function(path) {
 # No dendrograms are generated and the icons are in alphabetical order
 # Jinlong: It is intended to be a raw heat map without dendrograms. 
 # The cluster heatmap function is right below this function
-OsmViz <- function(path) {
+OsmViz <- function(path, osm.path) {
 	
 	# Read in the osm.csv file and format the row/column names
-	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+	d <- read.csv(osm.path, header = F)
 	dm <- as.matrix(d[, -1])
 	dimnames(dm) <- list(d[, 1], d[, 1])
 	
@@ -247,10 +252,10 @@ OsmViz <- function(path) {
 
 
 # ClusterHeatmap: generates a cluster heatmap based on the OSM
-ClusterHeatmap <- function(path) {
+ClusterHeatmap <- function(path, osm.path) {
 	
 	# Read in the osm.csv file and format the row/column names
-	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+	d <- read.csv(osm.path, header = F)
 	dm <- as.matrix(d[, -1])
 	dimnames(dm) <- list(d[, 1], d[, 1])
 	
@@ -282,8 +287,8 @@ ClusterHeatmap <- function(path) {
 
 
 # General cluster analysis
-GeneralClusterAnalysis  <- function(path) {
-	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+GeneralClusterAnalysis  <- function(path, osm.path) {
+	d <- read.csv(osm.path, header = F)
 	dm <- as.matrix(d[, -1])
 	dimnames(dm) <- list(d[, 1], d[, 1])
 	# Old code: dm = as.matrix(d)
@@ -352,8 +357,8 @@ GeneralClusterAnalysis  <- function(path) {
 
 
 # Detailed cluster analysis
-DetailedClusterAnalysis <- function(path, k, title = "") {
-	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+DetailedClusterAnalysis <- function(path, osm.path, k, title = "") {
+	d <- read.csv(osm.path, header = F)
 	dm <- as.matrix(d[, -1])
 	dimnames(dm) <- list(d[, 1], d[, 1])
 	# Old code: dm = as.matrix(d)
@@ -494,6 +499,7 @@ ClusterValidation <- function(path, k, title="") {
 
 # Overview
 # set the scenario here and file name
+# requires "np" variable being defined (number of participants output from ParticipantCounter)
 OverviewGetter <- function(path) {
 	output <- paste(scenario.name, "_overview.pdf", sep = "")
 	data <- read.csv(paste(path,"participant.csv", sep = ""), header=F, stringsAsFactors = F)
@@ -701,8 +707,8 @@ PrototypeFreq <- function(path) {
 
 
 # multi-dimensional scaling
-MdsScaling <- function(path) {
-	d <-  read.csv(paste(path, "osm.csv", sep = ""), header = F)
+MdsScaling <- function(path, osm.path) {
+	d <-  read.csv(osm.path, header = F)
 	dm <- as.matrix(d[, -1])
 	dimnames(dm) <- list(d[, 1], d[, 1])
 	dm.dist <- dist(dm, method = "euclidean")
@@ -739,11 +745,11 @@ ParticipantInfo(path)
 
 prototypes <- PrototypeFreq(path)
 
-OsmViz(path)
+OsmViz(path, osm.path)
 
-ClusterHeatmap(path)
+ClusterHeatmap(path, osm.path)
 
-GeneralClusterAnalysis(path)
+GeneralClusterAnalysis(path, osm.path)
 
 OverviewGetter(path)
 
@@ -751,6 +757,6 @@ DescriptionGetter(path)
 
 ParticipantSimilarity(path) # sluggish 
 
-mds <- MdsScaling(path) # no text labels on plot. Just points.
+mds <- MdsScaling(path, osm.path) # no text labels on plot. Just points.
 
 ClusterValidation(path, 3, "geo terms")

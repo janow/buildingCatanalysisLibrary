@@ -20,8 +20,8 @@
 
 # Creates a sample of participants of size sample_size and computes the hclust objects and cophenetic matrices for this sample.
 # The return value is a 6 element list (hclust_ave,coph.ave,hclust_comp,coph.comp,hclust_ward,coph.ward)
-SamplingRun <- function(path, ism.list, sample_size) {
-	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+SamplingRun <- function(path, osm.path, ism.list, sample_size) {
+	d <- read.csv(osm.path, header = F)
 	
 	# Construct the zip folder path and list all zip files
 	ism.path <- paste(path, "ism/", sep = "")
@@ -75,9 +75,9 @@ SamplingRun <- function(path, ism.list, sample_size) {
 # Perform a complete sampling experiment in which an average cophenetic matrix for samples of participants is compared
 # to that of the entire set of participnats. The number of trials is given by paramter 'trials' and a sample size 
 # of 'sample_size' 
-CopheneticSampling <- function(path, ism.list,trials, sample_size) {
+CopheneticSampling <- function(path, osm.path, ism.list,trials, sample_size) {
 	# read overall osm
-	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+	d <- read.csv(osm.path, header = F)
 	dm <- as.matrix(d[, -1])
 	dimnames(dm) <- list(d[, 1], d[, 1])
 	
@@ -390,9 +390,9 @@ ParticipantSimilarityVisualizations <- function(path) {
 # Parameters: path of experiment and k (maximum number of clusters)
 # There could be an issue as cluster membership is a number that may not be the same
 # across cluster method!!!
-NumClusVal <- function(path, k) {
+NumClusVal <- function(path, osm.path, k) {
 	# read in matrix and column/row names
-	d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+	d <- read.csv(osm.path, header = F)
 	dm <- as.matrix(d[, -1])
 	dimnames(dm) <- list(d[, 1], d[, 1])
 	
@@ -433,8 +433,8 @@ NumClusVal <- function(path, k) {
 # Author: Alexander Klippel
 # input variable: path
 # OSM needs to be present
-StanDen <- function(path) {
-  d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+StanDen <- function(path, osm.path) {
+  d <- read.csv(osm.path, header = F)
   dm <- as.matrix(d[, -1])
   dimnames(dm) <- list(d[, 1], d[, 1])
   clu.meth <- c("ave", "comp", "ward.D")
@@ -620,20 +620,20 @@ PartSimGroupVis <- function(path, np, k) {
 # Comparing results from 2 experiments / 2 OSMs
 # Here: Substracting two OSMs from one another and visualizing the difference
 # Author: Alexander Klippel
-Dif2Osm <- function(path1,path2) {
+Dif2Osm <- function(osm1.path, osm2.path) {
   # load first OSM
-  d1 <- read.csv(paste(path1, "osm.csv", sep = ""), header = F)
+  d1 <- read.csv(osm1.path, header = F)
   dm1 <- as.matrix(d1[, -1])
   
   # load second OSM
-  d2 <- read.csv(paste(path2, "osm.csv", sep = ""), header = F)
+  d2 <- read.csv(osm2.path, header = F)
   dm2 <- as.matrix(d2[, -1])
   
   # substract the two OSMs
   dm.diff <- dm1 - dm2
   dimnames(dm.diff) <- list(d1[, 1], d1[, 1])
   # Output results
-  jpeg(filename = paste(path1, "heatDif.jpeg", sep = ""), width = 2000, height = 2000, units = "px",
+  jpeg(filename = paste(substr(osm1.path, 1, nchar(osm1.path)-7), "heatDif.jpeg", sep = ""), width = 2000, height = 2000, units = "px",
        pointsize = 5, compression = "none", bg = "white", res = 600)
   heatmap.2(as.matrix(dm.diff), Rowv = F, Colv = "Rowv", dendrogram = "none", 
             margin = c(3, 3), cexRow = 0.6, cexCol = 0.6, revC = F, trace = "none", key = TRUE)
