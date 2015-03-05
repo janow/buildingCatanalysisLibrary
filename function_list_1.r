@@ -3,10 +3,7 @@
 # bottom of this file. 
 
 
-# OSM file should now be created from function_list_pre's OsmIsmGenerator function.
-# define path to OSM file below, as it is used as a parameter for functions below
-# rather than it being a dependency
-osm.path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/osm.csv"
+
 
 
 
@@ -740,6 +737,11 @@ MdsScaling <- function(path, osm.path) {
 #####################################################################################################
 #####################################################################################################
 #####################################################################################################
+
+# OSM file should now be created from function_list_pre's OsmIsmGenerator function.
+# define path to OSM file below, as it is used as a parameter for functions below
+# rather than it being a dependency
+osm.path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/osm.csv"
 
 ParticipantInfo(path)
 
