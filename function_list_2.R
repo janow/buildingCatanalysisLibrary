@@ -75,7 +75,7 @@ SamplingRun <- function(path, osm.path, ism.list, sample_size) {
 # Perform a complete sampling experiment in which an average cophenetic matrix for samples of participants is compared
 # to that of the entire set of participnats. The number of trials is given by paramter 'trials' and a sample size 
 # of 'sample_size' 
-CopheneticSampling <- function(path, osm.path, ism.list,trials, sample_size) {
+CopheneticSampling <- function(path, osm.path, ism.list, trials, sample_size) {
 	# read overall osm
 	d <- read.csv(osm.path, header = F)
 	dm <- as.matrix(d[, -1])
@@ -92,7 +92,7 @@ CopheneticSampling <- function(path, osm.path, ism.list,trials, sample_size) {
 	
 	# sample and sum up the cophenetic matrices for different clustering methods
 	for (i in 1:trials) {
-		result <- SamplingRun(path, ism.list, sample_size)
+		result <- SamplingRun(path, osm.path, ism.list, sample_size)
 		coph.ave.total <- coph.ave.total + result[[2]]
 		coph.comp.total <- coph.comp.total + result[[4]]
 		coph.ward.total <- coph.ward.total + result[[6]]
@@ -656,11 +656,61 @@ Dif2Osm <- function(osm1.path, osm2.path) {
 
 
 
+# Detailed cluster analysis
+DetailedClusterAnalysis <- function(path, osm.path, k, title = "") {
+	d <- read.csv(osm.path, header = F)
+	dm <- as.matrix(d[, -1])
+	dimnames(dm) <- list(d[, 1], d[, 1])
+	# Old code: dm = as.matrix(d)
+	# Jinlong: I'm pretty sure the code above won't work for this function
+	
+	# Participants minus osm generates dissimilarity
+	ave <- hclust(method = "average", as.dist(ParticipantCounter(path) - dm))
+	comp <- hclust(method = "complete", as.dist(ParticipantCounter(path) - dm))
+	ward <- hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
+	
+	# load code of A2R function
+	# Explain what this function is doing!
+	source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
+	
+	# Create a color scheme from rainbow color scheme
+	pre.colors <- rainbow(k)
+	colors <- pre.colors[1: k]
+	
+	pdf(file = paste(path, "dendrograms_", k, "_cluster.pdf", sep=""),
+			width = 6, height = 2.5, 
+			bg = "white", pointsize = 0.5)
+	
+	A2Rplot(ave, k = k, boxes = F, col.up = "gray50", col.down = colors, 
+			main = paste(title, " Average Linkage ", k, " clusters", sep = ""))
+	A2Rplot(comp, k = k, boxes = F, col.up = "gray50", col.down = colors, 
+			main = paste(title, " Complete Linkage ", k, " clusters", sep = ""))
+	A2Rplot(ward, k = k, boxes = F, col.up = "gray50", col.down = colors, 
+			main = paste(title, " Ward's Method ", k, " clusters", sep = ""))
+	
+	dev.off()
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Function list Pt. 2 - Executables
 #####################################################################################################
 #####################################################################################################
 #####################################################################################################
 
+osm.path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/osm.csv"
 
 # generate output file for icon viewer containing mds results and prototype frequencies
 mdsc <- cbind(mds, prototypes[3])
@@ -669,20 +719,21 @@ write.table(mdsc, file = paste(path, "mds.txt", sep = ""), sep = " ", quote = FA
 
 ###Change the number here to create colored-dendrograms at different solutions
 for(i in 2: max.cluster) {
-	DetailedClusterAnalysis(path, i, scenario.name)
+	DetailedClusterAnalysis(path, osm.path, i, scenario.name)
 }
 
-StanDen(path) 
+StanDen(path, osm.path) 
 
 VisIndIsm(path) 
 
-CopheneticSampling(path, list.files(paste(path, "ism/", sep = "")), 100, 20)
+CopheneticSampling(path, osm.path, list.files(paste(path, "ism/", sep = "")), 100, 20)
 
 # Error in sample.int(x, size, replace, prob) : 
   # cannot take a sample larger than the population when 'replace = FALSE'
 IndexSampling(path, list.files(paste(path, "ism/", sep = "")), "CMSI-2500", 100, 5, 100, 2, 10) # sluggish
 
 # Can someone email me these files? Or dropbox me these files?
+## NOTE THESE SHOULD NO LONGER BE PATHS TO DIRECTORIES, BUT PATHS TO EACH OSM FILE
 path1 <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/1209 mturk directions 3D mugs final 225deg/"
 path2 <- path <- "E:/My Documents/Dropbox/qstr_collaboration/Catscan experiments/Experiments/1208 mturk directions 3D mugs final 0deg/"
 Dif2Osm(path1, path2)

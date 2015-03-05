@@ -353,55 +353,6 @@ GeneralClusterAnalysis  <- function(path, osm.path) {
 
 
 
-# Detailed cluster analysis
-DetailedClusterAnalysis <- function(path, osm.path, k, title = "") {
-	d <- read.csv(osm.path, header = F)
-	dm <- as.matrix(d[, -1])
-	dimnames(dm) <- list(d[, 1], d[, 1])
-	# Old code: dm = as.matrix(d)
-	# Jinlong: I'm pretty sure the code above won't work for this function
-	
-	# Participants minus osm generates dissimilarity
-	ave <- hclust(method = "average", as.dist(ParticipantCounter(path) - dm))
-	comp <- hclust(method = "complete", as.dist(ParticipantCounter(path) - dm))
-	ward <- hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
-	
-	# load code of A2R function
-	# Explain what this function is doing!
-	source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
-	
-	# Create a color scheme from rainbow color scheme
-	pre.colors <- rainbow(k)
-	colors <- pre.colors[1: k]
-	
-	pdf(file = paste(path, "dendrograms_", k, "_cluster.pdf", sep=""),
-			width = 6, height = 2.5, 
-			bg = "white", pointsize = 0.5)
-	
-	A2Rplot(ave, k = k, boxes = F, col.up = "gray50", col.down = colors, 
-			main = paste(title, " Average Linkage ", k, " clusters", sep = ""))
-	A2Rplot(comp, k = k, boxes = F, col.up = "gray50", col.down = colors, 
-			main = paste(title, " Complete Linkage ", k, " clusters", sep = ""))
-	A2Rplot(ward, k = k, boxes = F, col.up = "gray50", col.down = colors, 
-			main = paste(title, " Ward's Method ", k, " clusters", sep = ""))
-	
-	dev.off()
-	
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Cluster validation
