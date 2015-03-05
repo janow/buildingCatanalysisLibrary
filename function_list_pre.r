@@ -358,7 +358,7 @@ n.icons <- IconCounter(path)
 
 all.icons <- sort(IconListGetter(path))
 
-np <- ParticipantCounter(path)
+# ParticipantCounter(path)
 
 OsmIsmGenerator(path)
 

@@ -447,10 +447,9 @@ ClusterValidation <- function(path, k, title="") {
 
 # Overview
 # set the scenario here and file name
-# requires "np" variable being defined (number of participants output from ParticipantCounter)
 OverviewGetter <- function(path) {
 	output <- paste(scenario.name, "_overview.pdf", sep = "")
-	data <- read.csv(paste(path,"participant.csv", sep = ""), header=F, stringsAsFactors = F)
+	data <- read.csv(paste(path, "participant.csv", sep = ""), header=F, stringsAsFactors = F)
 	
 	male <- 0
 	female <- 0
@@ -472,7 +471,7 @@ OverviewGetter <- function(path) {
 	layout(matrix(c(1,1,2,2,3,3,4,5), 4, 2, byrow = TRUE))
 	
 	plot.new()
-	title(paste("Total participants: ", np, ";", sep = ""), line = -18, cex = 20)
+	title(paste("Total participants: ", ParticipantCounter(path), ";", sep = ""), line = -18, cex = 20)
 	title(paste("Male: ", male, ", Female: ", female, sep = ""), line = -20, cex = 20)
 	title(paste("Average age: ", aveage, " (max: ", max, ", min: ", min, ")", sep = ""), line = -22, cex = 20)
 	boxplot(data[, 14],
