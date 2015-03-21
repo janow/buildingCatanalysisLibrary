@@ -14,62 +14,122 @@ require(RColorBrewer)
 
 
 
+## Takes the zip folders, creates a temporary unzipped folder, unzips all 
+## the folders and stores them in the temporary unzipped folder, and then 
+## begins to extract relevant information from each participant's "batch.csv"
+## file, builds a master txt file and stores all participant's info from "batch.csv"
+## in the txt, exports it to a new "wordcloud" directory created, and then 
+## the temporary unzipped folder is deleted. 
+CatWordcloudTextCreator <- function(dir.path) {
+
+  if(substr(dir.path, nchar(dir.path), nchar(dir.path)) != "/") {
+    dir.path <- paste(dir.path, "/", sep = "")
+  }
+
+  ##Read in files
+  files <- list.files(paste(dir.path, "zip/", sep=""))
+  zip.path <- paste(dir.path, "zip/", sep="")
+  unzip.path <- paste(dir.path, "unzipped/", sep="")
+  dir.create(unzip.path)
+
+  text <- c()
+
+  #Sets the working directory to the unzipped folder 
+  setwd(unzip.path)
+
+  ##Begins for loop to loop through participants' zip folders
+  for(p in files){
+
+    ##Unzippes participant folder
+    participant <- unzip(paste(zip.path, p, sep=""))
+
+    ##Gathers linguistic responses from participants 
+    # batch <- unzip(paste(zip.path, p, sep=""))
+    check <- participant[6]
+    if(substr(check, nchar(check) - 13, nchar(check)) != "batch.csv"){
+      check <- participant[5]
+    }
+    
+    ##Reads in linguistic response data
+    batch_file <- read.delim(check, header=FALSE, sep=",",stringsAsFactors=F)
+    linguistic_info <- batch_file[,3:4]
+
+    text <- c(text, linguistic_info$V3, linguistic_info$V4)
+
+  }
+
+  # remove word selected
+  text <- removeWords(text, "selected")
+
+  dir.create(paste(dir.path, "wordcloud/", sep=""))
+
+  write.table(text, paste(dir.path, "wordcloud/", "wordcloudtext.txt", sep=""))
+
+  unlink(unzip.path, recursive=TRUE)
+
+}
+
+## Run CatWordcloudTextCreator
+dir.path <- "/Users/sparks/Google Drive/Alex/R_PackageCreation/catLibTests/"
+CatWordcloudTextCreator(dir.path)
 
 
 
+## Takes the master txt file created from CatWordcloudTextCreator and creates
+## a wordcloud that gets stored in the "wordcloud" directory as a jpeg. Text
+## cleanup takes place to remove stop words punctuation, and other undesireble words.
+CatWordcloud <- function(wordcloud.path) {
 
+  # Checks if "/" exists after path. If not, one is added
+  if(substr(wordcloud.path, nchar(wordcloud.path), nchar(wordcloud.path)) != "/") {
+    wordcloud.path <- paste(wordcloud.path, "/", sep = "")
+  }
 
-CatWordcloud <- function(dir.path) {
+  word.data <- Corpus(DirSource(wordcloud.path))
+  #inspect(word.data)
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(dir.path, nchar(dir.path), nchar(dir.path)) != "/") {
-		dir.path <- paste(dir.path, "/", sep = "")
-	}
+  # cleaning the txt file (could also use removeNumbers and removePunctuation)
 
-	word.data <- Corpus(DirSource(dir.path))
-	# inspect(word.data)
+  # strip unnecessary whitespace
+  word.data <- tm_map(word.data, stripWhitespace)
+  #inspect(word.data)
 
-	# cleaning the txt file (could also use removeNumbers and removePunctuation)
+  #convert to lowercase
+  word.data <- tm_map(word.data, tolower)
+  # inspect(word.data)
 
-	# strip unnecessary whitespace
-	word.data <- tm_map(word.data, stripWhitespace)
-	# inspect(word.data)
+  # removes common undesired words like "the" (stopwords)
+  word.data <- tm_map(word.data, removeWords, stopwords("english"))
+  # inspect(word.data)
 
-	#convert to lowercase
-	word.data <- tm_map(word.data, tolower)
-	# inspect(word.data)
+  # remove numbers
+  word.data <- tm_map(word.data, removeNumbers)
 
-	# removes common undesired words like "the" (stopwords)
-	word.data <- tm_map(word.data, removeWords, stopwords("english"))
-	# inspect(word.data)
+  # remove punctuation
+  word.data <- tm_map(word.data, removePunctuation)
 
-	# resolves formatting issues
+  # resolves formatting issues
 
-	word.data <- tm_map(word.data, stemDocument)
-	# inspect(word.data)
+  word.data <- tm_map(word.data, stemDocument)
+  # inspect(word.data)
 
-	word.data <- tm_map(word.data, PlainTextDocument)
-	# inspect(word.data)
+  word.data <- tm_map(word.data, PlainTextDocument)
+  # inspect(word.data)
 
-	# Create jpeg of wordcould output 
-	jpeg(paste(dir.path, "/wordcloud.jpeg", sep=""), width = 480, height = 480, units = "px", pointsize = 12)
-	wordcloud(word.data, scale=c(5,0.5), min.freq=3, max.words=100, 
-	          random.order=FALSE, rot.per=0.35, use.r.layout=FALSE, 
-	          colors=brewer.pal(8, "Dark2"))
-	dev.off()
+  # Create jpeg of wordcould output 
+  jpeg(paste(wordcloud.path, "/wordcloud.jpeg", sep=""), width = 480, height = 480, units = "px", pointsize = 12)
+  wordcloud(word.data, scale=c(5,0.5), min.freq=3, max.words=100, 
+            random.order=FALSE, rot.per=0.35, use.r.layout=FALSE, 
+            colors=brewer.pal(5, "Dark2"))
+  dev.off()
 
 }
 
 
 # Has to be the directory of where the .txt file is, not the .txt file itself.
 # Also, no other files can be in the directory where the .txt file is.
-dir.path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/wordcloud"
-
-CatWordcloud(dir.path)
-
-
-
-
+wordcloud.path <- "/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/wordcloud"
+CatWordcloud(wordcloud.path)
 
 
 
