@@ -217,8 +217,7 @@ DescriptionGetter <- function(path) {
 
 # OsmViz: generates a heatmap based on the OSM.
 # No dendrograms are generated and the icons are in alphabetical order
-# Jinlong: It is intended to be a raw heat map without dendrograms. 
-# The cluster heatmap function is right below this function
+# It is intended to be a raw heat map without dendrograms
 OsmViz <- function(path, osm.path) {
 	
 	# Read in the osm.csv file and format the row/column names
