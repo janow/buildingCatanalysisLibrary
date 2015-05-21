@@ -41,7 +41,7 @@ rm(list=ls())
 
 # Begin user input #
 # Path to where the experiment folder is
-path <- "/Users/sparks/Google Drive/Alex/R_PackageCreation/catLibTests"
+path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests"
 
 # Checks if "/" exists after path. If not, one is added
 if(substr(path, nchar(path), nchar(path)) != "/") {
@@ -69,6 +69,10 @@ scenario.name <- "2501 geotermsN"
 
 
 CatDirectorySetup <- function(path) {
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
 	# Auto-create two subfolders "ism" and "matrices"
 	dir.create(paste(path, "ism/", sep=""))
 	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
@@ -82,8 +86,38 @@ CatDirectorySetup(path)
 
 
 
+# Participant counter: count the number of participants
+ParticipantCounter <- function(path) {
+
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
+	
+	#Construct the zip folder path and list all zip files
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
+	
+	#Get the total number of participants (zip files)
+	np <- length(files)
+	
+	#Return the total number of participants as an integer
+	return(np)
+}
+
+number.of.participants <- ParticipantCounter(path)
+
+
+
+
 #Icon counter: count the number of icons(items) used in the experiment
 IconCounter <- function(path) {
+
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
+
 	#Construct the zip folder path and list all the zip files
 	zip.path <- paste(path, "zip/", sep = "")
 	files <- list.files(zip.path)
@@ -115,6 +149,11 @@ number.of.icons <- IconCounter(path)
 # Icon list getter: get a list of icon names
 # It also saves the icon.csv needed for KlipArt
 IconListGetter <- function(path) {
+
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
 	
 	# Construct the zip folder path and list all the zip files 
 	zip.path <- paste(path, "zip/", sep = "")
@@ -160,7 +199,7 @@ IconListGetter <- function(path) {
 	return(sort(icon.list))
 }
 
-icon.names <- IconListGetter(path)
+icon.list <- IconListGetter(path)
 
 
 
@@ -168,6 +207,12 @@ icon.names <- IconListGetter(path)
 # OSM and ISM Generator: extract all individual similarity matrices (ISMs) 
 # and generate the overall similarity matrix(OSM) by summing up all ISMs
 OsmIsmGenerator <- function(path) {
+
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
+
 	# Construct the zip folder path and list all zip files
 	zip.path <- paste(path, "zip/", sep = "")
 	files <- list.files(zip.path)
@@ -250,7 +295,13 @@ OsmIsmGenerator(path)
 
 
 # AssignmentGetter: generate the assignment.csv for KlipArt
-AssignmentGetter <- function(path) {
+AssignmentGenerator <- function(path) {
+
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
+
 	# Create an empty dataframe
 	df <- data.frame()
 	
@@ -277,15 +328,20 @@ AssignmentGetter <- function(path) {
 			sep = ",", row.names = F,  col.names = F)
 }
 
-AssignmentGetter(path)
+AssignmentGenerator(path)
 
 
 
 
 # Participant info: collect demographic info and basic experiment info (# of groups created
 # and time spent in seconds)
-ParticipantInfo <- function(path) {
+ParticipantInfoGenerator <- function(path) {
 	
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
+
 	# Read in the zip file
 	zip.path <- paste(path, "zip/", sep = "")
 	files <- list.files(zip.path)
@@ -393,13 +449,18 @@ ParticipantInfo <- function(path) {
 	write.table(demographic, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
 }
 
-ParticipantInfo(path)
+ParticipantInfoGenerator(path)
 
 
 
 
-# DescriptionGetter: extract the linguistic labels (both long and short) from all participants and store in a single csv file
-DescriptionGetter <- function(path) {
+# DescriptionGenerator: extract the linguistic labels (both long and short) from all participants and store in a single csv file
+DescriptionGenerator <- function(path) {
+
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
 	
 	# Construct the path for the zip folder and list all the zip files
 	zip.path <- paste(path, "zip/", sep = "")
@@ -456,35 +517,49 @@ DescriptionGetter <- function(path) {
 	write.table(description, file=paste(paste(path, scenario.name, "-klipart/", sep = ""), "batch.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
 }
 
-DescriptionGetter(path)
+DescriptionGenerator(path)
 
 
 
 
-# Participant counter: count the number of participants
-ParticipantCounter <- function(path) {
+# Visualize the frequency that each icon is being selected as group prototype
+PrototypeFreq <- function(path, icon.list) {
+
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
 	
-	#Construct the zip folder path and list all zip files
+	# Construct the path for the zip folder and list all the zip files
 	zip.path <- paste(path, "zip/", sep = "")
 	files <- list.files(zip.path)
 	
-	#Get the total number of participants (zip files)
-	np <- length(files)
+	# Create a dataframe to store the prototype frequency
+	freq <- data.frame(icon = icon.list, 
+			icon_index = 0:(length(icon.list)-1), 
+			count = rep(0, length(icon.list))
+	)
 	
-	#Return the total number of participants as an integer
-	return(np)
+	for(p in files) {
+		participant <- unzip(paste(zip.path, p, sep =""))
+		participant.number <- substring(p, 1, nchar(p) - 4)
+		prototype_file <- paste("./", participant.number, "/", substring(p, 1, 8), "gprototypes.csv", sep = "")
+		prototype <- read.csv(prototype_file, header = F, stringsAsFactors = F)
+		prev <- -1 # workaround to deal with old prototype files
+		for(j in 1:nrow(prototype)) {
+			if(ncol(prototype) < 4 || (!is.na(prototype[j, 2]) && !is.na(prototype[j, 3]) && !is.na(as.numeric(as.numeric(prototype[j, 3]))) && prototype[j, 2] != prev)) {
+				prev <- as.numeric(prototype[j, 2])
+				freq[as.numeric(prototype[j, 3]) + 1, 3] <- freq[as.numeric(prototype[j, 3]) + 1, 3] + 1
+			}
+		}
+	}
+	
+	# Export batch.csv for Klipart
+	write.table(freq, file = "prototype.csv", sep = ",", col.names = F, row.names = F)
+	return(freq)
 }
 
-number.of.participants <- ParticipantCounter(path)
-
-
-
-
-
-
-
-
-
+PrototypeFreq(path, icon.list)
 
 
  
