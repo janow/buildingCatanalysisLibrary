@@ -1,294 +1,317 @@
-# # OsmViz: generates a heatmap based on the OSM.
-# # No dendrograms are generated and the icons are in alphabetical order
-# # It is intended to be a raw heat map without dendrograms
-# OsmViz <- function(path, osm.path) {
-	
-# 	# Read in the osm.csv file and format the row/column names
-# 	d <- read.csv(osm.path, header = F)
-# 	dm <- as.matrix(d[, -1])
-# 	dimnames(dm) <- list(d[, 1], d[, 1])
-	
-# 	# Drawing the heatmap and export as a jpeg file
-# 	jpeg(filename = paste(path, "heat_map.jpeg", sep = ""),width = 2000, height = 2000, units = "px",
-# 			pointsize = 5, bg = "white", res = 700)
-# 	heatmap.2(as.matrix(ParticipantCounter(path) - dm), Rowv = F, Colv = "Rowv", dendrogram = "none", 
-# 			margin = c(4, 4), cexRow = 0.35, cexCol = 0.35, revC = F, trace = "none", key = F)
-# 	dev.off()
-# }
-# OsmViz: generates a heatmap based on the OSM.
-# No dendrograms are generated and the icons are in alphabetical order
-# It is intended to be a raw heat map without dendrograms
-OsmViz <- function(osm.path, number.of.participants) {
-	
-	# Read in the osm.csv file and format the row/column names
-	d <- read.csv(osm.path, header = F)
-	dm <- as.matrix(d[, -1])
-	dimnames(dm) <- list(d[, 1], d[, 1])
-	
-	# Drawing the heatmap and export as a jpeg file
-	jpeg(filename = "heat_map.jpeg", width = 2000, height = 2000, units = "px",
-			pointsize = 5, bg = "white", res = 700)
-	heatmap.2(as.matrix(number.of.participants - dm), Rowv = F, Colv = "Rowv", dendrogram = "none", 
-			margin = c(4, 4), cexRow = 0.35, cexCol = 0.35, revC = F, trace = "none", key = F)
-	dev.off()
-}
-
-OsmViz(paste(path, "osm.csv", sep=""), number.of.participants)
-
-
-
-
-# # ClusterHeatmap: generates a cluster heatmap based on the OSM
-# ClusterHeatmap <- function(path, osm.path) {
-	
-# 	# Read in the osm.csv file and format the row/column names
-# 	d <- read.csv(osm.path, header = F)
-# 	dm <- as.matrix(d[, -1])
-# 	dimnames(dm) <- list(d[, 1], d[, 1])
-	
-# 	# Generate the dendrogram using wards method
-# 	cluster <- hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
-# 	dend <- as.dendrogram(cluster)
-	
-# 	# Drawing the cluster heatmap and export as a jpeg file
-# 	jpeg(filename = paste(path, "cluster_heatmap.jpeg", sep = ""), width = 2000, height = 2000, units = "px",
-# 			pointsize = 5, bg = "white", res = 700)
-# 	heatmap.2(as.matrix(ParticipantCounter(path) - dm), Rowv = dend, Colv = dend, 
-# 			margin = c(4, 4), cexRow = 0.35, cexCol = 0.35, dendrogram = "both", 
-# 			revC = T, trace = "none", key = T)
-# 	dev.off()
-# }
-# ClusterHeatmap: generates a cluster heatmap based on the OSM
-ClusterHeatmap <- function(osm.path, number.of.participants) {
-	
-	# Read in the osm.csv file and format the row/column names
-	d <- read.csv(osm.path, header = F)
-	dm <- as.matrix(d[, -1])
-	dimnames(dm) <- list(d[, 1], d[, 1])
-	
-	# Generate the dendrogram using wards method
-	cluster <- hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
-	dend <- as.dendrogram(cluster)
-	
-	# Drawing the cluster heatmap and export as a jpeg file
-	jpeg(filename = "cluster_heatmap.jpeg", width = 2000, height = 2000, units = "px",
-			pointsize = 5, bg = "white", res = 700)
-	heatmap.2(as.matrix(number.of.participants - dm), Rowv = dend, Colv = dend, 
-			margin = c(4, 4), cexRow = 0.35, cexCol = 0.35, dendrogram = "both", 
-			revC = T, trace = "none", key = T)
-	dev.off()
-}
-
-ClusterHeatmap(paste(path, "osm.csv", sep=""), number.of.participants)
-
-
-
-
-# # General cluster analysis
-# GeneralClusterAnalysis  <- function(path, osm.path) {
-# 	d <- read.csv(osm.path, header = F)
-# 	dm <- as.matrix(d[, -1])
-# 	dimnames(dm) <- list(d[, 1], d[, 1])
-# 	# Old code: dm = as.matrix(d)
-# 	# Jinlong: I'm pretty sure the code above won't work for this function
-	
-# 	# Participants minus osm generates dissimilarity
-# 	ave <- hclust(method = "average", as.dist(ParticipantCounter(path) - dm))
-# 	comp <- hclust(method = "complete", as.dist(ParticipantCounter(path) - dm))
-# 	ward <- hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
-	
-# 	# compute and save cophenectic matrices
-	
-# 	coph.ave <- as.matrix(cophenetic(ave)) 
-# 	coph.comp <- as.matrix(cophenetic(comp)) 
-# 	coph.ward <- as.matrix(cophenetic(ward)) 
-	
-# 	write.table(coph.ave, file = paste(path, "coph_matrix_ave.mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
-# 	write.table(coph.comp, file = paste(path, "coph_matrix_comp.mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
-# 	write.table(coph.ward, file = paste(path, "coph_matrix_ward.mtrx", sep = ""), sep = " ", row.names = F, col.names = F)
-	
-# 	# Export the dendrograms as a jpeg files
-# 	dend.ave <- as.dendrogram(ave)
-# 	dend.comp <- as.dendrogram(comp)
-# 	dend.ward <- as.dendrogram(ward)
-	
-# 	# png(filename = paste(path, "dendrogram_ave.png", sep =""),
-# 	# 		width = 2000, height=2000, units="px",
-# 	# 		pointsize=5, compression = "none", bg = "white", res = 600)
-# 	jpeg(filename = paste(path, "dendrogram_ave.jpeg", sep =""),
-# 			width = 2000, height=2000, units="px",
-# 			pointsize=5, bg = "white", res = 600)
-# 	plot(dend.ave)
-# 	dev.off()
-	
-# 	# png(filename = paste(path, "dendrogram_comp.png", sep =""),
-# 	# 		width = 2000, height=2000, units="px",
-# 	# 		pointsize=5, compression = "none", bg = "white", res = 600)
-# 	jpeg(filename = paste(path, "dendrogram_comp.jpeg", sep =""),
-# 			width = 2000, height=2000, units="px",
-# 			pointsize=5, bg = "white", res = 600)
-# 	plot(dend.comp)
-# 	dev.off()
-	
-# 	# png(filename = paste(path, "dendrogram_ward.png", sep =""),
-# 	# 		width = 2000, height=2000, units="px",
-# 	# 		pointsize=5, compression = "none", bg = "white", res = 600)
-# 	jpeg(filename = paste(path, "dendrogram_ward.jpeg", sep =""),
-# 			width = 2000, height=2000, units="px",
-# 			pointsize=5, bg = "white", res = 600)
-# 	plot(dend.ward)
-# 	dev.off()
-# }
-# General cluster analysis
-GeneralClusterAnalysis  <- function(osm.path, number.of.participants) {
-	d <- read.csv(osm.path, header = F)
-	dm <- as.matrix(d[, -1])
-	dimnames(dm) <- list(d[, 1], d[, 1])
-	# Old code: dm = as.matrix(d)
-	# Jinlong: I'm pretty sure the code above won't work for this function
-	
-	# Participants minus osm generates dissimilarity
-	ave <- hclust(method = "average", as.dist(number.of.participants - dm))
-	comp <- hclust(method = "complete", as.dist(number.of.participants - dm))
-	ward <- hclust(method = "ward", as.dist(number.of.participants - dm))
-	
-	# compute and save cophenectic matrices
-	
-	coph.ave <- as.matrix(cophenetic(ave)) 
-	coph.comp <- as.matrix(cophenetic(comp)) 
-	coph.ward <- as.matrix(cophenetic(ward)) 
-	
-	write.table(coph.ave, file = "coph_matrix_ave.mtrx", sep = " ", row.names = F, col.names = F)
-	write.table(coph.comp, file = "coph_matrix_comp.mtrx", sep = " ", row.names = F, col.names = F)
-	write.table(coph.ward, file = "coph_matrix_ward.mtrx", sep = " ", row.names = F, col.names = F)
-	
-	# Export the dendrograms as a jpeg files
-	dend.ave <- as.dendrogram(ave)
-	dend.comp <- as.dendrogram(comp)
-	dend.ward <- as.dendrogram(ward)
-	
-	# png(filename = paste(path, "dendrogram_ave.png", sep =""),
-	# 		width = 2000, height=2000, units="px",
-	# 		pointsize=5, compression = "none", bg = "white", res = 600)
-	jpeg(filename = "dendrogram_ave.jpeg",
-			width = 2000, height=2000, units="px",
-			pointsize=5, bg = "white", res = 600)
-	plot(dend.ave)
-	dev.off()
-	
-	# png(filename = paste(path, "dendrogram_comp.png", sep =""),
-	# 		width = 2000, height=2000, units="px",
-	# 		pointsize=5, compression = "none", bg = "white", res = 600)
-	jpeg(filename = "dendrogram_comp.jpeg",
-			width = 2000, height=2000, units="px",
-			pointsize=5, bg = "white", res = 600)
-	plot(dend.comp)
-	dev.off()
-	
-	# png(filename = paste(path, "dendrogram_ward.png", sep =""),
-	# 		width = 2000, height=2000, units="px",
-	# 		pointsize=5, compression = "none", bg = "white", res = 600)
-	jpeg(filename = "dendrogram_ward.jpeg",
-			width = 2000, height=2000, units="px",
-			pointsize=5, bg = "white", res = 600)
-	plot(dend.ward)
-	dev.off()
-}
-
-GeneralClusterAnalysis(paste(path, "osm.csv", sep=""), number.of.participants)
-
-
-
-
-
-# Participant similarity analysis
-ParticipantSimilarity <- function(ism.path) {
+# OSM and ISM Generator: extract all individual similarity matrices (ISMs) 
+# and generate the overall similarity matrix(OSM) by summing up all ISMs
+OsmIsmGenerator <- function(path) {
 
 	# Checks if "/" exists after path. If not, one is added
-	if(substr(ism.path, nchar(ism.path), nchar(ism.path)) != "/") {
-		ism.path <- paste(ism.path, "/", sep = "")
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
 	}
 
-	# List all ISMs
-	isms <- list.files(ism.path)
-	all.isms <- list()
+	# Construct the zip folder path and list all zip files
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
 	
-	np <- length(isms)
+	# Initialize osm with the 1st ISM
+	participant1 <- unzip(paste(zip.path, files[1], sep = ""))
 	
-	# Read in all ISMs and store them in a list named all.isms
-	for (i in 1:length(isms)) {
-		aism <- read.delim(paste(ism.path, isms[i], sep = ""),
-				header = F, sep = " ", stringsAsFactors = F)
-		all.isms <- c(all.isms, list(aism))
+	# Get the participant number for the first participant
+	first.p.number <- substring(files[1], 1, nchar(files[1]) - 4)
+	
+	# Construct the full file name for ISM file (mtrx file)
+	first.ism <- paste("./", first.p.number, "/", substring(files[1],1,8), ".mtrx", sep = "")
+	
+	# Read in the ISM from the 1st participant and exclude the non-ism info from the .mtrx file
+	first.matrix <- read.delim(first.ism, header = FALSE, sep = " ", stringsAsFactors = F)
+	first.matrix <- data.matrix(first.matrix[1:IconCounter(path), ])
+	
+	# Export the first ISM
+	write.table(first.matrix, file = paste(path, "ism/", "participant", 
+                                        substr(files[1], 1, nchar(files[1]) - 4),
+                                        ".mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
+	
+	write.table(first.matrix, file = paste(path, "matrices/", "participant", 
+                                        substr(files[1], 1, nchar(files[1]) - 4),
+                                        ".mtrx",sep = ""), sep = " ", row.names = F, col.names = F)
+	
+	# Summing up all ISMs for OSM and export each ISM
+	osm <- first.matrix
+	
+	# Process the ISMs of the rest of participants
+	for(i in 2:length(files)) {
+		# Unzip the participant's zip file
+		participant.i <- unzip(paste(zip.path, files[i], sep = ""))
+		
+		# Get the participant number
+		participant.number <- substring(files[i], 1, nchar(files[i]) - 4)
+		
+		# Construct the full file name for .mtrx file
+		matrix.i.name <- paste("./", participant.number, "/", substring(files[i],1,8), ".mtrx", sep = "")
+		
+		# Read in the ISM from a participant and exclude the non-ism info from the .mtrx file
+		matrix.i <- read.delim(matrix.i.name, header = F, sep = " ", stringsAsFactors = F)
+		matrix.i <- data.matrix(matrix.i[1:IconCounter(path), ])
+		
+		# Export the ISM as .mtrx for KlipArt and .csv for catanalysis
+		write.table(matrix.i, file = paste(path, "ism/", "participant", 
+						substr(files[i], 1, nchar(files[i]) - 4),
+						".mtrx", sep = ""), sep = " ", 
+						row.names = F, col.names = F)
+		
+		write.table(matrix.i, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "matrices/", "participant", 
+						substr(files[i], 1, nchar(files[i]) - 4), 
+						".mtrx", sep = ""), sep = " ",
+						row.names = F, col.names = F)
+		
+		write.table(matrix.i, file = paste(path, "matrices/", "participant", 
+						substr(files[i], 1, nchar(files[i]) - 4), 
+						".mtrx", sep = ""), sep = " ",
+						row.names = F, col.names = F)
+		
+		# Add the ISM to OSM
+		osm <- osm + matrix.i
 	}
 	
-	# Calculate participant similarity matrices of all pairs of partcipants based on the hamming distance of their ISMs (dm) and Jaccard index (dm_jaccard)
-	dm <- matrix(0, ncol = np, nrow = np)
-	dm.jac <- matrix(0, ncol = np, nrow = np)
-	dm.rand <- matrix(0, ncol = np, nrow = np)
-	for (i in 1:np) {
-		for (j in 1:np) {
-			dm[i, j] <- sum(abs(all.isms[[i]] - all.isms[[j]]))
-			
-			m11 <- sum(all.isms[[i]] * all.isms[[j]])
-			m01 <- sum(abs(1-all.isms[[i]]) * all.isms[[j]])
-			m10 <- sum(all.isms[[i]] * abs(1-all.isms[[j]]))
-			m00 <- sum(abs(1-all.isms[[i]]) * abs(1-all.isms[[j]]))
-			
-			dm.jac[i, j] <- m11 / (m01+m10+m11) 
-			
-			dm.rand[i, j] <- (m11 + m00) / (m01+m10+m00+m11)
+	# Export OSM
+	write.table(osm, file = paste(path, "matrices/", "total.mtrx", sep = ""), 
+			sep = " ", row.names = F,  col.names = F)
+	
+	write.table(osm, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "matrices/", "total.mtrx", sep = ""), 
+			sep = " ", row.names = F,  col.names = F)
+	
+	osm <- cbind(IconListGetter(path), osm)
+	write.table(osm, file = paste(path, "osm.csv", sep = ""), 
+			sep = ",", row.names = F,  col.names = F)
+}
+
+OsmIsmGenerator(path)
+
+
+
+
+# AssignmentGetter: generate the assignment.csv for KlipArt
+AssignmentGenerator <- function(path) {
+
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
+
+	# Create an empty dataframe
+	df <- data.frame()
+	
+	#List all zip files
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
+	
+	for(i in 1:length(files)) {
+		# Read in the assignment.csv file
+		participant.i <- unzip(paste(zip.path, files[i], sep = ""))
+		
+		# Get the participant number for the first participant
+		participant.number <- substring(files[i], 1, nchar(files[i]) - 4)
+		
+		# Construct the full file name for assignment.csv file
+		participant.assignment <- paste("./", participant.number, "/", substring(files[i],1,8), 
+				"assignment.csv", sep = "")
+		
+		assignment <- read.delim(participant.assignment, header = F, sep = ",", stringsAsFactors = F)
+		df <- rbind(df, assignment)
+	}
+	# Export the assignment.csv
+	write.table(df, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "assignment.csv", sep = ""),
+			sep = ",", row.names = F,  col.names = F)
+}
+
+AssignmentGenerator(path)
+
+
+
+
+# Participant info: collect demographic info and basic experiment info (# of groups created
+# and time spent in seconds)
+ParticipantInfoGenerator <- function(path) {
+	
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
+
+	# Read in the zip file
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
+	
+	# Read in to demographic info for the 1st participant
+	participant1 <- unzip(paste(zip.path, files[1],sep = ""))
+	
+	# Get the participant number for the first participant
+	first.p.number <- substring(files[1], 1, nchar(files[1]) - 4)
+	
+	# Construct the full file name for the participant.csv file for the 1st participant
+	first.demo <- paste("./", first.p.number, "/", substring(files[1],1,8), "participant.csv", sep = "")
+	
+	# Read in the participant.csv for the 1st participant
+	demo1 <- read.delim(first.demo, header = F, sep = ",",stringsAsFactors = F)
+	
+	# Aggregate eduction background for participant who use comma(s) in their eduction 
+	# background (e.g., geography, education, business)
+	while(length(demo1) > 13) {
+		demo1[7] <- paste(demo1[7], demo1[8], sep = ",")
+		demo1 <- demo1[-8]
+	}
+
+	colnames(demo1) <- 1:13
+	
+	# Initialize the dataframe for demographic info
+	demographic <- demo1
+	
+	# Add demographic info from the rest of participants to the dataframe "demographic"
+	for(i in 2:length(files)) {
+		participant.i <- unzip(paste(zip.path, files[i], sep=""))
+		
+		# Get the participant number for the first participant
+		participant.number <- substring(files[i], 1, nchar(files[i]) - 4)
+		
+		# Construct the full file name for participant.csv file
+		participant.demo <- paste("./", participant.number, "/", substring(files[i],1,8), 
+				"participant.csv", sep = "")
+		
+		# Read in the participant.csv
+		demo <- read.delim(participant.demo, header = F, sep = ",", stringsAsFactors = F)
+		while(length(demo) > 13) {
+			demo[7] <- paste(demo[7], demo[8], sep = ",")
+			demo <- demo[-8]
 		}
+		colnames(demo) <- 1:13
+		demographic <- rbind(demographic, demo)
 	}
 	
-	# Extract the participant number of all participants and store them in a vector named names
-	names <- c()
-	for (i in 1:length(isms)) {
-		name <- isms[i]
-		names <- append(names, substr(name, 12, nchar(name) - 5))
+	# Create two vectors to store the # of groups created and time spent (in seconds)
+	groups.created <- c()
+	time.spent <- c()
+	
+	for(i in 1:length(files)) {
+		# Read in the assignment.csv file
+		participant.i <- unzip(paste(zip.path, files[i], sep = ""))
+		
+		# Get the participant number for the first participant
+		participant.number <- substring(files[i], 1, nchar(files[i]) - 4)
+		
+		# Construct the full file name for assignment.csv file
+		participant.groups <- paste("./", participant.number, "/", substring(files[i],1,8), 
+				"assignment.csv", sep = "")
+		
+		groups <- read.delim(participant.groups, header = F, sep = ",", stringsAsFactors = F)
+		
+		# Count the number of rows in the assignment file and convert it to the # of groups created
+		groups <- length(unique(groups[, 2]))
+		
+		# Append the # of groups created to the vector "groups.created"
+		groups.created <- append(groups.created, groups)
 	}
 	
-	# Assign participants numbers as the row&column names of the participant similarity matrix (dm)
-	colnames(dm) <- names
-	rownames(dm) <- names
-	colnames(dm.jac) <- names
-	rownames(dm.jac) <- names
-	colnames(dm.rand) <- names
-	rownames(dm.rand) <- names
 	
-	write.table(dm, file = "participant_similarity_hamming.csv", sep = " ",
-			row.names = T, col.names = T)
+	for(i in 1:length(files)) {
+		# Read in the log file
+		participant.i <- unzip(paste(zip.path, files[i], sep=""))
+		
+		# Get the participant number for the first participant
+		participant.number <- substring(files[i], 1, nchar(files[i]) - 4)
+		
+		# Construct the full file name for .log file
+		participant.log <- paste("./", participant.number, "/", substring(files[i],1,8), ".log", sep = "")
+		
+		# Read in the log file
+		log <- read.delim(participant.log, header = F, sep=",", stringsAsFactors = F)
+		
+		# Get the time spent
+		time <- log[nrow(log), ]
+		time <- substr(time, 33, nchar(time))
+		
+		# Append the time spent to the vector "time.spent"
+		time.spent <- append(time.spent, time)
+	}
 	
-	write.table(dm.jac, file = "participant_similarity_jaccard.csv", sep = " ",
-			row.names = T, col.names = T)
+	# Append two vectors (i.e., two columns) - groups.created and time.spent to the demographic dataframe
+	demographic <- cbind(demographic, groups.created)
+	demographic <- cbind(demographic, time.spent)
 	
-	write.table(dm.rand, file = "participant_similarity_rand.csv", sep = " ",
-			row.names = T, col.names = T)
+	# Export the demographic dataframe as a csv file
+	write.table(demographic, file = paste(path, "participant.csv", sep = ""),
+			sep = ",", row.names = F,  col.names = F)
+	
+	# Export the participant.csv for KlipArt
+	write.table(demographic, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
 }
 
-ParticipantSimilarity(ism.path)
+ParticipantInfoGenerator(path)
 
 
 
 
-# multi-dimensional scaling
-MdsScaling <- function(osm.path) {
-	d <-  read.csv(osm.path, header = F)
-	dm <- as.matrix(d[, -1])
-	dimnames(dm) <- list(d[, 1], d[, 1])
-	dm.dist <- dist(dm, method = "euclidean")
-	mds <- cmdscale(dm.dist)
-	col <- rainbow(50)
-	jpeg(filename = "mds.jpeg", width = 3, height =3, units = "in", pointsize = 5, bg = "white", res = 600)
-	plot(min(mds[, 1], mds[, 2]):max(mds[, 1],mds[, 2]), min(mds[, 1], mds[, 2]):max(mds[, 1], mds[, 2]), type = "n", xlab = "", ylab = "", main = "Multidimensional Scaling")
-	for(i in 1:nrow(mds)) {
-		points(mds[i, 1], mds[i, 2], type = "p", cex = 1.5)
+# DescriptionGenerator: extract the linguistic labels (both long and short) from all participants and store in a single csv file
+DescriptionGenerator <- function(path) {
+
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
 	}
-	dev.off()
-	return(mds)
+	
+	# Construct the path for the zip folder and list all the zip files
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
+	
+	# Unzip the zip file from the 1st participant
+	participant1 <- unzip(paste(zip.path, files[1], sep =""))
+	
+	# Get the participant number for the first participant
+	participant.number <- substring(files[1], 1, nchar(files[1]) - 4)
+	
+	# Construct the full file name for the batch.csv file
+	batch <- paste("./", participant.number, "/", substring(files[1],1,8), "batch.csv", sep = "")
+	
+	description1 <- read.csv(batch, header = F, stringsAsFactors = F)
+	
+	# Aggregate participants' long descriptions when they use comma in the descriptions.
+	while(length(description1) > 4) {
+		description1[, 4] <- paste(description1[, 4], description1[,5], sep = ",")
+		description1 <- description1[-5]
+	}
+	
+	# Create dummy column names for the dataframe (will not be included when exported)
+	colnames(description1) <- 1:4
+	
+	# Initialize a dataframe for all descriptions
+	description <- description1
+	
+	# Read in the batch.csv for the rest of participants and extract the descriptions
+	for(i in 2:length(files)) {
+		
+		# Read in the zip files
+		participant.i <- unzip(paste(zip.path, files[i], sep = ""))
+		description.i <- read.csv(sort(participant.i)[5], header = F, stringsAsFactors = F)
+		
+		# Aggregate participants' long descriptions when they use comma in the descriptions.
+		while(length(description.i) > 4) {
+			description.i[4] <- paste(description.i[, 4], description.i[, 5], sep = ",")
+			description.i <- description.i[-5]
+		}
+		
+		# Create dummy column names for the dataframe (will not be included when exported)
+		colnames(description.i) <- 1:4
+		
+		# Combine descriptions from all participant into a dataframe (row-bind)
+		description <- rbind(description, description.i)
+	}
+	
+	# Export the description dataframe as a csv file
+	write.table(description, file = paste(path, "description.csv", sep = ""), 
+			sep = ",", row.names = F,  col.names = F)
+	
+	# Export batch.csv for Klipart
+	write.table(description, file=paste(paste(path, scenario.name, "-klipart/", sep = ""), "batch.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
 }
 
-MdsScaling(osm.path)
+DescriptionGenerator(path)
 
 
 
@@ -365,4 +388,22 @@ OverviewGenerator <- function(scenario.name, participant_info.path, number.of.pa
 }
 
 OverviewGenerator(scenario.name, paste(path, "participant.csv", sep=""), number.of.participants)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
