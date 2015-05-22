@@ -86,6 +86,20 @@ CatDirectorySetup(path)
 
 
 
+# Removes all the unzipped participant folders in working directory
+CatCleanUp <- function(path) {
+  zip.path <- paste(path, "zip/", sep = "")
+  zip.files <- list.files(zip.path)
+  folder.names <- substr(zip.files, 1, nchar(zip.files)-4)
+  for(folder in folder.names) {
+    unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
+  }
+}
+
+
+
+
+CatCleanUp(path)
 # Participant counter: count the number of participants
 ParticipantCounter <- function(path) {
 
