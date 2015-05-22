@@ -43,15 +43,7 @@ rm(list=ls())
 # Path to where the experiment folder is
 path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests"
 
-# Checks if "/" exists after path. If not, one is added
-if(substr(path, nchar(path), nchar(path)) != "/") {
-	path <- paste(path, "/", sep = "")
-}
-
 setwd(path)
-
-# Define the name of the experiment
-scenario.name <- "2501 geotermsN"
 
 # # Define the max number of clusters
 # max.cluster <- 9
@@ -68,7 +60,7 @@ scenario.name <- "2501 geotermsN"
 
 
 
-CatDirectorySetup <- function(path) {
+CatDirectorySetup <- function(path, scenario.name) {
 	# Checks if "/" exists after path. If not, one is added
 	if(substr(path, nchar(path), nchar(path)) != "/") {
 		path <- paste(path, "/", sep = "")
@@ -100,6 +92,10 @@ CatCleanUp <- function(path) {
 
 
 CatCleanUp(path)
+
+
+
+
 # Participant counter: count the number of participants
 ParticipantCounter <- function(path) {
 
@@ -162,7 +158,7 @@ number.of.icons <- IconCounter(path)
 
 # Icon list getter: get a list of icon names
 # It also saves the icon.csv needed for KlipArt
-IconListGetter <- function(path) {
+IconListGetter <- function(path, scenario.name) {
 
 	# Checks if "/" exists after path. If not, one is added
 	if(substr(path, nchar(path), nchar(path)) != "/") {
