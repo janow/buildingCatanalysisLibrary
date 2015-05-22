@@ -245,3 +245,82 @@ PrototypeFreq(path, icon.list)
 
 
 
+# Cluster validation
+ClusterValidation <- function(path, k, title="") {
+	
+	ism <- list.files(paste(path, "ism/", sep=""))
+	r <- sample(1:100, size=ParticipantCounter(path), replace=TRUE)
+	ism.list <- data.frame(ism, r)
+	ism.list <- ism.list[order(r), ]
+	
+	if(ParticipantCounter(path)%%2 == 0) {
+		split <- ParticipantCounter(path)/2
+	} else {
+		split <- (ParticipantCounter(path)-1)/2
+	}
+	
+	# Split the participants
+	group1 <- ism.list[1:split, 1]
+	group2 <- ism.list[(split+1):ParticipantCounter(path), 1]
+	
+	# read in group1 matrix
+	matrix1 <- read.delim(paste(path, "ism/", group1[1], sep=""), header=F, sep=" ", stringsAsFactors=F)
+	osm1 <- data.matrix(matrix1)
+	
+	for (i in 2:length(group1)) {
+		matrix.i <- read.delim(paste(path, "ism/", group1[i], sep=""), header=F, sep=" ", stringsAsFactors=F)
+		matrix.i <- data.matrix(matrix.i)
+		osm1 <- osm1 + matrix.i
+	}
+	
+	# read in group2 matrix
+	matrix2 <- read.delim(paste(path, "ism/", group2[1], sep=""), header=F, sep=" ", stringsAsFactors=F)
+	osm2 <- data.matrix(matrix2)
+	
+	for (i in 2:length(group2)) {
+		matrix.i <- read.delim(paste(path, "ism/", group2[i], sep=""), header=F, sep=" ", stringsAsFactors=F)
+		matrix.i <- data.matrix(matrix.i)
+		osm2 <- osm2 + matrix.i
+	}
+	
+	d1 <- data.frame(IconListGetter(path), osm1)
+	d1m <- as.matrix(d1[, -1])
+	dimnames(d1m) <- list(d1[, 1], d1[, 1])
+	
+	d2 <- data.frame(IconListGetter(path), osm2)
+	d2m <- as.matrix(d2[, -1])
+	dimnames(d2m) <- list(d2[, 1], d2[, 1])
+	
+	ave1 <- hclust(method = "average", as.dist(ParticipantCounter(path)-d1m))
+	ave2 <- hclust(method = "average", as.dist(ParticipantCounter(path)-d2m))
+	
+	comp1 <- hclust(method = "complete", as.dist(ParticipantCounter(path)-d1m))
+	comp2 <- hclust(method = "complete", as.dist(ParticipantCounter(path)-d2m))
+	
+	ward1 <- hclust(method = "ward", as.dist(ParticipantCounter(path)-d1m))
+	ward2 <- hclust(method = "ward", as.dist(ParticipantCounter(path)-d2m))
+	
+	# load code of A2R function
+	source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
+	
+	# Define colors
+	pre.colors <- rainbow(k)
+	colors <- pre.colors[1:k]
+	
+	# colored dendrograms
+	pdf(file= paste(path, "cluster_validation.pdf", sep=""),onefile=T,width=12, height=4)
+	A2Rplot(ave1, k = k, boxes = FALSE, col.up = "gray50", col.down = colors, main=paste(title, " Group 1 Average Linkage", sep=""))
+	A2Rplot(ave2, k = k, boxes = FALSE, col.up = "gray50", col.down = colors, main=paste(title, " Group 2 Average Linkage", sep=""))
+	
+	A2Rplot(comp1, k = k, boxes = FALSE, col.up = "gray50", col.down = colors, main=paste(title, " Group 1 Complete Linkage", sep=""))
+	A2Rplot(comp2, k = k, boxes = FALSE, col.up = "gray50", col.down = colors, main=paste(title, " Group 2 Complete Linkage", sep=""))
+	
+	A2Rplot(ward1, k = k, boxes = FALSE, col.up = "gray50", col.down = colors, main=paste(title, " Group 1 Ward's Method", sep=""))
+	A2Rplot(ward2, k = k, boxes = FALSE, col.up = "gray50", col.down = colors, main=paste(title, " Group 2 Ward's Method", sep=""))
+	
+	dev.off()
+}
+
+ClusterValidation(path, 3, "geo terms")
+
+
