@@ -1,4 +1,5 @@
 #a test from kevinsparksportfolio account
+#a 2nd test from kevinsparksportfolio account
 
 ## Kevin Sparks 3/4/15
 # A file to test out new functions to later be implemented 
