@@ -980,6 +980,36 @@ IconGroupViz <- function() {
 
 
 
+###################################################################
+# print standard dendrograms
+# Author: Alexander Klippel
+# input variable: path
+# OSM needs to be present
+stanDen <- function(path)
+{
+  d <- read.csv(paste(path, "osm.csv", sep = ""), header = F)
+  dm <- as.matrix(d[, -1])
+  dimnames(dm) <- list(d[, 1],d[, 1])
+  clu.meth = c("ave", "comp", "ward.D")
+  for (i in clu.meth)
+  {
+    ##ALTERNATIVE 1
+    dummy = hclust(method = i, as.dist(participant_counter(path) - dm))
+    png(file = paste(path, "dendro", i, ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
+    plot(dummy)
+    ##ALTERNATIVE 2
+    #     dummy = as.dendrogram(hclust(method = i, as.dist(participant_counter(path) - dm)))
+    #     png(file = paste(path, "dendro", i, ".png", sep=""), width = 1400, height = 1200)
+    #     plot(dummy, type = "triangle", nodePar = list(pch = 10:1, cex = .5*4:1, col = 2:3),
+    #          edgePar = list(col = 1:2, lty = 2:3), 
+    #          horiz = TRUE, 
+    #          #center = FALSE, dLeaf = -2, edge.root = FALSE
+    #     )
+    myTitle = paste(scenario_name, i, sep="//")
+    title(main = myTitle)
+    dev.off()
+  }
+}
 
 
 
