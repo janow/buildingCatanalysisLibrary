@@ -1,6 +1,3 @@
-# new test 5
-#Test2
-# Test
 # OSM and ISM Generator: extract all individual similarity matrices (ISMs) 
 # and generate the overall similarity matrix(OSM) by summing up all ISMs
 OsmIsmGenerator <- function(path) {
