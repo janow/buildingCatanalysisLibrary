@@ -1,6 +1,6 @@
 # OSM and ISM Generator: extract all individual similarity matrices (ISMs) 
 # and generate the overall similarity matrix(OSM) by summing up all ISMs
-OsmIsmGenerator <- function(path) {
+OsmIsmGenerator <- function(path, number.of.icons, scenario.name, icon.list) {
 
 	# Checks if "/" exists after path. If not, one is added
 	if(substr(path, nchar(path), nchar(path)) != "/") {
@@ -22,7 +22,7 @@ OsmIsmGenerator <- function(path) {
 	
 	# Read in the ISM from the 1st participant and exclude the non-ism info from the .mtrx file
 	first.matrix <- read.delim(first.ism, header = FALSE, sep = " ", stringsAsFactors = F)
-	first.matrix <- data.matrix(first.matrix[1:IconCounter(path), ])
+	first.matrix <- data.matrix(first.matrix[1:number.of.icons, ])
 	
 	# Export the first ISM
 	write.table(first.matrix, file = paste(path, "ism/", "participant", 
@@ -49,7 +49,7 @@ OsmIsmGenerator <- function(path) {
 		
 		# Read in the ISM from a participant and exclude the non-ism info from the .mtrx file
 		matrix.i <- read.delim(matrix.i.name, header = F, sep = " ", stringsAsFactors = F)
-		matrix.i <- data.matrix(matrix.i[1:IconCounter(path), ])
+		matrix.i <- data.matrix(matrix.i[1:number.of.icons, ])
 		
 		# Export the ISM as .mtrx for KlipArt and .csv for catanalysis
 		write.table(matrix.i, file = paste(path, "ism/", "participant", 
@@ -78,18 +78,18 @@ OsmIsmGenerator <- function(path) {
 	write.table(osm, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "matrices/", "total.mtrx", sep = ""), 
 			sep = " ", row.names = F,  col.names = F)
 	
-	osm <- cbind(IconListGetter(path), osm)
+	osm <- cbind(icon.list, osm)
 	write.table(osm, file = paste(path, "osm.csv", sep = ""), 
 			sep = ",", row.names = F,  col.names = F)
 }
 
-OsmIsmGenerator(path)
+OsmIsmGenerator(path, number.of.icons, scenario.name, icon.list)
 
 
 
 
 # AssignmentGetter: generate the assignment.csv for KlipArt
-AssignmentGenerator <- function(path) {
+AssignmentGenerator <- function(path, scenario.name) {
 
 	# Checks if "/" exists after path. If not, one is added
 	if(substr(path, nchar(path), nchar(path)) != "/") {
@@ -122,14 +122,14 @@ AssignmentGenerator <- function(path) {
 			sep = ",", row.names = F,  col.names = F)
 }
 
-AssignmentGenerator(path)
+AssignmentGenerator(path, scenario.name)
 
 
 
 
 # Participant info: collect demographic info and basic experiment info (# of groups created
 # and time spent in seconds)
-ParticipantInfoGenerator <- function(path) {
+ParticipantInfoGenerator <- function(path, scenario.name) {
 	
 	# Checks if "/" exists after path. If not, one is added
 	if(substr(path, nchar(path), nchar(path)) != "/") {
@@ -243,13 +243,13 @@ ParticipantInfoGenerator <- function(path) {
 	write.table(demographic, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
 }
 
-ParticipantInfoGenerator(path)
+ParticipantInfoGenerator(path, scenario.name)
 
 
 
 
 # DescriptionGenerator: extract the linguistic labels (both long and short) from all participants and store in a single csv file
-DescriptionGenerator <- function(path) {
+DescriptionGenerator <- function(path, scenario.name) {
 
 	# Checks if "/" exists after path. If not, one is added
 	if(substr(path, nchar(path), nchar(path)) != "/") {
@@ -311,16 +311,16 @@ DescriptionGenerator <- function(path) {
 	write.table(description, file=paste(paste(path, scenario.name, "-klipart/", sep = ""), "batch.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
 }
 
-DescriptionGenerator(path)
+DescriptionGenerator(path, scenario.name)
 
 
 
 
 # Overview
 # set the scenario here and file name
-OverviewGenerator <- function(scenario.name, participant_info.path, number.of.participants) {
+OverviewGenerator <- function(scenario.name, participant.info.path, number.of.participants) {
 	output <- paste(scenario.name, "_overview.pdf", sep = "")
-	data <- read.csv(participant_info.path, header=F, stringsAsFactors = F)
+	data <- read.csv(participant.info.path, header=F, stringsAsFactors = F)
 	
 	male <- 0
 	female <- 0
