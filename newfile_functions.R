@@ -1,6 +1,6 @@
 # OSM and ISM Generator: extract all individual similarity matrices (ISMs) 
 # and generate the overall similarity matrix(OSM) by summing up all ISMs
-OsmIsmGenerator <- function(path, number.of.icons, scenario.name, icon.list) {
+OsmIsmGenerator <- function(path, scenario.name, number.of.icons, icon.list) {
 
 	# Checks if "/" exists after path. If not, one is added
 	if(substr(path, nchar(path), nchar(path)) != "/") {
@@ -81,9 +81,15 @@ OsmIsmGenerator <- function(path, number.of.icons, scenario.name, icon.list) {
 	osm <- cbind(icon.list, osm)
 	write.table(osm, file = paste(path, "osm.csv", sep = ""), 
 			sep = ",", row.names = F,  col.names = F)
+
+	folder.names <- substr(files, 1, nchar(files)-4)
+  	for(folder in folder.names) {
+    	unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
+  	}
+
 }
 
-OsmIsmGenerator(path, number.of.icons, scenario.name, icon.list)
+OsmIsmGenerator(path, scenario.name, number.of.icons, icon.list)
 
 
 
