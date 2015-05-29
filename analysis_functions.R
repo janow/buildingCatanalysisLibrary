@@ -176,7 +176,7 @@ ParticipantSimilarity <- function(ism.path) {
 			row.names = T, col.names = T)
 }
 
-ParticipantSimilarity(ism.path)
+ParticipantSimilarity(paste(path, , sep=""))
 
 
 

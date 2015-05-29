@@ -73,7 +73,7 @@ CatDirectorySetup <- function(path, scenario.name) {
 	dir.create(paste(path, "matrices/", sep="")) 
 }
 
-CatDirectorySetup(path)
+CatDirectorySetup(path, scenario.name)
 
 
 
@@ -203,14 +203,14 @@ IconListGetter <- function(path, scenario.name) {
 	icon.list.klipart <- icon.list.klipart[order(icon.list.klipart$index), ]
 	
 	# Export the list as a csv file
-	write.table(icon.list.klipart, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "icon.csv", sep = ""),
+	write.table(icon.list.klipart, file = paste(path, scenario.name, "-klipart/", "icon.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
 	
 	#Return the icon list as a vector
 	return(sort(icon.list))
 }
 
-icon.list <- IconListGetter(path)
+icon.list <- IconListGetter(path, scenario.name)
 
 
 
