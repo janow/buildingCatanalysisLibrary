@@ -31,7 +31,7 @@ ClusterHeatmap <- function(osm.path, number.of.participants) {
 	dimnames(dm) <- list(d[, 1], d[, 1])
 	
 	# Generate the dendrogram using wards method
-	cluster <- hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
+	cluster <- hclust(method = "ward", as.dist(number.of.participants - dm))
 	dend <- as.dendrogram(cluster)
 	
 	# Drawing the cluster heatmap and export as a jpeg file
@@ -246,22 +246,22 @@ PrototypeFreq(path, icon.list)
 
 
 # Cluster validation
-ClusterValidation <- function(path, k, title="") {
+ClusterValidation <- function(path, k, title="", number.of.participants) {
 	
 	ism <- list.files(paste(path, "ism/", sep=""))
-	r <- sample(1:100, size=ParticipantCounter(path), replace=TRUE)
+	r <- sample(1:100, size=number.of.participants, replace=TRUE)
 	ism.list <- data.frame(ism, r)
 	ism.list <- ism.list[order(r), ]
 	
-	if(ParticipantCounter(path)%%2 == 0) {
-		split <- ParticipantCounter(path)/2
+	if(number.of.participants%%2 == 0) {
+		split <- number.of.participants/2
 	} else {
-		split <- (ParticipantCounter(path)-1)/2
+		split <- (number.of.participants-1)/2
 	}
 	
 	# Split the participants
 	group1 <- ism.list[1:split, 1]
-	group2 <- ism.list[(split+1):ParticipantCounter(path), 1]
+	group2 <- ism.list[(split+1):number.of.participants, 1]
 	
 	# read in group1 matrix
 	matrix1 <- read.delim(paste(path, "ism/", group1[1], sep=""), header=F, sep=" ", stringsAsFactors=F)
@@ -291,14 +291,14 @@ ClusterValidation <- function(path, k, title="") {
 	d2m <- as.matrix(d2[, -1])
 	dimnames(d2m) <- list(d2[, 1], d2[, 1])
 	
-	ave1 <- hclust(method = "average", as.dist(ParticipantCounter(path)-d1m))
-	ave2 <- hclust(method = "average", as.dist(ParticipantCounter(path)-d2m))
+	ave1 <- hclust(method = "average", as.dist(number.of.participants-d1m))
+	ave2 <- hclust(method = "average", as.dist(number.of.participants-d2m))
 	
-	comp1 <- hclust(method = "complete", as.dist(ParticipantCounter(path)-d1m))
-	comp2 <- hclust(method = "complete", as.dist(ParticipantCounter(path)-d2m))
+	comp1 <- hclust(method = "complete", as.dist(number.of.participants-d1m))
+	comp2 <- hclust(method = "complete", as.dist(number.of.participants-d2m))
 	
-	ward1 <- hclust(method = "ward", as.dist(ParticipantCounter(path)-d1m))
-	ward2 <- hclust(method = "ward", as.dist(ParticipantCounter(path)-d2m))
+	ward1 <- hclust(method = "ward", as.dist(number.of.participants-d1m))
+	ward2 <- hclust(method = "ward", as.dist(number.of.participants-d2m))
 	
 	# load code of A2R function
 	source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
@@ -321,6 +321,6 @@ ClusterValidation <- function(path, k, title="") {
 	dev.off()
 }
 
-ClusterValidation(path, 3, "geo terms")
+ClusterValidation(path, 3, "geo terms", number.of.participants)
 
 
