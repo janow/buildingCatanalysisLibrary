@@ -40,22 +40,11 @@ require(grid)
 rm(list=ls())
 
 # Begin user input #
+
 # Path to where the experiment folder is
 path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests"
 
 setwd(path)
-
-# # Define the max number of clusters
-# max.cluster <- 9
-
-# End user input #
-
-
-
-
-##########
-##########
-##########
 
 
 
@@ -73,7 +62,16 @@ CatDirectorySetup <- function(path, scenario.name) {
 	dir.create(paste(path, "matrices/", sep="")) 
 }
 
+scenario.name <- "scenario_name_here"
 CatDirectorySetup(path, scenario.name)
+
+
+
+
+# End user input #
+##########
+##########
+##########
 
 
 
@@ -147,6 +145,8 @@ IconCounter <- function(path) {
 	
 	#Get the number of icons used in the experiment
 	n.icons <- nrow(icons)
+
+	unlink(substring(paste(getwd(), "/", files[1], sep = ""), 1, nchar(paste(getwd(), "/", files[1], sep = "")) - 4), recursive = TRUE)
 	
 	#Return the number of icons
 	return(n.icons)
@@ -205,6 +205,8 @@ IconListGetter <- function(path, scenario.name) {
 	# Export the list as a csv file
 	write.table(icon.list.klipart, file = paste(path, scenario.name, "-klipart/", "icon.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
+
+	unlink(substring(paste(getwd(), "/", files[1], sep = ""), 1, nchar(paste(getwd(), "/", files[1], sep = "")) - 4), recursive = TRUE)
 	
 	#Return the icon list as a vector
 	return(sort(icon.list))
