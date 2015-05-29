@@ -82,6 +82,7 @@ OsmIsmGenerator <- function(path, scenario.name, number.of.icons, icon.list) {
 	write.table(osm, file = paste(path, "osm.csv", sep = ""), 
 			sep = ",", row.names = F,  col.names = F)
 
+	# Deletes all unzipped files as they are no longer needed
 	folder.names <- substr(files, 1, nchar(files)-4)
   	for(folder in folder.names) {
     	unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
@@ -126,6 +127,12 @@ AssignmentGenerator <- function(path, scenario.name) {
 	# Export the assignment.csv
 	write.table(df, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "assignment.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
+
+	# Deletes all unzipped files as they are no longer needed
+	folder.names <- substr(files, 1, nchar(files)-4)
+  	for(folder in folder.names) {
+    	unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
+  	}
 }
 
 AssignmentGenerator(path, scenario.name)
@@ -247,6 +254,12 @@ ParticipantInfoGenerator <- function(path, scenario.name) {
 	
 	# Export the participant.csv for KlipArt
 	write.table(demographic, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
+
+	# Deletes all unzipped files as they are no longer needed
+	folder.names <- substr(files, 1, nchar(files)-4)
+  	for(folder in folder.names) {
+    	unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
+  	}
 }
 
 ParticipantInfoGenerator(path, scenario.name)
@@ -315,6 +328,12 @@ DescriptionGenerator <- function(path, scenario.name) {
 	
 	# Export batch.csv for Klipart
 	write.table(description, file=paste(paste(path, scenario.name, "-klipart/", sep = ""), "batch.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
+
+	# Deletes all unzipped files as they are no longer needed
+	folder.names <- substr(files, 1, nchar(files)-4)
+  	for(folder in folder.names) {
+    	unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
+  	}
 }
 
 DescriptionGenerator(path, scenario.name)
@@ -393,7 +412,7 @@ OverviewGenerator <- function(scenario.name, participant.info.path, number.of.pa
 	dev.off()
 }
 
-OverviewGenerator(scenario.name, paste(path, "participant.csv", sep=""), number.of.participants)
+OverviewGenerator(scenario.name, paste(path, "/participant.csv", sep=""), number.of.participants)
 
 
 
