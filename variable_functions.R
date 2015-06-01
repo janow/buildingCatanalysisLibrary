@@ -1,31 +1,14 @@
-## Kevin Sparks 3/4/15
-## Functions taken from "catanalysis.R" and "catAnalysisExtension.R" from "jinlong25_catanalysis" repo (cross-referenced with "catanalysis2501" (geo terms))
+## Kevin Sparks 6/1/15
 
-## Notes
-# There seemed to be two sets of functions being defined among various catanalysis scripts. The first, denoted by 6 lines of "#"s and called "Function list Pt. 1" 
-# (followed with a set of executables running those functions denoted by three lines of "#"s), and the second, denoted by 6 lines of "#"s and called "Functions list Pt. 2"
-
+# Notes
 # "clusterval" package not available in R 3.0.0 
-
-
-
-
-
-
-
-
 
 # Instruction
 # 1. Create a folder with the name of the experiment;
 # 2. In the experiment folder, create a folder named "zip" and put all participant zip files into the "zip" folder;
-# 3. Run the entire script ("function_list_pre.R"), then run "function_list_1.R", followed by "function_list_2.R";
-# 4. To create dendrograms at different solutions, manually change the number in the last line of the script.
-# 5. Go find the result in the experiment folder
-
-# KlipArt Instruction
-# A klipart folder will be created inside the experiment folder. In the klipart folder:
-# 1. Zip the matrices folder into a zip file;
-# 2. Put a icons.zip file that contains all the icon files.
+# 3. Load the packages seen below
+# 4. Define a path variable as a string to the location of the experiment folder
+# 5. Run CatDirectorySetup
 
 
 #install.packages("gplots")
@@ -44,11 +27,10 @@ rm(list=ls())
 # Path to where the experiment folder is
 path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests"
 
-setwd(path)
-
-
-
-
+# Creates the necessary sub directories in experiment folder
+# Parameters
+# path: string, path to experiment directory
+# scenario.name: string, name of the experiment
 CatDirectorySetup <- function(path, scenario.name) {
 	# Checks if "/" exists after path. If not, one is added
 	if(substr(path, nchar(path), nchar(path)) != "/") {
