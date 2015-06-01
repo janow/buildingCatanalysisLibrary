@@ -96,6 +96,8 @@ CatCleanUp(path)
 
 
 # Participant counter: count the number of participants
+# Parameters
+# path: string, path to experiment directory
 ParticipantCounter <- function(path) {
 
 	# Checks if "/" exists after path. If not, one is added
@@ -120,6 +122,8 @@ number.of.participants <- ParticipantCounter(path)
 
 
 #Icon counter: count the number of icons(items) used in the experiment
+# Parameters
+# path: string, path to experiment directory
 IconCounter <- function(path) {
 
 	# Checks if "/" exists after path. If not, one is added
@@ -159,6 +163,9 @@ number.of.icons <- IconCounter(path)
 
 # Icon list getter: get a list of icon names
 # It also saves the icon.csv needed for KlipArt
+# Parameters
+# path: string, path to experiment directory
+# scenario.name: string, name of the experiment
 IconListGetter <- function(path, scenario.name) {
 
 	# Checks if "/" exists after path. If not, one is added

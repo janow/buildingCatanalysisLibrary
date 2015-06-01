@@ -1,5 +1,10 @@
 # OSM and ISM Generator: extract all individual similarity matrices (ISMs) 
 # and generate the overall similarity matrix(OSM) by summing up all ISMs
+# Parameters
+# path: string, path to experiment directory
+# scenario.name: string, name of the experiment
+# number.of.icons: integer, the total number of icons in the experiment created by IconCounter
+# icon.list: character vector, a list of the names of the icons created by IconListGetter
 OsmIsmGenerator <- function(path, scenario.name, number.of.icons, icon.list) {
 
 	# Checks if "/" exists after path. If not, one is added
@@ -96,6 +101,9 @@ OsmIsmGenerator(path, scenario.name, number.of.icons, icon.list)
 
 
 # AssignmentGetter: generate the assignment.csv for KlipArt
+# Parameters
+# path: string, path to experiment directory
+# scenario.name: string, name of the experiment
 AssignmentGenerator <- function(path, scenario.name) {
 
 	# Checks if "/" exists after path. If not, one is added
@@ -142,6 +150,9 @@ AssignmentGenerator(path, scenario.name)
 
 # Participant info: collect demographic info and basic experiment info (# of groups created
 # and time spent in seconds)
+# Parameters
+# path: string, path to experiment directory
+# scenario.name: string, name of the experiment
 ParticipantInfoGenerator <- function(path, scenario.name) {
 	
 	# Checks if "/" exists after path. If not, one is added
@@ -268,6 +279,9 @@ ParticipantInfoGenerator(path, scenario.name)
 
 
 # DescriptionGenerator: extract the linguistic labels (both long and short) from all participants and store in a single csv file
+# Parameters
+# path: string, path to experiment directory
+# scenario.name: string, name of the experiment
 DescriptionGenerator <- function(path, scenario.name) {
 
 	# Checks if "/" exists after path. If not, one is added
@@ -343,6 +357,10 @@ DescriptionGenerator(path, scenario.name)
 
 # Overview
 # set the scenario here and file name
+# Parameters
+# scenario.name: string, name of the experiment
+# participant.info.path: string, full path to the participant.csv created by ParticipantInfoGenerator
+# number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
 OverviewGenerator <- function(scenario.name, participant.info.path, number.of.participants) {
 	output <- paste(scenario.name, "_overview.pdf", sep = "")
 	data <- read.csv(participant.info.path, header=F, stringsAsFactors = F)

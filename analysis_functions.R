@@ -1,6 +1,9 @@
 # OsmViz: generates a heatmap based on the OSM.
 # No dendrograms are generated and the icons are in alphabetical order
 # It is intended to be a raw heat map without dendrograms
+# Parameters
+# osm.path: string, the full path to the osm.csv file created by OsmIsmGenerator
+# number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
 OsmViz <- function(osm.path, number.of.participants) {
 	
 	# Read in the osm.csv file and format the row/column names
@@ -23,6 +26,9 @@ OsmViz(paste(path, "osm.csv", sep=""), number.of.participants)
 
 
 # ClusterHeatmap: generates a cluster heatmap based on the OSM
+# Parameters
+# osm.path: string, the full path to the osm.csv file created by OsmIsmGenerator
+# number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
 ClusterHeatmap <- function(osm.path, number.of.participants) {
 	
 	# Read in the osm.csv file and format the row/column names
@@ -50,6 +56,9 @@ ClusterHeatmap(paste(path, "osm.csv", sep=""), number.of.participants)
 
 
 # General cluster analysis
+# Parameters
+# osm.path: string, the full path to the osm.csv file created by OsmIsmGenerator
+# number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
 GeneralClusterAnalysis  <- function(osm.path, number.of.participants) {
 	d <- read.csv(osm.path, header = F)
 	dm <- as.matrix(d[, -1])
@@ -112,6 +121,8 @@ GeneralClusterAnalysis(paste(path, "osm.csv", sep=""), number.of.participants)
 
 
 # Participant similarity analysis
+# Parameters
+# osm.path: string, the full path to the ism directory created by OsmIsmGenerator
 ParticipantSimilarity <- function(ism.path) {
 
 	# Checks if "/" exists after path. If not, one is added
@@ -182,6 +193,8 @@ ParticipantSimilarity(paste(path, , sep=""))
 
 
 # multi-dimensional scaling
+# Parameters
+# osm.path: string, the full path to the osm.csv file created by OsmIsmGenerator
 MdsScaling <- function(osm.path) {
 	d <-  read.csv(osm.path, header = F)
 	dm <- as.matrix(d[, -1])
@@ -204,6 +217,9 @@ MdsScaling(osm.path)
 
 
 # Visualize the frequency that each icon is being selected as group prototype
+# Parameters
+# path: string, path to experiment directory
+# icon.list: character vector, a list of the names of the icons created by IconListGetter
 PrototypeFreq <- function(path, icon.list) {
 
 	# Checks if "/" exists after path. If not, one is added
@@ -246,6 +262,11 @@ PrototypeFreq(path, icon.list)
 
 
 # Cluster validation
+# Parameters
+# path: string, path to experiment directory
+# k: integer, number of clusters
+# title: string, title of the experiment
+# number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
 ClusterValidation <- function(path, k, title="", number.of.participants) {
 	
 	ism <- list.files(paste(path, "ism/", sep=""))
