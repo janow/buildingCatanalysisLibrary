@@ -25,7 +25,7 @@ rm(list=ls())
 # Begin user input #
 
 # Path to where the experiment folder is
-path <- "C:/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests"
+path <- "/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests"
 
 # Creates the necessary sub directories in experiment folder
 # Parameters
@@ -54,25 +54,6 @@ CatDirectorySetup(path, scenario.name)
 ##########
 ##########
 ##########
-
-
-
-
-# Removes all the unzipped participant folders in working directory
-CatCleanUp <- function(path) {
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
-	}
-  	zip.path <- paste(path, "zip/", sep = "")
-  	zip.files <- list.files(zip.path)
-  	folder.names <- substr(zip.files, 1, nchar(zip.files)-4)
-  	for(folder in folder.names) {
-    	unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
-  	}
-}
-
-CatCleanUp(path)
 
 
 
@@ -202,6 +183,80 @@ IconListGetter <- function(path, scenario.name) {
 }
 
 icon.list <- IconListGetter(path, scenario.name)
+
+
+
+
+# Returns a list of participant isms
+# Parameters
+# ism.path: string, full path to the ism directory 
+# ism.list: character vector, list of all the isms you want included (if you want to include all of them, list.files(ism.path) will work)
+# number.of.icons: integer, the total number of icons in the experiment created by IconCounter
+ReadIsms <- function(ism.path, ism.list, number.of.icons) {
+
+  # Checks if "/" exists after ism.path. If not, one is added
+  if(substr(ism.path, nchar(ism.path), nchar(ism.path)) != "/") {
+    ism.path <- paste(ism.path, "/", sep = "")
+  }
+
+  # creates an empty list to store imported isms
+  isms <- list()
+    
+  for (i in 1:length(ism.list)) {
+
+    # gathers the current ism file name from the ism.list parameter in the for loop
+    matrix.i.name <- ism.list[i]
+
+    # reads in the current ism file
+    matrix.i <- read.delim(paste(ism.path, matrix.i.name, sep=""), header = F, sep = " ", stringsAsFactors = F)
+
+    # converts the ism file to a matrix
+    matrix.i <- data.matrix(matrix.i[1:number.of.icons, ])
+        
+    # adds that ism matrix to the isms list created at the begining of the function
+    isms[[i]] <- matrix.i
+  }
+
+  # returns a list of the isms
+  return(isms)
+
+}
+
+ism.path <- paste(path, "/ism", sep="")
+isms <- ReadIsms(ism.path, list.files(ism.path), number.of.icons)
+
+
+
+
+# Adds all isms (created by ReadIsms) to one osm matrix
+# Parameters
+# isms: list of matrices, a list of participants' isms
+# icon.list: character vector, a list of the names of the icons created by IconListGetter
+OsmGenerator <- function(isms, icon.list) {
+
+  # creates an empty osm matrix
+  osm <- matrix(0, nrow(isms[[1]]), ncol(isms[[1]]))
+    
+  # loops through all the isms in the isms parameter input
+  for (ism in isms) {
+    # adds each ism (in effect adding all the isms together)
+    osm <- osm + ism
+  }
+
+  # defining the row and column names for the osm from the icon.list parameter
+  dimnames(osm) <- list(icon.list,icon.list)
+
+  # returns the osm matrix
+  return(osm)
+}
+
+Osm <- OsmGenerator(isms, icon.list)
+
+
+
+
+
+
 
 
 
