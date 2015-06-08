@@ -1,64 +1,10 @@
-## Kevin Sparks 6/1/15
-
-# Notes
-# "clusterval" package not available in R 3.0.0 
-
-# Instruction
-# 1. Create a folder with the name of the experiment;
-# 2. In the experiment folder, create a folder named "zip" and put all participant zip files into the "zip" folder;
-# 3. Load the packages seen below
-# 4. Define a path variable as a string to the location of the experiment folder
-# 5. Run CatDirectorySetup
-
-
-#install.packages("gplots")
-require(gplots)
-#install.packages("vegan")
-require(vegan)
-#install.packages("clusteval")
-require(clusteval)
-require(grid)
-
-# Clear the workspace
-rm(list=ls())
-
-# Begin user input #
-
-# Path to where the experiment folder is
-path <- "/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests"
-
-# Creates the necessary sub directories in experiment folder
-# Parameters
-# path: string, path to experiment directory
-# scenario.name: string, name of the experiment
-CatDirectorySetup <- function(path, scenario.name) {
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
-	}
-	# Auto-create two subfolders "ism" and "matrices"
-	dir.create(paste(path, "ism/", sep=""))
-	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
-	dir.create(klipart.path)
-	dir.create(paste(klipart.path, "matrices/", sep="")) 
-	dir.create(paste(path, "matrices/", sep="")) 
-}
-
-scenario.name <- "scenario_name_here"
-CatDirectorySetup(path, scenario.name)
+# These "read functions" access the local drive to read in necessary data. 
+# Some of these functions are used to create variables that are useful for analysis functions.
 
 
 
 
-# End user input #
-##########
-##########
-##########
-
-
-
-
-# Participant counter: count the number of participants
+# ParticipantCounter: count the number of participants
 # Parameters
 # path: string, path to experiment directory
 ParticipantCounter <- function(path) {
@@ -84,7 +30,7 @@ number.of.participants <- ParticipantCounter(path)
 
 
 
-#Icon counter: count the number of icons(items) used in the experiment
+#IconCounter: count the number of icons(items) used in the experiment
 # Parameters
 # path: string, path to experiment directory
 IconCounter <- function(path) {
@@ -124,12 +70,12 @@ number.of.icons <- IconCounter(path)
 
 
 
-# Icon list getter: get a list of icon names
+# IconNamesGetter: get a list of icon names
 # It also saves the icon.csv needed for KlipArt
 # Parameters
 # path: string, path to experiment directory
 # scenario.name: string, name of the experiment
-IconListGetter <- function(path, scenario.name) {
+IconNamesGetter <- function(path, scenario.name) {
 
 	# Checks if "/" exists after path. If not, one is added
 	if(substr(path, nchar(path), nchar(path)) != "/") {
@@ -182,12 +128,76 @@ IconListGetter <- function(path, scenario.name) {
 	return(sort(icon.list))
 }
 
-icon.list <- IconListGetter(path, scenario.name)
+icon.names <- IconNamesGetter(path, scenario.name)
 
 
 
 
-# Returns a list of participant isms
+# ExtractIsms: Unzipps the participant folders and copies each participants individual similarity matrix into the "ism" folder created in CatDirectorySetup.
+# Parameters
+# path: string, path to experiment directory
+# path: string, path to experiment directory
+# number.of.icons: integer, the total number of icons in the experiment created by IconCounter
+ExtractIsms <- function(path, scenario.name, number.of.icons) {
+
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
+
+	# Construct the zip folder path and list all zip files
+	zip.path <- paste(path, "zip/", sep = "")
+	files <- list.files(zip.path)
+
+	
+	# Process the ISMs of the rest of participants
+	for(i in 1:length(files)) {
+		# Unzip the participant's zip file
+		participant.i <- unzip(paste(zip.path, files[i], sep = ""))
+		
+		# Get the participant number
+		participant.number <- substring(files[i], 1, nchar(files[i]) - 4)
+		
+		# Construct the full file name for .mtrx file
+		matrix.i.name <- paste("./", participant.number, "/", substring(files[i],1,8), ".mtrx", sep = "")
+		
+		# Read in the ISM from a participant and exclude the non-ism info from the .mtrx file
+		matrix.i <- read.delim(matrix.i.name, header = F, sep = " ", stringsAsFactors = F)
+		matrix.i <- data.matrix(matrix.i[1:number.of.icons, ])
+		
+		# Export the ISM as .mtrx for KlipArt and .csv for catanalysis
+		write.table(matrix.i, file = paste(path, "ism/", "participant", 
+						substr(files[i], 1, nchar(files[i]) - 4),
+						".mtrx", sep = ""), sep = " ", 
+						row.names = F, col.names = F)
+		
+		write.table(matrix.i, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "matrices/", "participant", 
+						substr(files[i], 1, nchar(files[i]) - 4), 
+						".mtrx", sep = ""), sep = " ",
+						row.names = F, col.names = F)
+		
+		write.table(matrix.i, file = paste(path, "matrices/", "participant", 
+						substr(files[i], 1, nchar(files[i]) - 4), 
+						".mtrx", sep = ""), sep = " ",
+						row.names = F, col.names = F)
+
+	}
+
+
+	# Deletes all unzipped files as they are no longer needed
+	folder.names <- substr(files, 1, nchar(files)-4)
+  	for(folder in folder.names) {
+    	unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
+  	}
+
+}
+
+ExtractIsms(path, scenario.name, number.of.icons)
+
+
+
+
+# ReadIsms: Takes all the isms from the ism folder (the ism folder is populated via ExtractIsms) and reads them into R and returns a list of isms
 # Parameters
 # ism.path: string, full path to the ism directory 
 # ism.list: character vector, list of all the isms you want included (if you want to include all of them, list.files(ism.path) will work)
@@ -228,29 +238,7 @@ isms <- ReadIsms(ism.path, list.files(ism.path), number.of.icons)
 
 
 
-# Adds all isms (created by ReadIsms) to one osm matrix
-# Parameters
-# isms: list of matrices, a list of participants' isms
-# icon.list: character vector, a list of the names of the icons created by IconListGetter
-OsmGenerator <- function(isms, icon.list) {
 
-  # creates an empty osm matrix
-  osm <- matrix(0, nrow(isms[[1]]), ncol(isms[[1]]))
-    
-  # loops through all the isms in the isms parameter input
-  for (ism in isms) {
-    # adds each ism (in effect adding all the isms together)
-    osm <- osm + ism
-  }
-
-  # defining the row and column names for the osm from the icon.list parameter
-  dimnames(osm) <- list(icon.list,icon.list)
-
-  # returns the osm matrix
-  return(osm)
-}
-
-Osm <- OsmGenerator(isms, icon.list)
 
 
 
