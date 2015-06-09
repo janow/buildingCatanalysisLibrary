@@ -13,12 +13,16 @@ WriteOsm <- function(osm, path) {
 		path <- paste(path, "/", sep = "")
 	}
 
-  # Export OSM
-  write.table(osm, file = paste(path, "matrices/", "total.mtrx", sep = ""), 
-      sep = " ", row.names = F,  col.names = F)
+	# create matrices folder if not already created
+	matrices.path <- paste(path, "matrices/", sep = "")
+	dir.create(matrices.path, showWarnings = FALSE)
+
+  	# Export OSM
+  	write.table(osm, file = paste(path, "matrices/", "total.mtrx", sep = ""), 
+      	sep = " ", row.names = F,  col.names = F)
   
-  write.table(osm, file = paste(path, "osm.csv", sep = ""), 
-      sep = ",", row.names = T,  col.names = F)
+  	write.table(osm, file = paste(path, "osm.csv", sep = ""), 
+      	sep = ",", row.names = T,  col.names = F)
 
 }
 
@@ -296,6 +300,11 @@ WriteAssignment <- function(path, scenario.name) {
 		assignment <- read.delim(participant.assignment, header = F, sep = ",", stringsAsFactors = F)
 		df <- rbind(df, assignment)
 	}
+
+	# create klipart folder if not already created
+	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	dir.create(klipart.path, showWarnings = FALSE)
+
 	# Export the assignment.csv
 	write.table(df, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "assignment.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
@@ -425,6 +434,10 @@ WriteParticipantInfo <- function(path, scenario.name) {
 	# Export the demographic dataframe as a csv file
 	write.table(demographic, file = paste(path, "participant.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
+
+	# create klipart folder if not already created
+	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	dir.create(klipart.path, showWarnings = FALSE)
 	
 	# Export the participant.csv for KlipArt
 	write.table(demographic, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
@@ -503,6 +516,10 @@ WriteDescription <- function(path, scenario.name) {
 	write.table(description, file = paste(path, "description.csv", sep = ""), 
 			sep = ",", row.names = F,  col.names = F)
 	
+	# create klipart folder if not already created
+	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	dir.create(klipart.path, showWarnings = FALSE)
+
 	# Export batch.csv for Klipart
 	write.table(description, file=paste(paste(path, scenario.name, "-klipart/", sep = ""), "batch.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
 

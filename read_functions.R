@@ -117,6 +117,10 @@ IconNamesGetter <- function(path, scenario.name) {
 	
 	# Sort the icon list by index
 	icon.list.klipart <- icon.list.klipart[order(icon.list.klipart$index), ]
+
+	# create klipart folder if not already created
+	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	dir.create(klipart.path, showWarnings = FALSE)
 	
 	# Export the list as a csv file
 	write.table(icon.list.klipart, file = paste(path, scenario.name, "-klipart/", "icon.csv", sep = ""),
@@ -134,6 +138,7 @@ icon.names <- IconNamesGetter(path, scenario.name)
 
 
 # ExtractIsms: Unzipps the participant folders and copies each participants individual similarity matrix into the "ism" folder created in CatDirectorySetup.
+# Also writes files to klipart folder (creates a klipart folder is one is not already created)
 # Parameters
 # path: string, path to experiment directory
 # path: string, path to experiment directory
@@ -149,7 +154,20 @@ ExtractIsms <- function(path, scenario.name, number.of.icons) {
 	zip.path <- paste(path, "zip/", sep = "")
 	files <- list.files(zip.path)
 
-	
+	# create ism folder if not already created
+	ism.path <- paste(path, "ism/", sep = "")
+	dir.create(ism.path, showWarnings = FALSE)
+
+	# create klipart folder if not already created
+	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	dir.create(klipart.path, showWarnings = FALSE)
+	dir.create(paste(klipart.path, "matrices/", sep=""), showWarnings = FALSE)
+
+	# create matrices folder if not already created
+	matrices.path <- paste(path, "matrices/", sep = "")
+	dir.create(matrices.path, showWarnings = FALSE)
+
+
 	# Process the ISMs of the rest of participants
 	for(i in 1:length(files)) {
 		# Unzip the participant's zip file
