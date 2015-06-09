@@ -143,7 +143,13 @@ WriteParticipantSimilarity(participant.similarity.output)
 # k: integer, number of clusters
 # title: string, title of the experiment
 # number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
-ClusterValidation <- function(path, k, title="", number.of.participants) {
+# icon.names: character vector, a list of the names of the icons created by IconListGetter
+ClusterValidation <- function(path, k, title="", number.of.participants, icon.names) {
+
+	# Checks if "/" exists after path. If not, one is added
+	if(substr(path, nchar(path), nchar(path)) != "/") {
+		path <- paste(path, "/", sep = "")
+	}
 	
 	ism <- list.files(paste(path, "ism/", sep=""))
 	r <- sample(1:100, size=number.of.participants, replace=TRUE)
@@ -180,11 +186,11 @@ ClusterValidation <- function(path, k, title="", number.of.participants) {
 		osm2 <- osm2 + matrix.i
 	}
 	
-	d1 <- data.frame(IconListGetter(path), osm1)
+	d1 <- data.frame(icon.names, osm1)
 	d1m <- as.matrix(d1[, -1])
 	dimnames(d1m) <- list(d1[, 1], d1[, 1])
 	
-	d2 <- data.frame(IconListGetter(path), osm2)
+	d2 <- data.frame(icon.names, osm2)
 	d2m <- as.matrix(d2[, -1])
 	dimnames(d2m) <- list(d2[, 1], d2[, 1])
 	
@@ -194,8 +200,8 @@ ClusterValidation <- function(path, k, title="", number.of.participants) {
 	comp1 <- hclust(method = "complete", as.dist(number.of.participants-d1m))
 	comp2 <- hclust(method = "complete", as.dist(number.of.participants-d2m))
 	
-	ward1 <- hclust(method = "ward", as.dist(number.of.participants-d1m))
-	ward2 <- hclust(method = "ward", as.dist(number.of.participants-d2m))
+	ward1 <- hclust(method = "ward.D", as.dist(number.of.participants-d1m))
+	ward2 <- hclust(method = "ward.D", as.dist(number.of.participants-d2m))
 	
 	# load code of A2R function
 	source("http://addictedtor.free.fr/packages/A2R/lastVersion/R/code.R")
@@ -218,7 +224,7 @@ ClusterValidation <- function(path, k, title="", number.of.participants) {
 	dev.off()
 }
 
-ClusterValidation(path, 3, "geo terms", number.of.participants)
+ClusterValidation(path, 3, "geo terms", number.of.participants, icon.names)
 
 
 
@@ -226,8 +232,8 @@ ClusterValidation(path, 3, "geo terms", number.of.participants)
 # PrototypeFreq: visualize the frequency that each icon is being selected as group prototype
 # Parameters
 # path: string, path to experiment directory
-# icon.list: character vector, a list of the names of the icons created by IconListGetter
-PrototypeFreq <- function(path, icon.list) {
+# icon.names: character vector, a list of the names of the icons created by IconListGetter
+PrototypeFreq <- function(path, icon.names) {
 
 	# Checks if "/" exists after path. If not, one is added
 	if(substr(path, nchar(path), nchar(path)) != "/") {
@@ -239,9 +245,9 @@ PrototypeFreq <- function(path, icon.list) {
 	files <- list.files(zip.path)
 	
 	# Create a dataframe to store the prototype frequency
-	freq <- data.frame(icon = icon.list, 
-			icon_index = 0:(length(icon.list)-1), 
-			count = rep(0, length(icon.list))
+	freq <- data.frame(icon = icon.names, 
+			icon_index = 0:(length(icon.names)-1), 
+			count = rep(0, length(icon.names))
 	)
 	
 	for(p in files) {
@@ -260,10 +266,18 @@ PrototypeFreq <- function(path, icon.list) {
 	
 	# Export batch.csv for Klipart
 	write.table(freq, file = "prototype.csv", sep = ",", col.names = F, row.names = F)
-	return(freq)
+
+	# Deletes all unzipped files as they are no longer needed
+	folder.names <- substr(files, 1, nchar(files)-4)
+  	for(folder in folder.names) {
+    	unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
+  	}
+
+  	return(freq)
+  	
 }
 
-PrototypeFreq(path, icon.list)
+PrototypeFreq(path, icon.names)
 
 
 

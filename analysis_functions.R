@@ -6,8 +6,8 @@
 # OsmGenerator: Adds all isms (created by ReadIsms) to one osm matrix.
 # Parameters
 # isms: list of matrices, a list of participants' isms
-# icon.list: character vector, a list of the names of the icons created by IconListGetter
-OsmGenerator <- function(isms, icon.list) {
+# icon.names: character vector, a list of the names of the icons created by IconListGetter
+OsmGenerator <- function(isms, icon.names) {
 
   # creates an empty osm matrix
   osm <- matrix(0, nrow(isms[[1]]), ncol(isms[[1]]))
@@ -19,13 +19,13 @@ OsmGenerator <- function(isms, icon.list) {
   }
 
   # defining the row and column names for the osm from the icon.list parameter
-  dimnames(osm) <- list(icon.list,icon.list)
+  dimnames(osm) <- list(icon.names, icon.names)
 
   # returns the osm matrix
   return(osm)
 }
 
-Osm <- OsmGenerator(isms, icon.list)
+Osm <- OsmGenerator(isms, icon.names)
 
 
 
