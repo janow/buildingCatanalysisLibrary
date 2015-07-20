@@ -277,7 +277,7 @@ PrototypeFreq <- function(path, icon.names) {
   	
 }
 
-PrototypeFreq(path, icon.names)
+PrototypeFreq.output <- PrototypeFreq(path, icon.names)
 
 
 

@@ -137,7 +137,7 @@ icon.names <- IconNamesGetter(path, scenario.name)
 
 
 
-# ExtractIsms: Unzipps the participant folders and copies each participants individual similarity matrix into the "ism" folder created in CatDirectorySetup.
+# ExtractIsms: Unzipps the participant folders and copies each participants individual similarity matrix into the "ism" folder (the "ism" folder is created by this function if not yet already created).
 # Also writes files to klipart folder (creates a klipart folder is one is not already created)
 # Parameters
 # path: string, path to experiment directory
