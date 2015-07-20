@@ -2,7 +2,7 @@
 
 
 
-## Kevin Sparks 6/8/15
+## Kevin Sparks 7/20/15
 
 # Instruction
 # 1. Create a folder with the name of the experiment;
