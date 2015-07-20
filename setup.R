@@ -18,8 +18,9 @@ require(vegan)
 require(clusteval)
 require(grid)
 
-# Path to where the experiment folder is
+# Setting the basic path and scenario name variables, as well as setting the working directory to the path (this isn't necessary, just convenient).
 path <- "/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests"
+setwd(path)
 scenario.name <- "scenario_name_here"
 
 

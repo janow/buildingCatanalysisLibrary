@@ -26,7 +26,6 @@ WriteOsm <- function(osm, path) {
 
 }
 
-WriteOsm(Osm, path)
 
 
 
@@ -47,7 +46,6 @@ WriteOsmViz <- function(osm, number.of.participants) {
 	dev.off()
 }
 
-WriteOsmViz(Osm, number.of.participants)
 
 
 
@@ -72,7 +70,6 @@ WriteClusterHeatmap <- function(osm, number.of.participants, cluster.method="war
 	dev.off()
 }
 
-WriteClusterHeatmap(Osm, number.of.participants)
 
 
 
@@ -93,7 +90,6 @@ WriteClusterAnalysis  <- function(cluster.output) {
 
 }
 
-WriteClusterAnalysis(cluster.output)
 
 
 
@@ -111,7 +107,6 @@ WriteMdsScaling <- function(mds) {
 	dev.off()
 }
 
-WriteMdsScaling(mds)
 
 
 
@@ -132,7 +127,6 @@ WriteParticipantSimilarity <- function(participant.similarity.output) {
 
 }
 
-WriteParticipantSimilarity(participant.similarity.output)
 
 
 
@@ -224,7 +218,6 @@ ClusterValidation <- function(path, k, title="", number.of.participants, icon.na
 	dev.off()
 }
 
-ClusterValidation(path, 3, "geo terms", number.of.participants, icon.names)
 
 
 
@@ -277,7 +270,6 @@ PrototypeFreq <- function(path, icon.names) {
   	
 }
 
-PrototypeFreq.output <- PrototypeFreq(path, icon.names)
 
 
 
@@ -330,7 +322,6 @@ WriteAssignment <- function(path, scenario.name) {
   	}
 }
 
-WriteAssignment(path, scenario.name)
 
 
 
@@ -463,8 +454,6 @@ WriteParticipantInfo <- function(path, scenario.name) {
   	}
 }
 
-WriteParticipantInfo(path, scenario.name)
-
 
 
 
@@ -544,7 +533,6 @@ WriteDescription <- function(path, scenario.name) {
   	}
 }
 
-WriteDescription(path, scenario.name)
 
 
 
@@ -623,23 +611,38 @@ WriteOverview <- function(scenario.name, participant.info.path, number.of.partic
 	dev.off()
 }
 
+
+
+
+
+
+
+
+
+
+## EXE
+WriteOsm(Osm, path)
+
+WriteOsmViz(Osm, number.of.participants)
+
+WriteClusterHeatmap(Osm, number.of.participants)
+
+WriteClusterAnalysis(cluster.output)
+
+WriteMdsScaling(mds)
+
+WriteParticipantSimilarity(participant.similarity.output)
+
+ClusterValidation(path, 3, "geo terms", number.of.participants, icon.names)
+
+PrototypeFreq.output <- PrototypeFreq(path, icon.names)
+
+WriteAssignment(path, scenario.name)
+
+WriteParticipantInfo(path, scenario.name)
+
+WriteDescription(path, scenario.name)
+
 WriteOverview(scenario.name, paste(path, "/participant.csv", sep=""), number.of.participants)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

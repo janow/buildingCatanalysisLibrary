@@ -25,7 +25,6 @@ ParticipantCounter <- function(path) {
 	return(np)
 }
 
-number.of.participants <- ParticipantCounter(path)
 
 
 
@@ -65,7 +64,6 @@ IconCounter <- function(path) {
 	return(n.icons)
 }
 
-number.of.icons <- IconCounter(path)
 
 
 
@@ -132,7 +130,6 @@ IconNamesGetter <- function(path, scenario.name) {
 	return(sort(icon.list))
 }
 
-icon.names <- IconNamesGetter(path, scenario.name)
 
 
 
@@ -210,7 +207,6 @@ ExtractIsms <- function(path, scenario.name, number.of.icons) {
 
 }
 
-ExtractIsms(path, scenario.name, number.of.icons)
 
 
 
@@ -250,16 +246,27 @@ ReadIsms <- function(ism.path, ism.list, number.of.icons) {
 
 }
 
+
+
+
+
+
+
+
+
+
+
+## EXE
+number.of.participants <- ParticipantCounter(path)
+
+number.of.icons <- IconCounter(path)
+
+icon.names <- IconNamesGetter(path, scenario.name)
+
+ExtractIsms(path, scenario.name, number.of.icons)
+
 ism.path <- paste(path, "/ism", sep="")
 isms <- ReadIsms(ism.path, list.files(ism.path), number.of.icons)
-
-
-
-
-
-
-
-
 
 
 

@@ -25,7 +25,6 @@ OsmGenerator <- function(isms, icon.names) {
   return(osm)
 }
 
-Osm <- OsmGenerator(isms, icon.names)
 
 
 
@@ -39,7 +38,6 @@ MdsScaling <- function(osm) {
 	return(mds)
 }
 
-mds <- MdsScaling(Osm)
 
 
 
@@ -68,7 +66,6 @@ ClusterAnalysis  <- function(osm, number.of.participants, cluster.method="ward.D
 
 }
 
-cluster.output <- ClusterAnalysis(Osm, number.of.participants)
 
 
 
@@ -124,12 +121,22 @@ ParticipantSimilarity <- function(isms, ism.list) {
 	
 }
 
+
+
+
+
+
+
+
+
+
+## EXE
+Osm <- OsmGenerator(isms, icon.names)
+
+mds <- MdsScaling(Osm)
+
+cluster.output <- ClusterAnalysis(Osm, number.of.participants)
+
 ism.path <- paste(path, "/ism", sep="")
 participant.similarity.output <- ParticipantSimilarity(isms, list.files(ism.path))
-
-
-
-
-
-
 
