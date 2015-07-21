@@ -19,9 +19,9 @@ require(RColorBrewer)
 
 
 
-# Creates a sample of participants of size sample_size and computes the hclust objects and cophenetic matrices for this sample.
+# Creates a sample of participants of size sample.size and computes the hclust objects and cophenetic matrices for this sample.
 # The return value is a 6 element list (hclust_ave,coph.ave,hclust_comp,coph.comp,hclust_ward,coph.ward)
-SamplingRun <- function(path, osm.path, ism.list, sample_size) {
+SamplingRun <- function(path, osm.path, ism.list, sample.size) {
   d <- read.csv(osm.path, header = F)
   
   # Construct the zip folder path and list all zip files
@@ -29,43 +29,44 @@ SamplingRun <- function(path, osm.path, ism.list, sample_size) {
   files <- ism.list
   
   # Initialize OSM
-  osm <- matrix(0,nrow(d),nrow(d))
+  osm <- matrix(0, nrow(d), nrow(d))
   
   # create random sample numbers
-  r <- sample(length(ism.list), size=sample_size, replace=FALSE)
+  r <- sample(length(ism.list), size=sample.size, replace=FALSE)
   
   # create OSM for sample
-  for (i in 1:sample_size) {
+  for (i in 1:sample.size) {
     matrix.i.name <- files[r[i]]
     # print(paste("reading",matrix.i.name))
     
     # Read in the ISM from a participant and exclude the non-ism info from the .mtrx file
-    matrix.i <- read.delim(paste(ism.path,matrix.i.name,sep=""), header = F, sep = " ", stringsAsFactors = F)
+    matrix.i <- read.delim(paste(ism.path, matrix.i.name, sep=""), header = F, sep = " ", stringsAsFactors = F)
     matrix.i <- data.matrix(matrix.i[1:nrow(d), ])
     
     osm <- osm + matrix.i
   }
   
   # create hclust objects for different methods
-  ave <- hclust(method = "average", as.dist(sample_size - osm))
-  comp <- hclust(method = "complete", as.dist(sample_size - osm))
-  ward <- hclust(method = "ward", as.dist(sample_size - osm))
+  ave <- hclust(method = "average", as.dist(sample.size - osm))
+  comp <- hclust(method = "complete", as.dist(sample.size - osm))
+  ward <- hclust(method = "ward", as.dist(sample.size - osm))
   
   # compute cophenetic matrices
   coph.ave <- as.matrix(cophenetic(ave)) 
   coph.comp <- as.matrix(cophenetic(comp)) 
   coph.ward <- as.matrix(cophenetic(ward)) 
   
-  return(list(ave,coph.ave,comp,coph.comp,ward,coph.ward,r))
+  return(list(ave, coph.ave, comp, coph.comp, ward, coph.ward, r))
 }
+
 
 
 
 
 # Perform a complete sampling experiment in which an average cophenetic matrix for samples of participants is compared
 # to that of the entire set of participnats. The number of trials is given by paramter 'trials' and a sample size 
-# of 'sample_size' 
-CopheneticSampling <- function(path, osm.path, ism.list, trials, sample_size) {
+# of 'sample.size' 
+CopheneticSampling <- function(path, osm.path, ism.list, trials, sample.size) {
   # read overall osm
   d <- read.csv(osm.path, header = F)
   dm <- as.matrix(d[, -1])
@@ -76,13 +77,13 @@ CopheneticSampling <- function(path, osm.path, ism.list, trials, sample_size) {
   comp.all <- hclust(method = "complete", as.dist(ParticipantCounter(path) - dm))
   ward.all <- hclust(method = "ward", as.dist(ParticipantCounter(path) - dm))
   
-  coph.ave.total <- matrix(0,nrow(d),nrow(d))
-  coph.comp.total <- matrix(0,nrow(d),nrow(d))
-  coph.ward.total <- matrix(0,nrow(d),nrow(d))
+  coph.ave.total <- matrix(0, nrow(d), nrow(d))
+  coph.comp.total <- matrix(0, nrow(d), nrow(d))
+  coph.ward.total <- matrix(0, nrow(d), nrow(d))
   
   # sample and sum up the cophenetic matrices for different clustering methods
   for (i in 1:trials) {
-    result <- SamplingRun(path, osm.path, ism.list, sample_size)
+    result <- SamplingRun(path, osm.path, ism.list, sample.size)
     coph.ave.total <- coph.ave.total + result[[2]]
     coph.comp.total <- coph.comp.total + result[[4]]
     coph.ward.total <- coph.ward.total + result[[6]]
@@ -107,7 +108,9 @@ CopheneticSampling <- function(path, osm.path, ism.list, trials, sample_size) {
   print (sum(diff.ave) / (nrow(d)^2))
   print (sum(diff.comp) / (nrow(d)^2))
   print (sum(diff.ward) / (nrow(d)^2))
+
 }
+
 
 
 
@@ -129,23 +132,24 @@ IndexSampling <- function(path, ism.list, output.name, trials, sample.size.start
   result.df.jac <- data.frame(row_names = c("sample size", c(sample.size.start:sample.size.end)), stringsAsFactors=FALSE)
   result.df.rand <- data.frame(row_names = c("sample size", c(sample.size.start:sample.size.end)), stringsAsFactors=FALSE)
   for (i in 1:(n.cluster.end-n.cluster.start+1)) {
-    result.df.jac[1, ((i-1)*2)+2] <- paste("cluster=", n.cluster.start + i - 1, " avg", sep = "")
-    result.df.jac[1, ((i-1)*2)+3] <- paste("cluster=", n.cluster.start + i - 1, " sd", sep = "")
-    result.df.rand[1, ((i-1)*2)+2] <- paste("cluster=", n.cluster.start + i - 1, " avg", sep = "")
-    result.df.rand[1, ((i-1)*2)+3] <- paste("cluster=", n.cluster.start + i - 1, " sd", sep = "")
+    result.df.jac[1, ((i - 1) * 2) + 2] <- paste("cluster=", n.cluster.start + i - 1, " avg", sep = "")
+    result.df.jac[1, ((i - 1) * 2) + 3] <- paste("cluster=", n.cluster.start + i - 1, " sd", sep = "")
+    result.df.rand[1, ((i - 1) * 2) + 2] <- paste("cluster=", n.cluster.start + i - 1, " avg", sep = "")
+    result.df.rand[1, ((i - 1) * 2) + 3] <- paste("cluster=", n.cluster.start + i - 1, " sd", sep = "")
+
   }
   
   # run experiments and enter average Jaccard similarity over all three cluster methods in the data frame
   count <- 1
   for (j in n.cluster.start:n.cluster.end) {
     for (l in sample.size.start:sample.size.end) {
-      print(paste(((((j-n.cluster.start)*(sample.size.end-sample.size.start+1))+(l-sample.size.start+1)) / ((n.cluster.end-n.cluster.start+1) * (sample.size.end-sample.size.start+1)))*100,"% done" ))
+      print(paste(((((j - n.cluster.start) * (sample.size.end - sample.size.start + 1)) + (l - sample.size.start + 1)) / ((n.cluster.end - n.cluster.start + 1) * (sample.size.end - sample.size.start + 1))) * 100, "% done" ))
       avg.jac <- 0 
       sq.jac <- 0
       avg.rand <- 0 
       sq.rand <- 0
       for (i in 1:trials) {
-        result <- SamplingRun(path,ism.list,l)
+        result <- SamplingRun(path,ism.list, l)
         sim.ave.comp.jac <- cluster_similarity(cutree(result[[1]], k=j), cutree(result[[3]], k = j), similarity = c("jaccard"), method = "independence")
         sim.ave.ward.jac <- cluster_similarity(cutree(result[[1]], k=j), cutree(result[[5]], k = j), similarity = c("jaccard"), method = "independence")
         sim.comp.ward.jac <- cluster_similarity(cutree(result[[3]], k=j), cutree(result[[5]], k = j), similarity = c("jaccard"), method = "independence")
@@ -174,7 +178,9 @@ IndexSampling <- function(path, ism.list, output.name, trials, sample.size.start
         log[count, 12] <- sim.avg.rand
         
         count <- count + 1
+
       }
+      
       var.jac <- ((trials * sq.jac) - avg.jac^2) / (trials * (trials - 1))
       avg.jac <- avg.jac / trials
       
@@ -185,7 +191,9 @@ IndexSampling <- function(path, ism.list, output.name, trials, sample.size.start
       result.df.jac[l - sample.size.start + 2, (j - n.cluster.start) * 2 + 3] <- sqrt(var.jac)
       result.df.rand[l - sample.size.start + 2, (j - n.cluster.start) * 2 + 2] <- avg.rand
       result.df.rand[l - sample.size.start + 2, (j - n.cluster.start) * 2 + 3] <- sqrt(var.rand)
+
     }
+
   }
   
   # write data frame to file
@@ -198,42 +206,48 @@ IndexSampling <- function(path, ism.list, output.name, trials, sample.size.start
   
   pdf(file = paste(path, output.name, "_jac.pdf", sep = ""), onefile = T, width = 12, height = 4)
   # png(filename=paste(path, output.name, "_jac.png",sep=""), height=1600, width=1600, bg="white")
-  for (i in 1:(n.cluster.end-n.cluster.start+1)) {
+  for (i in 1:(n.cluster.end - n.cluster.start + 1)) {
     if (i == 1) {
       par(mar = c(5.1, 4.1, 4.1, 5.1), xpd = TRUE)
-      plot(result.df.jac[2:(sample.size.end-sample.size.start+2),2], type = "o", ylim = c(0, 1), col = cols[((i-1) %% length(cols)) + 1 ], pch = 21+i-1, lty = i, axes = FALSE, ann = FALSE, bty = 'L') 
-      axis(1, at = 1:(sample.size.end-sample.size.start+1), labels = c(sample.size.start:sample.size.end))
+      plot(result.df.jac[2:(sample.size.end - sample.size.start + 2), 2], type = "o", ylim = c(0, 1), col = cols[((i - 1) %% length(cols)) + 1], pch = 21 + i - 1, lty = i, axes = FALSE, ann = FALSE, bty = 'L') 
+      axis(1, at = 1:(sample.size.end - sample.size.start + 1), labels = c(sample.size.start:sample.size.end))
       axis(2, at = c(0, 0.2, 0.4, 0.6, 0.8, 1), labels = c("0.0", "0.2", "0.4", "0.6", "0.8", "1.0"))
       box()
       title(main = "CMSI based on Jaccard coefficient", col = rgb(0, 0.5, 0))
     } else {
-      lines(result.df.jac[2:(sample.size.end-sample.size.start+2), (i-1)*2+2], type="o", col = cols[((i-1) %% length(cols)) + 1 ], pch = 21+i-1, lty = i)
+      lines(result.df.jac[2:(sample.size.end - sample.size.start + 2), (i - 1) * 2 + 2], type="o", col = cols[((i - 1) %% length(cols)) + 1], pch = 21 + i - 1, lty = i)
     }
+
   }
-  legend("topright", inset = c(-0.08, 0), legend = c(n.cluster.start:n.cluster.end), cex = 0.8, col = cols, pch = 21:(21+(n.cluster.end-n.cluster.start)), lty = 1:(n.cluster.end-n.cluster.start+1))
+
+  legend("topright", inset = c(-0.08, 0), legend = c(n.cluster.start:n.cluster.end), cex = 0.8, col = cols, pch = 21:(21 + (n.cluster.end - n.cluster.start)), lty = 1:(n.cluster.end - n.cluster.start + 1))
   title(xlab = "Sample size", col.lab = rgb(0, 0.5, 0))
   title(ylab = "CMSI", col.lab = rgb(0, 0.5, 0))
   dev.off()
   
   pdf(file = paste(path, output.name, "_rand.pdf", sep = ""), onefile = T, width = 12, height = 4)
   #png(filename=paste(path, output.name, "_rand.png",sep=""), height=1600, width=1600, bg="white")
-  for (i in 1:(n.cluster.end-n.cluster.start+1)) {
+  for (i in 1:(n.cluster.end - n.cluster.start + 1)) {
     if (i == 1) {
       par(mar = c(5.1, 4.1, 4.1,5.1), xpd = TRUE)
-      plot(result.df.rand[2:(sample.size.end-sample.size.start+2), 2], type = "o", ylim = c(0, 1), col = cols[((i-1) %% length(cols)) + 1], pch = 21+i-1, lty = i, axes = FALSE, ann = FALSE) 
-      axis(1, at = 1:(sample.size.end-sample.size.start+1), labels = c(sample.size.start:sample.size.end))
+      plot(result.df.rand[2:(sample.size.end - sample.size.start + 2), 2], type = "o", ylim = c(0, 1), col = cols[((i - 1) %% length(cols)) + 1], pch = 21 + i - 1, lty = i, axes = FALSE, ann = FALSE) 
+      axis(1, at = 1:(sample.size.end-sample.size.start + 1), labels = c(sample.size.start:sample.size.end))
       axis(2, at = c(0, 0.2, 0.4, 0.6, 0.8, 1), labels = c("0.0", "0.2", "0.4", "0.6", "0.8", "1.0"))
       box()
       title(main = "CMSI based on Rand coefficient", col = rgb(0, 0.5, 0))
     } else {
-      lines(result.df.rand[2:(sample.size.end-sample.size.start+2), (i-1)*2+2], type = "o", col = cols[((i-1) %% length(cols)) + 1], pch = 21+i-1, lty = i)
+      lines(result.df.rand[2:(sample.size.end - sample.size.start + 2), (i - 1) * 2 + 2], type = "o", col = cols[((i - 1) %% length(cols)) + 1], pch = 21 + i - 1, lty = i)
     }
+
   }
-  legend("topright", inset = c(-0.08,0), legend = c(n.cluster.start:n.cluster.end), cex = 0.8, col = cols, pch = 21:(21+(n.cluster.end-n.cluster.start)), lty = 1:(n.cluster.end-n.cluster.start+1))
+
+  legend("topright", inset = c(-0.08, 0), legend = c(n.cluster.start:n.cluster.end), cex = 0.8, col = cols, pch = 21:(21 + (n.cluster.end - n.cluster.start)), lty = 1:(n.cluster.end - n.cluster.start + 1))
   title(xlab = "Sample size", col.lab = rgb(0, 0.5, 0))
   title(ylab = "CMSI", col.lab = rgb(0, 0.5, 0))
   dev.off()
+
 }
+
 
 
 
@@ -260,7 +274,9 @@ ParticipantSimilarityClusters <- function(path) {
   #Create overview table showing cluster membership for all possible numbers of clusters
   tree <- cutree(cluster, k = c(1:nrow(dm)))
   write.csv(tree, file=paste(path, "participant_similarity_ward_clusters", ".csv", sep = ""))
+
 }
+
 
 
 

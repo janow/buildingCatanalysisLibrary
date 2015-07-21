@@ -44,6 +44,7 @@ WriteOsmViz <- function(osm, number.of.participants) {
 	heatmap.2(as.matrix(number.of.participants - osm), Rowv = F, Colv = "Rowv", dendrogram = "none", 
 			margin = c(4, 4), cexRow = 0.35, cexCol = 0.35, revC = F, trace = "none", key = F)
 	dev.off()
+
 }
 
 
@@ -68,6 +69,7 @@ WriteClusterHeatmap <- function(osm, number.of.participants, cluster.method="war
 			margin = c(4, 4), cexRow = 0.35, cexCol = 0.35, dendrogram = "both", 
 			revC = T, trace = "none", key = T)
 	dev.off()
+	
 }
 
 
@@ -644,5 +646,12 @@ WriteParticipantInfo(path, scenario.name)
 WriteDescription(path, scenario.name)
 
 WriteOverview(scenario.name, paste(path, "/participant.csv", sep=""), number.of.participants)
+
+
+
+
+
+
+
 
 

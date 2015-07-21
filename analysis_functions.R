@@ -137,6 +137,15 @@ mds <- MdsScaling(Osm)
 
 cluster.output <- ClusterAnalysis(Osm, number.of.participants)
 
-ism.path <- paste(path, "/ism", sep="")
-participant.similarity.output <- ParticipantSimilarity(isms, list.files(ism.path))
+participant.similarity.output <- ParticipantSimilarity(isms, list.files(paste(path, "/ism", sep="")))
+
+
+
+
+
+
+
+
+
+
 

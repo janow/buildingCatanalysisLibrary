@@ -265,8 +265,9 @@ icon.names <- IconNamesGetter(path, scenario.name)
 
 ExtractIsms(path, scenario.name, number.of.icons)
 
-ism.path <- paste(path, "/ism", sep="")
-isms <- ReadIsms(ism.path, list.files(ism.path), number.of.icons)
+isms <- ReadIsms(paste(path, "/ism", sep=""), list.files(paste(path, "/ism", sep="")), number.of.icons)
+
+
 
 
 
