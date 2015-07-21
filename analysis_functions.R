@@ -23,6 +23,7 @@ OsmGenerator <- function(isms, icon.names) {
 
   # returns the osm matrix
   return(osm)
+
 }
 
 
@@ -36,6 +37,7 @@ MdsScaling <- function(osm) {
 	osm.dist <- dist(osm, method = "euclidean")
 	mds <- cmdscale(osm.dist)
 	return(mds)
+	
 }
 
 

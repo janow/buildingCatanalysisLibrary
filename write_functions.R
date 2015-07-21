@@ -69,7 +69,7 @@ WriteClusterHeatmap <- function(osm, number.of.participants, cluster.method="war
 			margin = c(4, 4), cexRow = 0.35, cexCol = 0.35, dendrogram = "both", 
 			revC = T, trace = "none", key = T)
 	dev.off()
-	
+
 }
 
 
@@ -107,6 +107,7 @@ WriteMdsScaling <- function(mds) {
 		points(mds[i, 1], mds[i, 2], type = "p", cex = 1.5)
 	}
 	dev.off()
+	
 }
 
 

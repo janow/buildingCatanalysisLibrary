@@ -131,7 +131,7 @@ IndexSampling <- function(path, ism.list, output.name, trials, sample.size.start
   
   result.df.jac <- data.frame(row_names = c("sample size", c(sample.size.start:sample.size.end)), stringsAsFactors=FALSE)
   result.df.rand <- data.frame(row_names = c("sample size", c(sample.size.start:sample.size.end)), stringsAsFactors=FALSE)
-  for (i in 1:(n.cluster.end-n.cluster.start+1)) {
+  for (i in 1:(n.cluster.end-n.cluster.start + 1)) {
     result.df.jac[1, ((i - 1) * 2) + 2] <- paste("cluster=", n.cluster.start + i - 1, " avg", sep = "")
     result.df.jac[1, ((i - 1) * 2) + 3] <- paste("cluster=", n.cluster.start + i - 1, " sd", sep = "")
     result.df.rand[1, ((i - 1) * 2) + 2] <- paste("cluster=", n.cluster.start + i - 1, " avg", sep = "")

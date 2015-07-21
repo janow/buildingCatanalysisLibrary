@@ -128,6 +128,7 @@ IconNamesGetter <- function(path, scenario.name) {
 	
 	#Return the icon list as a vector
 	return(sort(icon.list))
+	
 }
 
 
