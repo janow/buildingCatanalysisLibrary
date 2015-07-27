@@ -1155,6 +1155,10 @@ stanDen <- function(path)
 # Visualize row values for the entire OSM
 VisRowValues <- function(Osm, icon.names) {
 
+  # create a folder to hold individual graphics 
+  graphics.path <- paste(getwd(), "MeanVarianceGraphics/", sep = "/")
+  dir.create(graphics.path, showWarnings = FALSE)
+
   myOSM <- as.data.frame(Osm)
 
   ## Calculate the mean and variance for each row. Store in data frame.
@@ -1166,37 +1170,47 @@ VisRowValues <- function(Osm, icon.names) {
   myMean <- round(myOSM[,nrow(Osm)+1], 2)
   myVar <- round(myOSM[,nrow(Osm)+2], 2)
 
-  png(file = paste(path, "groupFreq_test", ".png", sep=""), width = 3000, height = 3200, pointsize = 12)
-  par(mfrow=c(9,8))
-  for(i in 2:73)
-  {
-    lab <- i-1
-    subT = paste(myMean[lab], myVar[lab], sep = '//')
-    barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
-  }
-  dev.off()
-
   # Visualize row data for each row
-  for (i in 2:73){
-    lab <- i-1
-    png(file = paste(path, myLabels[lab], "_RF", ".png", sep=""),
+  for (i in 1:nrow(Osm)) {
+    lab <- i
+    png(file = paste(graphics.path, myLabels[lab], "_RF", ".png", sep=""),
         width = 300, height = 300, pointsize = 10)
     subT = paste(myMean[lab], myVar[lab], sep = '//')
     barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
     dev.off()
+
+  }
+
+  # Create bar plots for the lower quartile
+  my25 <- quantile(myVar, .25)
+  distinct25 <- c()
+  png(file = paste(graphics.path, "groupFreq_25", ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
+  par(mfrow=c(4,4))
+  for(i in 2:55) {
+    lab <- i-1
+    if (myVar[lab] < my25) {
+      distinct25 <- append(distinct25, myLabels[lab])
+      subT = paste(myMean[lab], myVar[lab], sep = '//')
+      barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
+    }
+  }
+  dev.off()
+
+  # Make HMTL file with lower quantile images
+  #define output file
+  output <- "lowerQuantiles25.html"
+  HTMLoutput=file.path(path, output)
+  #specify where the icons/images are located at
+  iconPath <- paste("icons/", sep = "")
+  #write all the images/icons of one cluster into the html file
+  #MyHTMLInsertGraph is necessary as there is no parameter to switch off the line break
+  for (i in distinct25) {
+    MyHTMLInsertGraph(paste(iconPath, i, ".jpg", sep = ""),file=HTMLoutput,caption=i)
   }
 
 }
-VisRowValues(path)
 
-
-
-
-
-
-
-
-
+VisRowValues(Osm, icon.names)
 
 
 

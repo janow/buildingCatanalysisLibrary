@@ -1072,6 +1072,52 @@ WriteOverview <- function(scenario.name, participant.info.path, number.of.partic
 
 
 
+# Visualize row values for the entire OSM
+VisRowValues <- function(Osm, icon.names) {
+
+  # create a folder to hold individual graphics 
+  graphics.path <- paste(getwd(), "MeanVarianceGraphics/", sep = "/")
+  dir.create(graphics.path, showWarnings = FALSE)
+
+  myOSM <- as.data.frame(Osm)
+
+  ## Calculate the mean and variance for each row. Store in data frame.
+  myOSM$Mean <- apply(myOSM[1:nrow(Osm)],1,mean,na.rm=TRUE) #mean for each row, add to new column "Mean"
+  myOSM$Variance <- apply(myOSM[1:nrow(Osm)],1,var,na.rm=TRUE)
+
+  # Icon names are in row 1. They are stored in myLabels
+  myLabels <- as.vector(icon.names)
+  myMean <- round(myOSM[,nrow(Osm)+1], 2)
+  myVar <- round(myOSM[,nrow(Osm)+2], 2)
+
+  png(file = paste(path, "groupFreq_test", ".png", sep=""), width = 3000, height = 3200, pointsize = 12)
+  par(mfrow=c(9,8))
+
+  for(i in 1:nrow(Osm)) {
+    lab <- i
+    subT = paste(myMean[lab], myVar[lab], sep = '//')
+    barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
+  }
+
+  dev.off()
+
+  # Visualize row data for each row
+  for (i in 1:nrow(Osm)) {
+    lab <- i
+    png(file = paste(graphics.path, myLabels[lab], "_RF", ".png", sep=""),
+        width = 300, height = 300, pointsize = 10)
+    subT = paste(myMean[lab], myVar[lab], sep = '//')
+    barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
+    dev.off()
+
+  }
+
+}
+
+
+
+
+
 ################################################################################################################################################################
 ################################################################################################################################################################
 ################################################################################################################################################################
@@ -1123,3 +1169,5 @@ WriteParticipantInfo(path, scenario.name)
 WriteDescription(path, scenario.name)
 
 WriteOverview(scenario.name, paste(path, "/participant.csv", sep=""), number.of.participants)
+
+VisRowValues(Osm, icon.names)
