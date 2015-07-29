@@ -1152,8 +1152,25 @@ stanDen <- function(path)
 # VisRowValues(path)
 
 
+
+
+
+
+
+
+
+
+require(R2HTML)
+
+
+
 # Visualize row values for the entire OSM
-VisRowValues <- function(Osm, icon.names) {
+# MeanVarianceGraphics: visualize row values for the entire OSM
+# Parameters
+# osm: matrix, the osm matrix created by OsmGenerator
+# icon.names: character vector, a list of the names of the icons created by IconListGetter
+# icons.path: string, path to icons directory that holds the experiment icons (usually a subdirectory of the experiment directory)
+MeanVarianceGraphics <- function(Osm, icon.names, icons.path) {
 
   # create a folder to hold individual graphics 
   graphics.path <- paste(getwd(), "MeanVarianceGraphics/", sep = "/")
@@ -1185,9 +1202,10 @@ VisRowValues <- function(Osm, icon.names) {
   my25 <- quantile(myVar, .25)
   distinct25 <- c()
   png(file = paste(graphics.path, "groupFreq_25", ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
-  par(mfrow=c(4,4))
-  for(i in 2:55) {
-    lab <- i-1
+  # Figures out the proper "par" parameters by calculating how many icons would be in a quartile, then taking the square root to determine how large the window needs to be 
+  par(mfrow=c(ceiling((nrow(Osm)/4)^(1/2)),ceiling((nrow(Osm)/4)^(1/2))))
+  for(i in 1:nrow(Osm)) {
+    lab <- i
     if (myVar[lab] < my25) {
       distinct25 <- append(distinct25, myLabels[lab])
       subT = paste(myMean[lab], myVar[lab], sep = '//')
@@ -1196,84 +1214,53 @@ VisRowValues <- function(Osm, icon.names) {
   }
   dev.off()
 
-  # Make HMTL file with lower quantile images
+  # Create bar plots for upper quartile
+  # Set upper quartile
+  my75 <- quantile(myVar, .75)
+  distinct75 <- c()
+  png(file = paste(graphics.path, "groupFreq_75", ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
+  # Figures out the proper "par" parameters by calculating how many icons would be in a quartile, then taking the square root to determine how large the window needs to be 
+  par(mfrow=c(ceiling((nrow(Osm)/4)^(1/2)),ceiling((nrow(Osm)/4)^(1/2))))
+  for(i in 1:nrow(Osm)) {
+    lab <- i
+    if (myVar[lab] > my75) {
+      distinct75 <- append(distinct75, myLabels[lab])
+      subT = paste(myMean[lab], myVar[lab], sep = '//')
+      barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
+    }
+  }
+  dev.off()
+
+
+  # Find out what the extension is for the icons (i.e. ".png", ".jpeg", ".gif")
+  icon.names <- list.files(icons.path)
+  icon.extension <- strsplit(icon.names[1], "\\.")[[1]][2]
+  icon.extension <- paste(".", icon.extension, sep="")
+
+  # Make HMTL file with lower and upper quantile images
   #define output file
-  output <- "lowerQuantiles25.html"
-  HTMLoutput=file.path(path, output)
-  #specify where the icons/images are located at
-  iconPath <- paste("icons/", sep = "")
-  #write all the images/icons of one cluster into the html file
-  #MyHTMLInsertGraph is necessary as there is no parameter to switch off the line break
+  output <- "LowerQuantiles25.html"
+  HTMLoutput=file.path(graphics.path, output)
   for (i in distinct25) {
-    MyHTMLInsertGraph(paste(iconPath, i, ".jpg", sep = ""),file=HTMLoutput,caption=i)
+    HTMLInsertGraph(GraphFileName= paste(icons.path, i, icon.extension, sep = ""), file=HTMLoutput, Caption=i, Align="center", WidthHTML=200, HeightHTML=NULL)
+  }
+
+  output <- "UpperQuantiles75.html"
+  HTMLoutput=file.path(graphics.path, output)
+  for (i in distinct75) { 
+    HTMLInsertGraph(GraphFileName= paste(icons.path, i, icon.extension, sep = ""), file=HTMLoutput, Caption=i, Align="center", WidthHTML=200, HeightHTML=NULL)
   }
 
 }
 
-VisRowValues(Osm, icon.names)
+icons.path <- paste(path, "/icons/", sep="")
+MeanVarianceGraphics(Osm, icon.names, icons.path)
 
 
 
 
-# Create bar plots for the lower quartile
-my25 <- quantile(myVar, .25)
-distinct25 <- c()
-png(file = paste(path, "groupFreq_25", ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
-par(mfrow=c(4,4))
-for(i in 2:55)
-{
-  lab <- i-1
-  if (myVar[lab] < my25) {
-    distinct25 <- append(distinct25, myLabels[lab])
-    subT = paste(myMean[lab], myVar[lab], sep = '//')
-    barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
-  }
-}
-dev.off()
-
-# Create bar plots for upper quartile
-# TODO: find a way to calculate the best height width, mfrow settings
-# Set upper quartile
-my75 <- quantile(myVar, .75)
-distinct75 <- c()
-png(file = paste(path, "groupFreq_75", ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
-par(mfrow=c(4,4))
-for(i in 2:55)
-{
-  lab <- i-1
-  if (myVar[lab] > my75) {
-    distinct75 <- append(distinct75, myLabels[lab])
-    subT = paste(myMean[lab], myVar[lab], sep = '//')
-    barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
-  }
-}
-dev.off()
 
 
-# Make HMTL file with upper quantile images
-#define output file
-output <- "upperQuantiles75.html"
-HTMLoutput=file.path(path, output)
-#specify where the icons/images are located at
-iconPath <- paste("icons/", sep = "")
-#write all the images/icons of one cluster into the html file
-#MyHTMLInsertGraph is necessary as there is no parameter to switch off the line break
-for (i in distinct75) {
-  MyHTMLInsertGraph(paste(iconPath, i, ".jpg", sep = ""),file=HTMLoutput,caption=i)
-}
-
-
-# Make HMTL file with lower quantile images
-#define output file
-output <- "lowerQuantiles25.html"
-HTMLoutput=file.path(path, output)
-#specify where the icons/images are located at
-iconPath <- paste("icons/", sep = "")
-#write all the images/icons of one cluster into the html file
-#MyHTMLInsertGraph is necessary as there is no parameter to switch off the line break
-for (i in distinct25) {
-  MyHTMLInsertGraph(paste(iconPath, i, ".jpg", sep = ""),file=HTMLoutput,caption=i)
-}
 
 
 # Visualize row values for the entire OSM as a histogram

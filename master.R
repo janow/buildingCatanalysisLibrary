@@ -6,13 +6,11 @@
 # 3. Load the packages seen below
 # 4. Define a path variable as a string to the location of the experiment folder (there should be a sub-folder "zip")
 
-#install.packages("gplots")
 require(gplots)
-#install.packages("vegan")
 require(vegan)
-#install.packages("clusteval")
 require(clusteval)
 require(grid)
+require(R2HTML)
 
 # Setting the basic path and scenario name variables, as well as setting the working directory to the path (this isn't necessary, just convenient).
 path <- "/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests"
@@ -1073,7 +1071,12 @@ WriteOverview <- function(scenario.name, participant.info.path, number.of.partic
 
 
 # Visualize row values for the entire OSM
-VisRowValues <- function(Osm, icon.names) {
+# MeanVarianceGraphics: visualize row values for the entire OSM
+# Parameters
+# osm: matrix, the osm matrix created by OsmGenerator
+# icon.names: character vector, a list of the names of the icons created by IconListGetter
+# icons.path: string, path to icons directory that holds the experiment icons (usually a subdirectory of the experiment directory)
+MeanVarianceGraphics <- function(Osm, icon.names, icons.path) {
 
   # create a folder to hold individual graphics 
   graphics.path <- paste(getwd(), "MeanVarianceGraphics/", sep = "/")
@@ -1090,17 +1093,6 @@ VisRowValues <- function(Osm, icon.names) {
   myMean <- round(myOSM[,nrow(Osm)+1], 2)
   myVar <- round(myOSM[,nrow(Osm)+2], 2)
 
-  png(file = paste(path, "groupFreq_test", ".png", sep=""), width = 3000, height = 3200, pointsize = 12)
-  par(mfrow=c(9,8))
-
-  for(i in 1:nrow(Osm)) {
-    lab <- i
-    subT = paste(myMean[lab], myVar[lab], sep = '//')
-    barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
-  }
-
-  dev.off()
-
   # Visualize row data for each row
   for (i in 1:nrow(Osm)) {
     lab <- i
@@ -1110,6 +1102,59 @@ VisRowValues <- function(Osm, icon.names) {
     barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
     dev.off()
 
+  }
+
+  # Create bar plots for the lower quartile
+  my25 <- quantile(myVar, .25)
+  distinct25 <- c()
+  png(file = paste(graphics.path, "groupFreq_25", ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
+  # Figures out the proper "par" parameters by calculating how many icons would be in a quartile, then taking the square root to determine how large the window needs to be 
+  par(mfrow=c(ceiling((nrow(Osm)/4)^(1/2)),ceiling((nrow(Osm)/4)^(1/2))))
+  for(i in 1:nrow(Osm)) {
+    lab <- i
+    if (myVar[lab] < my25) {
+      distinct25 <- append(distinct25, myLabels[lab])
+      subT = paste(myMean[lab], myVar[lab], sep = '//')
+      barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
+    }
+  }
+  dev.off()
+
+  # Create bar plots for upper quartile
+  # Set upper quartile
+  my75 <- quantile(myVar, .75)
+  distinct75 <- c()
+  png(file = paste(graphics.path, "groupFreq_75", ".png", sep=""), width = 1200, height = 1200, pointsize = 12)
+  # Figures out the proper "par" parameters by calculating how many icons would be in a quartile, then taking the square root to determine how large the window needs to be 
+  par(mfrow=c(ceiling((nrow(Osm)/4)^(1/2)),ceiling((nrow(Osm)/4)^(1/2))))
+  for(i in 1:nrow(Osm)) {
+    lab <- i
+    if (myVar[lab] > my75) {
+      distinct75 <- append(distinct75, myLabels[lab])
+      subT = paste(myMean[lab], myVar[lab], sep = '//')
+      barplot(myOSM[,i], main = paste(myLabels[lab], subT, sep = ': '), cex.main = 1.5 )
+    }
+  }
+  dev.off()
+
+
+  # Find out what the extension is for the icons (i.e. ".png", ".jpeg", ".gif")
+  icon.names <- list.files(icons.path)
+  icon.extension <- strsplit(icon.names[1], "\\.")[[1]][2]
+  icon.extension <- paste(".", icon.extension, sep="")
+
+  # Make HMTL file with lower and upper quantile images
+  #define output file
+  output <- "LowerQuantiles25.html"
+  HTMLoutput=file.path(graphics.path, output)
+  for (i in distinct25) {
+    HTMLInsertGraph(GraphFileName= paste(icons.path, i, icon.extension, sep = ""), file=HTMLoutput, Caption=i, Align="center", WidthHTML=200, HeightHTML=NULL)
+  }
+
+  output <- "UpperQuantiles75.html"
+  HTMLoutput=file.path(graphics.path, output)
+  for (i in distinct75) { 
+    HTMLInsertGraph(GraphFileName= paste(icons.path, i, icon.extension, sep = ""), file=HTMLoutput, Caption=i, Align="center", WidthHTML=200, HeightHTML=NULL)
   }
 
 }
@@ -1170,4 +1215,5 @@ WriteDescription(path, scenario.name)
 
 WriteOverview(scenario.name, paste(path, "/participant.csv", sep=""), number.of.participants)
 
-VisRowValues(Osm, icon.names)
+icons.path <- paste(path, "/icons/", sep="")
+MeanVarianceGraphics(Osm, icon.names, icons.path)
