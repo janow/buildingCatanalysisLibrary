@@ -13,8 +13,8 @@ require(grid)
 require(R2HTML)
 
 # Setting the basic path and scenario name variables, as well as setting the working directory to the path (this isn't necessary, just convenient).
-path <- "/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests"
-setwd(path)
+zip.path <- "/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/zip"
+setwd("/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests")
 scenario.name <- "scenario_name_here"
 
 
@@ -41,16 +41,9 @@ scenario.name <- "scenario_name_here"
 
 # ParticipantCounter: count the number of participants
 # Parameters
-# path: string, path to experiment directory
-ParticipantCounter <- function(path) {
+# path: string, path to participants zip directory
+ParticipantCounter <- function(zip.path) {
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
-	}
-	
-	#Construct the zip folder path and list all zip files
-	zip.path <- paste(path, "zip/", sep = "")
 	files <- list.files(zip.path)
 	
 	#Get the total number of participants (zip files)
@@ -66,16 +59,14 @@ ParticipantCounter <- function(path) {
 
 #IconCounter: count the number of icons(items) used in the experiment
 # Parameters
-# path: string, path to experiment directory
-IconCounter <- function(path) {
+# path: string, path to participants zip directory
+IconCounter <- function(zip.path) {
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
+	# Checks if "/" exists after zip.path. If not, one is added
+	if(substr(zip.path, nchar(zip.path), nchar(zip.path)) != "/") {
+		zip.path <- paste(zip.path, "/", sep = "")
 	}
 
-	#Construct the zip folder path and list all the zip files
-	zip.path <- paste(path, "zip/", sep = "")
 	files <- list.files(zip.path)
 
 	#Get the participant number for the first participant
@@ -106,17 +97,16 @@ IconCounter <- function(path) {
 # IconNamesGetter: get a list of icon names
 # It also saves the icon.csv needed for KlipArt
 # Parameters
-# path: string, path to experiment directory
+# path: string, path to participants zip directory
 # scenario.name: string, name of the experiment
-IconNamesGetter <- function(path, scenario.name) {
+IconNamesGetter <- function(zip.path, scenario.name) {
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
+	# Checks if "/" exists after zip.path. If not, one is added
+	if(substr(zip.path, nchar(zip.path), nchar(zip.path)) != "/") {
+		zip.path <- paste(zip.path, "/", sep = "")
 	}
 	
-	# Construct the zip folder path and list all the zip files 
-	zip.path <- paste(path, "zip/", sep = "")
+	# List all the zip files 
 	files <- list.files(zip.path)
 	
 	# Unzip the zip file from the 1st participant
@@ -152,11 +142,11 @@ IconNamesGetter <- function(path, scenario.name) {
 	icon.list.klipart <- icon.list.klipart[order(icon.list.klipart$index), ]
 
 	# create klipart folder if not already created
-	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	klipart.path <- paste(getwd(), "/", scenario.name, "-klipart/", sep = "")
 	dir.create(klipart.path, showWarnings = FALSE)
 	
 	# Export the list as a csv file
-	write.table(icon.list.klipart, file = paste(path, scenario.name, "-klipart/", "icon.csv", sep = ""),
+	write.table(icon.list.klipart, file = paste(klipart.path, "icon.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
 
 	unlink(substring(paste(getwd(), "/", files[1], sep = ""), 1, nchar(paste(getwd(), "/", files[1], sep = "")) - 4), recursive = TRUE)
@@ -176,28 +166,27 @@ IconNamesGetter <- function(path, scenario.name) {
 # path: string, path to experiment directory
 # path: string, path to experiment directory
 # number.of.icons: integer, the total number of icons in the experiment created by IconCounter
-ExtractIsms <- function(path, scenario.name, number.of.icons) {
+ExtractIsms <- function(zip.path, scenario.name, number.of.icons) {
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
+	# Checks if "/" exists after zip.path. If not, one is added
+	if(substr(zip.path, nchar(zip.path), nchar(zip.path)) != "/") {
+		zip.path <- paste(zip.path, "/", sep = "")
 	}
 
-	# Construct the zip folder path and list all zip files
-	zip.path <- paste(path, "zip/", sep = "")
+	# List all zip files
 	files <- list.files(zip.path)
 
 	# create ism folder if not already created
-	ism.path <- paste(path, "ism/", sep = "")
+	ism.path <- paste(getwd(), "/ism/", sep = "")
 	dir.create(ism.path, showWarnings = FALSE)
 
 	# create klipart folder if not already created
-	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	klipart.path <- paste(getwd(), "/", scenario.name, "-klipart/", sep = "")
 	dir.create(klipart.path, showWarnings = FALSE)
 	dir.create(paste(klipart.path, "matrices/", sep=""), showWarnings = FALSE)
 
 	# create matrices folder if not already created
-	matrices.path <- paste(path, "matrices/", sep = "")
+	matrices.path <- paste(getwd(), "/matrices/", sep = "")
 	dir.create(matrices.path, showWarnings = FALSE)
 
 
@@ -217,17 +206,17 @@ ExtractIsms <- function(path, scenario.name, number.of.icons) {
 		matrix.i <- data.matrix(matrix.i[1:number.of.icons, ])
 		
 		# Export the ISM as .mtrx for KlipArt and .csv for catanalysis
-		write.table(matrix.i, file = paste(path, "ism/", "participant", 
+		write.table(matrix.i, file = paste(ism.path, "participant", 
 						substr(files[i], 1, nchar(files[i]) - 4),
 						".mtrx", sep = ""), sep = " ", 
 						row.names = F, col.names = F)
 		
-		write.table(matrix.i, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "matrices/", "participant", 
+		write.table(matrix.i, file = paste(klipart.path, "matrices/", "participant", 
 						substr(files[i], 1, nchar(files[i]) - 4), 
 						".mtrx", sep = ""), sep = " ",
 						row.names = F, col.names = F)
 		
-		write.table(matrix.i, file = paste(path, "matrices/", "participant", 
+		write.table(matrix.i, file = paste(getwd(), "/matrices/", "participant", 
 						substr(files[i], 1, nchar(files[i]) - 4), 
 						".mtrx", sep = ""), sep = " ",
 						row.names = F, col.names = F)
@@ -457,24 +446,18 @@ ParticipantSimilarity <- function(isms, ism.list) {
 # Writes an osm to drive (usually, the osm is created by OsmGenerator)
 # Parameters
 # osm: matrix, osm generated by OsmGenerator
-# path: string, path to experiment directory
-WriteOsm <- function(osm, path) {
-  
-  	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
-	}
+WriteOsm <- function(osm) {
 
 	# create a folder to hold data outputs.
 	data.path <- paste(getwd(), "DataOutputs/", sep = "/")
 	dir.create(data.path, showWarnings = FALSE)
 
 	# create matrices folder if not already created
-	matrices.path <- paste(path, "matrices/", sep = "")
+	matrices.path <- paste(getwd(), "/matrices/", sep = "")
 	dir.create(matrices.path, showWarnings = FALSE)
 
   	# Export OSM
-  	write.table(osm, file = paste(path, "matrices/", "total.mtrx", sep = ""), 
+  	write.table(osm, file = paste(getwd(), "/matrices/", "total.mtrx", sep = ""), 
       	sep = " ", row.names = F,  col.names = F)
   
   	write.table(osm, file = paste(data.path, "osm.csv", sep = ""), 
@@ -617,18 +600,12 @@ WriteParticipantSimilarity <- function(participant.similarity.output) {
 
 # Cluster validation
 # Parameters
-# path: string, path to experiment directory
+# ism.path: string, path to ism directory
 # k: integer, number of clusters
 # title: string, title of the experiment
 # number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
 # icon.names: character vector, a list of the names of the icons created by IconListGetter
-# ism.path
-ClusterValidation <- function(path, k, title="", number.of.participants, icon.names, ism.path) {
-
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
-	}
+ClusterValidation <- function(ism.path, k, title="", number.of.participants, icon.names) {
 
 	# Checks if "/" exists after ism.path. If not, one is added
 	if(substr(ism.path, nchar(ism.path), nchar(ism.path)) != "/") {
@@ -720,19 +697,18 @@ ClusterValidation <- function(path, k, title="", number.of.participants, icon.na
 # Parameters
 # path: string, path to experiment directory
 # icon.names: character vector, a list of the names of the icons created by IconListGetter
-PrototypeFreq <- function(path, icon.names) {
+PrototypeFreq <- function(zip.path, icon.names) {
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
+	# Checks if "/" exists after zip.path. If not, one is added
+	if(substr(zip.path, nchar(zip.path), nchar(zip.path)) != "/") {
+		zip.path <- paste(zip.path, "/", sep = "")
 	}
 
 	# create a folder to hold data outputs
 	data.path <- paste(getwd(), "DataOutputs/", sep = "/")
 	dir.create(data.path, showWarnings = FALSE)
 	
-	# Construct the path for the zip folder and list all the zip files
-	zip.path <- paste(path, "zip/", sep = "")
+	# List all the zip files
 	files <- list.files(zip.path)
 	
 	# Create a dataframe to store the prototype frequency
@@ -776,21 +752,21 @@ PrototypeFreq <- function(path, icon.names) {
 # Parameters
 # path: string, path to experiment directory
 # scenario.name: string, name of the experiment
-WriteAssignment <- function(path, scenario.name) {
+WriteAssignment <- function(zip.path, scenario.name) {
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
+	# Checks if "/" exists after zip.path. If not, one is added
+	if(substr(zip.path, nchar(zip.path), nchar(zip.path)) != "/") {
+		zip.path <- paste(zip.path, "/", sep = "")
 	}
 
 	# Create an empty dataframe
 	df <- data.frame()
 	
-	#List all zip files
-	zip.path <- paste(path, "zip/", sep = "")
+	# List all zip files
 	files <- list.files(zip.path)
 	
 	for(i in 1:length(files)) {
+
 		# Read in the assignment.csv file
 		participant.i <- unzip(paste(zip.path, files[i], sep = ""))
 		
@@ -803,14 +779,15 @@ WriteAssignment <- function(path, scenario.name) {
 		
 		assignment <- read.delim(participant.assignment, header = F, sep = ",", stringsAsFactors = F)
 		df <- rbind(df, assignment)
+
 	}
 
 	# create klipart folder if not already created
-	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	klipart.path <- paste(getwd(), "/", scenario.name, "-klipart/", sep = "")
 	dir.create(klipart.path, showWarnings = FALSE)
 
 	# Export the assignment.csv
-	write.table(df, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "assignment.csv", sep = ""),
+	write.table(df, file = paste(klipart.path, "assignment.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
 
 	# Deletes all unzipped files as they are no longer needed
@@ -818,6 +795,7 @@ WriteAssignment <- function(path, scenario.name) {
   	for(folder in folder.names) {
     	unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
   	}
+
 }
 
 
@@ -828,19 +806,18 @@ WriteAssignment <- function(path, scenario.name) {
 # Parameters
 # path: string, path to experiment directory
 # scenario.name: string, name of the experiment
-WriteParticipantInfo <- function(path, scenario.name) {
+WriteParticipantInfo <- function(zip.path, scenario.name) {
 	
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
+	# Checks if "/" exists after zip.path. If not, one is added
+	if(substr(zip.path, nchar(zip.path), nchar(zip.path)) != "/") {
+		zip.path <- paste(zip.path, "/", sep = "")
 	}
 
 	# create a folder to hold data outputs
 	data.path <- paste(getwd(), "DataOutputs/", sep = "/")
 	dir.create(data.path, showWarnings = FALSE)
 
-	# Read in the zip file
-	zip.path <- paste(path, "zip/", sep = "")
+	# List all zip files
 	files <- list.files(zip.path)
 	
 	# Read in to demographic info for the 1st participant
@@ -943,17 +920,18 @@ WriteParticipantInfo <- function(path, scenario.name) {
 			sep = ",", row.names = F,  col.names = F)
 
 	# create klipart folder if not already created
-	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	klipart.path <- paste(getwd(), "/", scenario.name, "-klipart/", sep = "")
 	dir.create(klipart.path, showWarnings = FALSE)
 	
 	# Export the participant.csv for KlipArt
-	write.table(demographic, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
+	write.table(demographic, file = paste(klipart.path, "participant.csv", sep = ""), sep = ",", row.names = F,  col.names = F)
 
 	# Deletes all unzipped files as they are no longer needed
 	folder.names <- substr(files, 1, nchar(files)-4)
   	for(folder in folder.names) {
     	unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
   	}
+
 }
 
 
@@ -963,19 +941,18 @@ WriteParticipantInfo <- function(path, scenario.name) {
 # Parameters
 # path: string, path to experiment directory
 # scenario.name: string, name of the experiment
-WriteDescription <- function(path, scenario.name) {
+WriteDescription <- function(zip.path, scenario.name) {
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
+	# Checks if "/" exists after zip.path. If not, one is added
+	if(substr(zip.path, nchar(zip.path), nchar(zip.path)) != "/") {
+		zip.path <- paste(zip.path, "/", sep = "")
 	}
 	
 	# create a folder to hold data outputs
 	data.path <- paste(getwd(), "DataOutputs/", sep = "/")
 	dir.create(data.path, showWarnings = FALSE)
 
-	# Construct the path for the zip folder and list all the zip files
-	zip.path <- paste(path, "zip/", sep = "")
+	# List all the zip files
 	files <- list.files(zip.path)
 	
 	# Unzip the zip file from the 1st participant
@@ -1026,17 +1003,18 @@ WriteDescription <- function(path, scenario.name) {
 			sep = ",", row.names = F,  col.names = F)
 	
 	# create klipart folder if not already created
-	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	klipart.path <- paste(getwd(), "/", scenario.name, "-klipart/", sep = "")
 	dir.create(klipart.path, showWarnings = FALSE)
 
 	# Export batch.csv for Klipart
-	write.table(description, file=paste(paste(path, scenario.name, "-klipart/", sep = ""), "batch.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
+	write.table(description, file=paste(klipart.path, "batch.csv", sep = ""), sep = ",", col.names=  F, row.names = F)
 
 	# Deletes all unzipped files as they are no longer needed
 	folder.names <- substr(files, 1, nchar(files)-4)
   	for(folder in folder.names) {
     	unlink(paste(getwd(), "/", folder, sep = ""), recursive = TRUE)
   	}
+
 }
 
 
@@ -1115,6 +1093,7 @@ WriteOverview <- function(scenario.name, participant.info.path, number.of.partic
 	title(scenario.name, outer = T, line = -2, cex.main = 2, col.main = "blue")
 	
 	dev.off()
+
 }
 
 
@@ -1224,15 +1203,15 @@ MeanVarianceGraphics <- function(Osm, icon.names, icons.path) {
 
 
 ## EXE
-number.of.participants <- ParticipantCounter(path)
+number.of.participants <- ParticipantCounter(zip.path)
 
-number.of.icons <- IconCounter(path)
+number.of.icons <- IconCounter(zip.path)
 
-icon.names <- IconNamesGetter(path, scenario.name)
+icon.names <- IconNamesGetter(zip.path, scenario.name)
 
-ExtractIsms(path, scenario.name, number.of.icons)
+ExtractIsms(zip.path, scenario.name, number.of.icons)
 
-isms <- ReadIsms(paste(path, "/ism", sep=""), list.files(paste(path, "/ism", sep="")), number.of.icons)
+isms <- ReadIsms(paste(getwd(), "/ism", sep=""), list.files(paste(getwd(), "/ism", sep="")), number.of.icons)
 
 Osm <- OsmGenerator(isms, icon.names)
 
@@ -1240,9 +1219,9 @@ mds <- MdsScaling(Osm)
 
 cluster.output <- ClusterAnalysis(Osm, number.of.participants)
 
-participant.similarity.output <- ParticipantSimilarity(isms, list.files(paste(path, "/ism", sep="")))
+participant.similarity.output <- ParticipantSimilarity(isms, list.files(paste(getwd(), "/ism", sep="")))
 
-WriteOsm(Osm, path)
+WriteOsm(Osm)
 
 WriteOsmViz(Osm, number.of.participants)
 
@@ -1254,16 +1233,16 @@ WriteMdsScaling(mds)
 
 WriteParticipantSimilarity(participant.similarity.output)
 
-ClusterValidation(path, 3, "geo terms", number.of.participants, icon.names, paste(path, "/ism/", sep=""))
+ClusterValidation(paste(getwd(), "/ism/", sep=""), 3, "geo terms", number.of.participants, icon.names)
 
-PrototypeFreq.output <- PrototypeFreq(path, icon.names)
+PrototypeFreq.output <- PrototypeFreq(zip.path, icon.names)
 
-WriteAssignment(path, scenario.name)
+WriteAssignment(zip.path, scenario.name)
 
-WriteParticipantInfo(path, scenario.name)
+WriteParticipantInfo(zip.path, scenario.name)
 
-WriteDescription(path, scenario.name)
+WriteDescription(zip.path, scenario.name)
 
-WriteOverview(scenario.name, paste(path, "/DataOutputs", "/participant.csv", sep=""), number.of.participants)
+WriteOverview(scenario.name, paste(getwd(), "/DataOutputs", "/participant.csv", sep=""), number.of.participants)
 
-MeanVarianceGraphics(Osm, icon.names, paste(path, "/icons/", sep=""))
+MeanVarianceGraphics(Osm, icon.names, paste(getwd(), "/icons/", sep=""))
