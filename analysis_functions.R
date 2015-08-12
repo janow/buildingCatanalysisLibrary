@@ -5,8 +5,8 @@
 
 # OsmGenerator: Adds all isms (created by ReadIsms) to one osm matrix.
 # Parameters
-# isms: list of matrices, a list of participants' isms
-# icon.names: character vector, a list of the names of the icons created by IconListGetter
+# isms: list of matrices, a list of participants' isms (created by ReadIsms)
+# icon.names: character vector, a list of the names of the icons (created by IconListGetter)
 OsmGenerator <- function(isms, icon.names) {
 
   # creates an empty osm matrix
@@ -47,7 +47,7 @@ MdsScaling <- function(osm) {
 # ClusterAnalysis: performs cluster analysis on a given overall similarity matrix and returns a list, where the 1st entry is a dendrogram, and the 2nd entry is a cophenectic matrix
 # Parameters
 # osm: matrix, the osm matrix created by OsmGenerator by adding all isms together
-# number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
+# number.of.participants: integer, the number of participants in the experiment (created by ParticipantCounter)
 # cluster.method: string, optional parameter where the default is set to Ward's method (user has choice between options provided by the hclust function)
 ClusterAnalysis  <- function(osm, number.of.participants, cluster.method="ward.D") {
 	
@@ -74,7 +74,7 @@ ClusterAnalysis  <- function(osm, number.of.participants, cluster.method="ward.D
 
 # ParticipantSimilarity: Participant similarity analysis
 # Parameters
-# isms: list of matrices, a list of participants' isms
+# isms: list of matrices, a list of participants' isms (created by ReadIsms)
 # ism.list: character vector, list of all the isms you want included (if you want to include all of them, list.files(ism.path) will work)
 ParticipantSimilarity <- function(isms, ism.list) {
 	
@@ -127,11 +127,6 @@ ParticipantSimilarity <- function(isms, ism.list) {
 
 
 
-
-
-
-
-
 ## EXE
 Osm <- OsmGenerator(isms, icon.names)
 
@@ -139,7 +134,7 @@ mds <- MdsScaling(Osm)
 
 cluster.output <- ClusterAnalysis(Osm, number.of.participants)
 
-participant.similarity.output <- ParticipantSimilarity(isms, list.files(paste(path, "/ism", sep="")))
+participant.similarity.output <- ParticipantSimilarity(isms, list.files(paste(getwd(), "/ism", sep="")))
 
 
 

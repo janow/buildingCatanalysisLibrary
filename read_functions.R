@@ -6,16 +6,9 @@
 
 # ParticipantCounter: count the number of participants
 # Parameters
-# path: string, path to experiment directory
-ParticipantCounter <- function(path) {
+# zip.path: string, path to participants zip directory
+ParticipantCounter <- function(zip.path) {
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
-	}
-	
-	#Construct the zip folder path and list all zip files
-	zip.path <- paste(path, "zip/", sep = "")
 	files <- list.files(zip.path)
 	
 	#Get the total number of participants (zip files)
@@ -31,16 +24,14 @@ ParticipantCounter <- function(path) {
 
 #IconCounter: count the number of icons(items) used in the experiment
 # Parameters
-# path: string, path to experiment directory
-IconCounter <- function(path) {
+# zip.path: string, path to participants zip directory
+IconCounter <- function(zip.path) {
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
+	# Checks if "/" exists after zip.path. If not, one is added
+	if(substr(zip.path, nchar(zip.path), nchar(zip.path)) != "/") {
+		zip.path <- paste(zip.path, "/", sep = "")
 	}
 
-	#Construct the zip folder path and list all the zip files
-	zip.path <- paste(path, "zip/", sep = "")
 	files <- list.files(zip.path)
 
 	#Get the participant number for the first participant
@@ -58,6 +49,7 @@ IconCounter <- function(path) {
 	#Get the number of icons used in the experiment
 	n.icons <- nrow(icons)
 
+	#Delete the no longer needed unzipped participant folder 
 	unlink(substring(paste(getwd(), "/", files[1], sep = ""), 1, nchar(paste(getwd(), "/", files[1], sep = "")) - 4), recursive = TRUE)
 	
 	#Return the number of icons
@@ -71,17 +63,16 @@ IconCounter <- function(path) {
 # IconNamesGetter: get a list of icon names
 # It also saves the icon.csv needed for KlipArt
 # Parameters
-# path: string, path to experiment directory
+# zip.path: string, path to participants zip directory
 # scenario.name: string, name of the experiment
-IconNamesGetter <- function(path, scenario.name) {
+IconNamesGetter <- function(zip.path, scenario.name) {
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
+	# Checks if "/" exists after zip.path. If not, one is added
+	if(substr(zip.path, nchar(zip.path), nchar(zip.path)) != "/") {
+		zip.path <- paste(zip.path, "/", sep = "")
 	}
 	
-	# Construct the zip folder path and list all the zip files 
-	zip.path <- paste(path, "zip/", sep = "")
+	# List all the zip files 
 	files <- list.files(zip.path)
 	
 	# Unzip the zip file from the 1st participant
@@ -117,13 +108,14 @@ IconNamesGetter <- function(path, scenario.name) {
 	icon.list.klipart <- icon.list.klipart[order(icon.list.klipart$index), ]
 
 	# create klipart folder if not already created
-	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	klipart.path <- paste(getwd(), "/", scenario.name, "-klipart/", sep = "")
 	dir.create(klipart.path, showWarnings = FALSE)
 	
 	# Export the list as a csv file
-	write.table(icon.list.klipart, file = paste(path, scenario.name, "-klipart/", "icon.csv", sep = ""),
+	write.table(icon.list.klipart, file = paste(klipart.path, "icon.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
 
+	#Delete the no longer needed unzipped participant folder 
 	unlink(substring(paste(getwd(), "/", files[1], sep = ""), 1, nchar(paste(getwd(), "/", files[1], sep = "")) - 4), recursive = TRUE)
 	
 	#Return the icon list as a vector
@@ -138,32 +130,31 @@ IconNamesGetter <- function(path, scenario.name) {
 # ExtractIsms: Unzipps the participant folders and copies each participants individual similarity matrix into the "ism" folder (the "ism" folder is created by this function if not yet already created).
 # Also writes files to klipart folder (creates a klipart folder is one is not already created)
 # Parameters
-# path: string, path to experiment directory
-# path: string, path to experiment directory
+# zip.path: string, path to participants zip directory
+# scenario.name: string, name of the experiment
 # number.of.icons: integer, the total number of icons in the experiment created by IconCounter
-ExtractIsms <- function(path, scenario.name, number.of.icons) {
+ExtractIsms <- function(zip.path, scenario.name, number.of.icons) {
 
-	# Checks if "/" exists after path. If not, one is added
-	if(substr(path, nchar(path), nchar(path)) != "/") {
-		path <- paste(path, "/", sep = "")
+	# Checks if "/" exists after zip.path. If not, one is added
+	if(substr(zip.path, nchar(zip.path), nchar(zip.path)) != "/") {
+		zip.path <- paste(zip.path, "/", sep = "")
 	}
 
-	# Construct the zip folder path and list all zip files
-	zip.path <- paste(path, "zip/", sep = "")
+	# List all zip files
 	files <- list.files(zip.path)
 
 	# create ism folder if not already created
-	ism.path <- paste(path, "ism/", sep = "")
+	ism.path <- paste(getwd(), "/ism/", sep = "")
 	dir.create(ism.path, showWarnings = FALSE)
 
 	# create klipart folder if not already created
-	klipart.path <- paste(path, scenario.name, "-klipart/", sep = "")
+	klipart.path <- paste(getwd(), "/", scenario.name, "-klipart/", sep = "")
 	dir.create(klipart.path, showWarnings = FALSE)
 	dir.create(paste(klipart.path, "matrices/", sep=""), showWarnings = FALSE)
 
 	# create matrices folder if not already created
-	matrices.path <- paste(path, "matrices/", sep = "")
-	dir.create(matrices.path, showWarnings = FALSE)
+	# matrices.path <- paste(getwd(), "/matrices/", sep = "")
+	# dir.create(matrices.path, showWarnings = FALSE)
 
 
 	# Process the ISMs of the rest of participants
@@ -182,20 +173,20 @@ ExtractIsms <- function(path, scenario.name, number.of.icons) {
 		matrix.i <- data.matrix(matrix.i[1:number.of.icons, ])
 		
 		# Export the ISM as .mtrx for KlipArt and .csv for catanalysis
-		write.table(matrix.i, file = paste(path, "ism/", "participant", 
+		write.table(matrix.i, file = paste(ism.path, "participant", 
 						substr(files[i], 1, nchar(files[i]) - 4),
 						".mtrx", sep = ""), sep = " ", 
 						row.names = F, col.names = F)
 		
-		write.table(matrix.i, file = paste(paste(path, scenario.name, "-klipart/", sep = ""), "matrices/", "participant", 
+		write.table(matrix.i, file = paste(klipart.path, "matrices/", "participant", 
 						substr(files[i], 1, nchar(files[i]) - 4), 
 						".mtrx", sep = ""), sep = " ",
 						row.names = F, col.names = F)
 		
-		write.table(matrix.i, file = paste(path, "matrices/", "participant", 
-						substr(files[i], 1, nchar(files[i]) - 4), 
-						".mtrx", sep = ""), sep = " ",
-						row.names = F, col.names = F)
+		# write.table(matrix.i, file = paste(getwd(), "/matrices/", "participant", 
+		# 				substr(files[i], 1, nchar(files[i]) - 4), 
+		# 				".mtrx", sep = ""), sep = " ",
+		# 				row.names = F, col.names = F)
 
 	}
 
@@ -214,9 +205,9 @@ ExtractIsms <- function(path, scenario.name, number.of.icons) {
 
 # ReadIsms: Takes all the isms from the ism folder (the ism folder is populated via ExtractIsms) and reads them into R and returns a list of isms
 # Parameters
-# ism.path: string, full path to the ism directory 
+# ism.path: string, path to the ism directory (created by ExtractIsms)
 # ism.list: character vector, list of all the isms you want included (if you want to include all of them, list.files(ism.path) will work)
-# number.of.icons: integer, the total number of icons in the experiment created by IconCounter
+# number.of.icons: integer, the total number of icons in the experiment (created by IconCounter)
 ReadIsms <- function(ism.path, ism.list, number.of.icons) {
 
   # Checks if "/" exists after ism.path. If not, one is added
@@ -251,22 +242,16 @@ ReadIsms <- function(ism.path, ism.list, number.of.icons) {
 
 
 
-
-
-
-
-
-
 ## EXE
-number.of.participants <- ParticipantCounter(path)
+number.of.participants <- ParticipantCounter(zip.path)
 
-number.of.icons <- IconCounter(path)
+number.of.icons <- IconCounter(zip.path)
 
-icon.names <- IconNamesGetter(path, scenario.name)
+icon.names <- IconNamesGetter(zip.path, scenario.name)
 
-ExtractIsms(path, scenario.name, number.of.icons)
+ExtractIsms(zip.path, scenario.name, number.of.icons)
 
-isms <- ReadIsms(paste(path, "/ism", sep=""), list.files(paste(path, "/ism", sep="")), number.of.icons)
+isms <- ReadIsms(paste(getwd(), "/ism", sep=""), list.files(paste(getwd(), "/ism", sep="")), number.of.icons)
 
 
 

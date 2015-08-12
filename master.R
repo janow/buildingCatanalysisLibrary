@@ -1,10 +1,13 @@
-## Kevin Sparks 7/20/15
+## Kevin Sparks 8/12/15
 
 # Instruction
-# 1. Create a folder with the name of the experiment;
-# 2. In the experiment folder, create a folder named "zip" and put all participant zip files into the "zip" folder;
-# 3. Load the packages seen below
-# 4. Define a path variable as a string to the location of the experiment folder (there should be a sub-folder "zip")
+# 1. Load the packages below (gplots, vegan, clusterval, grid, R2HTML)
+# 2. Set the currecnt working directory to an experiment folder
+# 3. Define a zip.path variable as a string to the location of the participants zip directory that holds all the zipped participants folders
+# 4. Define a scenario.name variable as a string as the name of the experiment
+# 5. Load the functions seen below
+# 6. Run the EXEs at the bottom
+
 
 require(gplots)
 require(vegan)
@@ -13,8 +16,8 @@ require(grid)
 require(R2HTML)
 
 # Setting the basic path and scenario name variables, as well as setting the working directory to the path (this isn't necessary, just convenient).
-zip.path <- "/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/zip"
 setwd("/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests")
+zip.path <- "/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/zip"
 scenario.name <- "scenario_name_here"
 
 
@@ -41,7 +44,7 @@ scenario.name <- "scenario_name_here"
 
 # ParticipantCounter: count the number of participants
 # Parameters
-# path: string, path to participants zip directory
+# zip.path: string, path to participants zip directory
 ParticipantCounter <- function(zip.path) {
 
 	files <- list.files(zip.path)
@@ -59,7 +62,7 @@ ParticipantCounter <- function(zip.path) {
 
 #IconCounter: count the number of icons(items) used in the experiment
 # Parameters
-# path: string, path to participants zip directory
+# zip.path: string, path to participants zip directory
 IconCounter <- function(zip.path) {
 
 	# Checks if "/" exists after zip.path. If not, one is added
@@ -84,6 +87,7 @@ IconCounter <- function(zip.path) {
 	#Get the number of icons used in the experiment
 	n.icons <- nrow(icons)
 
+	#Delete the no longer needed unzipped participant folder 
 	unlink(substring(paste(getwd(), "/", files[1], sep = ""), 1, nchar(paste(getwd(), "/", files[1], sep = "")) - 4), recursive = TRUE)
 	
 	#Return the number of icons
@@ -97,7 +101,7 @@ IconCounter <- function(zip.path) {
 # IconNamesGetter: get a list of icon names
 # It also saves the icon.csv needed for KlipArt
 # Parameters
-# path: string, path to participants zip directory
+# zip.path: string, path to participants zip directory
 # scenario.name: string, name of the experiment
 IconNamesGetter <- function(zip.path, scenario.name) {
 
@@ -149,6 +153,7 @@ IconNamesGetter <- function(zip.path, scenario.name) {
 	write.table(icon.list.klipart, file = paste(klipart.path, "icon.csv", sep = ""),
 			sep = ",", row.names = F,  col.names = F)
 
+	#Delete the no longer needed unzipped participant folder 
 	unlink(substring(paste(getwd(), "/", files[1], sep = ""), 1, nchar(paste(getwd(), "/", files[1], sep = "")) - 4), recursive = TRUE)
 	
 	#Return the icon list as a vector
@@ -163,7 +168,7 @@ IconNamesGetter <- function(zip.path, scenario.name) {
 # ExtractIsms: Unzipps the participant folders and copies each participants individual similarity matrix into the "ism" folder (the "ism" folder is created by this function if not yet already created).
 # Also writes files to klipart folder (creates a klipart folder is one is not already created)
 # Parameters
-# path: string, path to experiment directory
+# zip.path: string, path to participants zip directory
 # scenario.name: string, name of the experiment
 # number.of.icons: integer, the total number of icons in the experiment created by IconCounter
 ExtractIsms <- function(zip.path, scenario.name, number.of.icons) {
@@ -238,9 +243,9 @@ ExtractIsms <- function(zip.path, scenario.name, number.of.icons) {
 
 # ReadIsms: Takes all the isms from the ism folder (the ism folder is populated via ExtractIsms) and reads them into R and returns a list of isms
 # Parameters
-# ism.path: string, full path to the ism directory 
+# ism.path: string, path to the ism directory (created by ExtractIsms)
 # ism.list: character vector, list of all the isms you want included (if you want to include all of them, list.files(ism.path) will work)
-# number.of.icons: integer, the total number of icons in the experiment created by IconCounter
+# number.of.icons: integer, the total number of icons in the experiment (created by IconCounter)
 ReadIsms <- function(ism.path, ism.list, number.of.icons) {
 
   # Checks if "/" exists after ism.path. If not, one is added
@@ -300,8 +305,8 @@ ReadIsms <- function(ism.path, ism.list, number.of.icons) {
 
 # OsmGenerator: Adds all isms (created by ReadIsms) to one osm matrix.
 # Parameters
-# isms: list of matrices, a list of participants' isms
-# icon.names: character vector, a list of the names of the icons created by IconListGetter
+# isms: list of matrices, a list of participants' isms (created by ReadIsms)
+# icon.names: character vector, a list of the names of the icons (created by IconListGetter)
 OsmGenerator <- function(isms, icon.names) {
 
   # creates an empty osm matrix
@@ -342,7 +347,7 @@ MdsScaling <- function(osm) {
 # ClusterAnalysis: performs cluster analysis on a given overall similarity matrix and returns a list, where the 1st entry is a dendrogram, and the 2nd entry is a cophenectic matrix
 # Parameters
 # osm: matrix, the osm matrix created by OsmGenerator by adding all isms together
-# number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
+# number.of.participants: integer, the number of participants in the experiment (created by ParticipantCounter)
 # cluster.method: string, optional parameter where the default is set to Ward's method (user has choice between options provided by the hclust function)
 ClusterAnalysis  <- function(osm, number.of.participants, cluster.method="ward.D") {
 	
@@ -369,7 +374,7 @@ ClusterAnalysis  <- function(osm, number.of.participants, cluster.method="ward.D
 
 # ParticipantSimilarity: Participant similarity analysis
 # Parameters
-# isms: list of matrices, a list of participants' isms
+# isms: list of matrices, a list of participants' isms (created by ReadIsms)
 # ism.list: character vector, list of all the isms you want included (if you want to include all of them, list.files(ism.path) will work)
 ParticipantSimilarity <- function(isms, ism.list) {
 	
@@ -480,7 +485,7 @@ WriteOsm <- function(osm, scenario.name) {
 # It is intended to be a raw heat map without dendrograms
 # Parameters
 # osm: matrix, osm generated by OsmGenerator
-# number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
+# number.of.participants: integer, the number of participants in the experiment (created by ParticipantCounter)
 WriteOsmViz <- function(osm, number.of.participants) {
 
 	# create a folder to hold viz outputs
@@ -531,7 +536,7 @@ WriteClusterHeatmap <- function(osm, number.of.participants, cluster.method="war
 
 # WriteClusterAnalysis: write the dendrogram and cophenectic matrix created from ClusterAnalysis
 # Parameters
-# cluster.output; list, first entry in the list is a dendrogram, the second entry is a cophenectic matrix (this list created by ClusterAnalysis)
+# cluster.output; list, first entry in the list is a dendrogram, the second entry is a cophenectic matrix (this list is created by ClusterAnalysis)
 WriteClusterAnalysis  <- function(cluster.output) {
 
 	# create a folder to hold viz outputs
@@ -609,8 +614,8 @@ WriteParticipantSimilarity <- function(participant.similarity.output) {
 # ism.path: string, path to ism directory
 # k: integer, number of clusters
 # title: string, title of the experiment
-# number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
-# icon.names: character vector, a list of the names of the icons created by IconListGetter
+# number.of.participants: integer, the number of participants in the experiment (created by ParticipantCounter)
+# icon.names: character vector, a list of the names of the icons (created by IconListGetter)
 ClusterValidation <- function(ism.path, k, title="", number.of.participants, icon.names) {
 
 	# Checks if "/" exists after ism.path. If not, one is added
@@ -701,8 +706,8 @@ ClusterValidation <- function(ism.path, k, title="", number.of.participants, ico
 
 # PrototypeFreq: visualize the frequency that each icon is being selected as group prototype
 # Parameters
-# path: string, path to experiment directory
-# icon.names: character vector, a list of the names of the icons created by IconListGetter
+# zip.path: string, path to participants zip directory
+# icon.names: character vector, a list of the names of the icons (created by IconListGetter)
 PrototypeFreq <- function(zip.path, icon.names) {
 
 	# Checks if "/" exists after zip.path. If not, one is added
@@ -756,7 +761,7 @@ PrototypeFreq <- function(zip.path, icon.names) {
 
 # WriteAssignment: generate the assignment.csv for KlipArt
 # Parameters
-# path: string, path to experiment directory
+# zip.path: string, path to participants zip directory
 # scenario.name: string, name of the experiment
 WriteAssignment <- function(zip.path, scenario.name) {
 
@@ -810,7 +815,7 @@ WriteAssignment <- function(zip.path, scenario.name) {
 
 # WriteParticipantInfo: collect demographic info and basic experiment info (# of groups created and time spent in seconds)
 # Parameters
-# path: string, path to experiment directory
+# zip.path: string, path to participants zip directory
 # scenario.name: string, name of the experiment
 WriteParticipantInfo <- function(zip.path, scenario.name) {
 	
@@ -945,7 +950,7 @@ WriteParticipantInfo <- function(zip.path, scenario.name) {
 
 # WriteDescription: extract the linguistic labels (both long and short) from all participants and store in a single csv file
 # Parameters
-# path: string, path to experiment directory
+# zip.path: string, path to participants zip directory
 # scenario.name: string, name of the experiment
 WriteDescription <- function(zip.path, scenario.name) {
 
@@ -1031,7 +1036,7 @@ WriteDescription <- function(zip.path, scenario.name) {
 # Parameters
 # scenario.name: string, name of the experiment
 # participant.info.path: string, full path to the participant.csv created by WriteParticipantInfo
-# number.of.participants: integer, the number of participants in the experiment can be created by ParticipantCounter
+# number.of.participants: integer, the number of participants in the experiment (created by ParticipantCounter)
 WriteOverview <- function(scenario.name, participant.info.path, number.of.participants) {
 	output <- paste(scenario.name, "_overview.pdf", sep = "")
 	data <- read.csv(participant.info.path, header=F, stringsAsFactors = F)
@@ -1110,8 +1115,8 @@ WriteOverview <- function(scenario.name, participant.info.path, number.of.partic
 # MeanVarianceGraphics: visualize row values for the entire OSM
 # Parameters
 # osm: matrix, the osm matrix created by OsmGenerator
-# icon.names: character vector, a list of the names of the icons created by IconListGetter
-# icons.path: string, path to icons directory that holds the experiment icons (usually a subdirectory of the experiment directory)
+# icon.names: character vector, a list of the names of the icons (created by IconListGetter)
+# icons.path: string, path to icons directory that holds the experiment icon files
 MeanVarianceGraphics <- function(Osm, icon.names, icons.path) {
 
   # create a folder to hold viz outputs
