@@ -16,8 +16,8 @@ require(grid)
 require(R2HTML)
 
 # Setting the basic path and scenario name variables, as well as setting the working directory to the path (this isn't necessary, just convenient).
-setwd("/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests")
-zip.path <- "/Users/Sparks/Google Drive/Alex/R_PackageCreation/catLibTests/zip"
+setwd(".../Catscan_Experiment_XYZ")
+zip.path <- ".../Catscan_Experiment_XYZ/zip"
 scenario.name <- "scenario_name_here"
 
 
